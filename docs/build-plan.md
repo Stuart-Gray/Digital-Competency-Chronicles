@@ -356,8 +356,8 @@ Each milestone ends with: a merged pull request, GitHub Pages updated, the local
 ## 10. Workflow
 
 1. **Direct pushes to `main`** (decided 6 Nov 2026). Claude manages git throughout the project: small, descriptive commits so the history reads as a changelog, no history rewriting, a short-lived branch only when a change is risky enough to test on Pages separately. The GitHub commit history is the dev history.
-2. **GitHub Pages** from `main`, root folder. Live link: `https://stuart-gray.github.io/Digital-Competency-Chronicles/`. The repo stays public.
-3. **Local clone** at `C:\dev\Digital Competency Chronicles` (decided 6 Nov 2026). After every push to `main`, the local clone is pulled so it matches GitHub. The Ministry PDF folder is git-ignored and exists only there.
+2. **GitHub Pages via GitHub Actions** (decided 6 Nov 2026): `.github/workflows/deploy-pages.yml` publishes the repository root on every push to `main`. No build step today; the workflow is where one would go later (for example, bundling, content validation before deploy). Live link: `https://stuart-gray.github.io/Digital-Competency-Chronicles/`. The repo stays public.
+3. **Local clone** at `C:\dev\Digital Competency Chronicles` (decided 6 Nov 2026). The folder is a git clone of the repo. After every push to `main`, the changed files are copied into the folder so it matches GitHub; at each milestone a Remote Control session runs `git fetch` and `git reset --hard origin/main` so the local history matches too. The Ministry PDF folder is git-ignored and exists only there.
 4. **Claude Artifact:** one Artifact, republished (same link, new version) after each meaningful change.
 5. **Before each push:** the content validator passes, and a headless-browser smoke test loads the game, selects a cycle, walks into the hub and opens a puzzle with no console errors.
 
