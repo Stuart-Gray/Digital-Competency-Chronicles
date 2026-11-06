@@ -2,11 +2,12 @@
 // There is no score and no fail state: a wrong try shows a hint and the player tries again.
 // Hints used are counted quietly for the teacher view.
 //
-// Built so far: "choice" and "sequence". The other types in the build plan
-// (sort, spot, match, predict, cocreate) are added the same way in milestone 2.
+// Built: choice, sequence, sort, match, spot, predict. Still to come: cocreate (Area 5).
+// See docs/content-schema.md for the data each type needs.
 
 import * as layer from '../ui/textLayer.js';
 import { t, ui } from './i18n.js';
+import { iconStyle, asset } from '../ui/art.js';
 
 const el = layer.el;
 const TYPES = {};
@@ -24,7 +25,7 @@ export function open(p) {
       return;
     }
     let hints = 0;
-    const card = el('section', { class: 'card', 'aria-labelledby': 'pz-prompt', 'data-puzzle': p.id, 'data-element': p.element });
+    const card = el('section', { class: 'card', 'aria-labelledby': 'pz-prompt', 'data-puzzle': p.id, 'data-element': p.element, 'data-type': p.type });
     card.appendChild(el('span', { class: 'tag', title: ui('puzzle.elementTag') }, p.element));
     card.appendChild(el('p', { class: 'prompt', id: 'pz-prompt' }, t(p.prompt)));
     const body = el('div', { class: 'body' });
@@ -42,8 +43,16 @@ export function open(p) {
         layer.announce(feedback.textContent);
       },
       clearFeedback() { feedback.hidden = true; },
+      /** A friendly note that is not a hint (an explanation, or "pick one first"). */
+      note(text) {
+        feedback.className = 'feedback note';
+        feedback.textContent = text;
+        feedback.hidden = false;
+        layer.announce(text);
+      },
       solved() {
         body.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+        card.classList.add('solved');
         feedback.className = 'feedback good';
         feedback.textContent = t(p.success);
         feedback.hidden = false;
@@ -74,10 +83,27 @@ function shuffle(list, avoidOrder) {
   return a;
 }
 
+/** A small pixel icon (from assets/sprites/icons.png), or nothing. */
+function icon(name) {
+  return name ? el('span', { class: 'icon', 'aria-hidden': 'true', style: iconStyle(name) }) : null;
+}
+
+/** An optional picture above the question. Words over it come from content (labels). */
+function picture(p) {
+  if (!p.picture) return null;
+  const fig = el('div', { class: 'picture' }, el('img', { src: asset(p.picture), alt: t(p.pictureAlt) || '' }));
+  for (const l of p.labels || []) fig.appendChild(label(l));
+  return fig;
+}
+
+function label(l) {
+  return el('span', { class: 'pic-label', 'aria-hidden': 'true', style: { left: l.x + '%', top: l.y + '%', width: (l.w || 20) + '%' } }, t(l.text));
+}
+
 // ---------- choice: pick the best answer ----------
-register('choice', (p, api) => {
+function choiceOptions(p, api, list) {
   const box = el('div', { class: 'options', role: 'group' });
-  const options = p.shuffle === false ? p.options : shuffle(p.options);
+  const options = p.shuffle === false ? list : shuffle(list);
   for (const o of options) {
     const b = el('button', {
       'data-correct': o.correct ? 'true' : null,
@@ -87,10 +113,170 @@ register('choice', (p, api) => {
         b.disabled = true;
         api.hint(t(o.hint));
       },
-    }, t(o.text));
+    }, icon(o.icon), el('span', {}, t(o.text)));
     box.appendChild(b);
   }
-  api.body.appendChild(box);
+  return box;
+}
+
+register('choice', (p, api) => {
+  const pic = picture(p);
+  if (pic) api.body.appendChild(pic);
+  api.body.appendChild(choiceOptions(p, api, p.options));
+});
+
+// ---------- predict: watch a short scene, then choose what happens next ----------
+register('predict', (p, api) => {
+  const strip = el('ol', { class: 'strip' });
+  const pic = picture(p);
+  // With a picture, the picture sits beside the scene so the question stays in view.
+  api.body.appendChild(pic ? el('div', { class: 'predict-top' }, pic, strip) : strip);
+  let i = 0;
+  const next = el('button', { class: 'primary', 'data-test': 'predict-next', onclick: () => show() }, ui('puzzle.predict.next'));
+  const question = el('p', { class: 'prompt' }, t(p.question));
+  function show() {
+    const f = p.scene[i++];
+    const li = el('li', {}, icon(f.icon), el('span', {}, t(f.text)));
+    strip.appendChild(li);
+    layer.announce(t(f.text));
+    if (i >= p.scene.length) {
+      next.remove();
+      api.body.append(question, choiceOptions(p, api, p.options));
+      setTimeout(() => { const b = api.body.querySelector('.options button'); if (b) b.focus(); }, 30);
+    } else {
+      setTimeout(() => next.focus(), 30);
+    }
+  }
+  api.actions.appendChild(next);
+  show();
+});
+
+// ---------- sort: put each item in the right box (tap an item, then tap a box) ----------
+register('sort', (p, api) => {
+  let selected = null;
+  const pool = el('div', { class: 'sort-pool', role: 'group', 'aria-label': ui('puzzle.sort.items') });
+  const binsBox = el('div', { class: 'sort-bins' });
+  const binLists = {};
+  const items = shuffle(p.items);
+  const left = new Set(items);
+  const accepts = (item, binId) => (Array.isArray(item.bin) ? item.bin : [item.bin]).includes(binId);
+
+  const help = el('p', { class: 'help' }, ui('puzzle.sort.help'));
+  for (const it of items) {
+    it._btn = el('button', {
+      class: 'sort-item', 'data-item': it.id, 'aria-pressed': 'false',
+      onclick: () => select(it),
+    }, icon(it.icon), el('span', {}, t(it.text)));
+    pool.appendChild(it._btn);
+  }
+  for (const b of p.bins) {
+    binLists[b.id] = el('ul', { class: 'bin-list' });
+    binsBox.appendChild(el('div', { class: 'bin' },
+      el('button', { class: 'bin-btn', 'data-bin': b.id, onclick: () => drop(b) }, icon(b.icon), el('span', {}, t(b.text))),
+      binLists[b.id]));
+  }
+  api.body.append(help, pool, binsBox);
+
+  function select(it) {
+    selected = selected === it ? null : it;
+    for (const x of left) x._btn.setAttribute('aria-pressed', String(x === selected));
+    api.clearFeedback();
+    if (selected) setTimeout(() => binsBox.querySelector('button').focus(), 20);
+  }
+  function drop(bin) {
+    if (!selected) { api.note(ui('puzzle.sort.pickFirst')); return; }
+    const it = selected;
+    selected = null;
+    if (accepts(it, bin.id)) {
+      left.delete(it);
+      it._btn.remove();
+      binLists[bin.id].appendChild(el('li', {}, icon(it.icon), t(it.text)));
+      api.clearFeedback();
+      if (it.why) api.note(t(it.why));
+      if (!left.size) { help.remove(); api.solved(); return; }
+      setTimeout(() => pool.querySelector('button').focus(), 20);
+    } else {
+      it._btn.setAttribute('aria-pressed', 'false');
+      api.hint(t(it.hint));
+      setTimeout(() => it._btn.focus(), 20);
+    }
+  }
+});
+
+// ---------- match: pair each thing on the left with one on the right ----------
+register('match', (p, api) => {
+  const leftCol = el('div', { class: 'match-col', role: 'group', 'aria-label': t(p.leftTitle) || '' }, p.leftTitle ? el('h3', {}, t(p.leftTitle)) : null);
+  const rightCol = el('div', { class: 'match-col', role: 'group', 'aria-label': t(p.rightTitle) || '' }, p.rightTitle ? el('h3', {}, t(p.rightTitle)) : null);
+  let picked = null;
+  let done = 0;
+  const lefts = shuffle(p.pairs), rights = shuffle(p.pairs, lefts);
+  for (const pr of lefts) {
+    pr._l = el('button', { class: 'match-l', 'data-left': pr.id, 'aria-pressed': 'false', onclick: () => pick(pr) }, icon(pr.left.icon), el('span', {}, t(pr.left.text)));
+    leftCol.appendChild(pr._l);
+  }
+  for (const pr of rights) {
+    pr._r = el('button', { class: 'match-r', 'data-right': pr.id, onclick: () => pair(pr) }, icon(pr.right.icon), el('span', {}, t(pr.right.text)));
+    rightCol.appendChild(pr._r);
+  }
+  api.body.append(el('p', { class: 'help' }, ui('puzzle.match.help')), el('div', { class: 'match' }, leftCol, rightCol));
+
+  function pick(pr) {
+    picked = picked === pr ? null : pr;
+    for (const x of p.pairs) if (!x._done) x._l.setAttribute('aria-pressed', String(x === picked));
+    api.clearFeedback();
+    if (picked) setTimeout(() => rightCol.querySelector('button:not([disabled])').focus(), 20);
+  }
+  function pair(pr) {
+    if (!picked) { api.note(ui('puzzle.match.pickFirst')); return; }
+    const l = picked;
+    picked = null;
+    l._l.setAttribute('aria-pressed', 'false');
+    if (l === pr) {
+      pr._done = true;
+      done++;
+      const n = String(done);
+      for (const b of [pr._l, pr._r]) { b.disabled = true; b.classList.add('paired'); b.prepend(el('span', { class: 'n' }, n)); }
+      if (pr.why) api.note(t(pr.why)); else api.clearFeedback();
+      if (done === p.pairs.length) { api.solved(); return; }
+      setTimeout(() => leftCol.querySelector('button:not([disabled])').focus(), 20);
+    } else {
+      api.hint(t(l.hint));
+      setTimeout(() => l._l.focus(), 20);
+    }
+  }
+});
+
+// ---------- spot: find the clues in a picture ----------
+register('spot', (p, api) => {
+  const fig = picture(p);
+  const clues = p.spots.filter((s) => s.clue);
+  const found = new Set();
+  const list = el('ul', { class: 'list found' });
+  const counter = el('p', { class: 'help' });
+  const update = () => { counter.textContent = ui('puzzle.spot.found', { n: found.size, total: clues.length }); };
+  for (const s of p.spots) {
+    const b = el('button', {
+      class: 'spot', 'data-spot': s.id, 'data-clue': s.clue ? 'true' : null, 'aria-label': t(s.name),
+      style: { left: s.x + '%', top: s.y + '%', width: s.w + '%', height: s.h + '%' },
+      onclick: () => {
+        if (s.clue) {
+          if (found.has(s)) return;
+          found.add(s);
+          b.classList.add('found');
+          b.disabled = true;
+          list.appendChild(el('li', {}, el('strong', {}, t(s.name)), ' · ', t(s.why)));
+          api.clearFeedback();
+          update();
+          if (found.size === clues.length) api.solved();
+        } else {
+          api.hint(t(s.hint));
+        }
+      },
+    });
+    fig.appendChild(b);
+  }
+  update();
+  api.body.append(el('p', { class: 'help' }, ui('puzzle.spot.help')), fig, counter, list);
 });
 
 // ---------- sequence: put the steps in order (tap to place, tap again to take back) ----------

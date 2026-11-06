@@ -226,3 +226,58 @@ input[type="text"] {
 @media (max-width: 700px) {
   .slots { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ---------- milestone 2: icons, pictures and the new puzzle types ---------- */
+:root { --icon: calc(var(--u) * 10); }
+.icon, .fx {
+  display: inline-block; flex: none; width: var(--icon); height: var(--icon);
+  background-repeat: no-repeat; image-rendering: pixelated; vertical-align: middle;
+}
+.icon { background-image: url("../../assets/sprites/icons.png"); background-size: calc(var(--icon) * 8) auto; }
+.fx { background-image: url("../../assets/sprites/fx.png"); background-size: calc(var(--icon) * 13) var(--icon); }
+.card .help { margin: 0; font-size: .85em; opacity: .85; }
+.card .feedback.note { background: #e6eefc; border-color: var(--accent); }
+.card h3 { margin: 0; font-size: .85em; text-transform: uppercase; letter-spacing: .05em; }
+.card button { display: inline-flex; align-items: center; gap: calc(var(--u) * 2); }
+
+.picture { position: relative; width: min(100%, calc(var(--u) * 160)); align-self: center; line-height: 0; }
+.picture img { width: 100%; image-rendering: pixelated; border: calc(var(--u) * 1) solid var(--ink); border-radius: calc(var(--u) * 1.5); }
+.pic-label {
+  position: absolute; transform: translateY(-50%); text-align: center; line-height: 1.1;
+  color: #fff; font-weight: 700; font-size: .55em; text-shadow: 0 1px 0 #000; pointer-events: none;
+}
+.spot {
+  position: absolute; padding: 0; min-height: 0; border-radius: calc(var(--u) * 2);
+  background: transparent; border: calc(var(--u) * .5) dashed rgba(255,255,255,.0); box-shadow: none;
+}
+.spot:hover, .spot:focus-visible { border-color: rgba(255,255,255,.9); background: rgba(255,255,255,.12); }
+.spot.found { border: calc(var(--u) * 1) solid var(--gold); background: rgba(255,216,74,.25); opacity: 1; }
+.found li { font-size: .9em; }
+
+.sort-pool { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 2); justify-content: center; }
+.sort-item { font-weight: 400; text-align: left; }
+.sort-item[aria-pressed="true"], .match-l[aria-pressed="true"] { background: var(--gold); outline: calc(var(--u) * .75) solid var(--edge); }
+.sort-bins { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: calc(var(--u) * 3); }
+.bin { display: flex; flex-direction: column; gap: calc(var(--u) * 1.5); background: var(--paper-2); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 2); }
+.bin-btn { justify-content: center; background: var(--accent); color: var(--accent-ink); }
+.bin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--u) * 1); font-size: .85em; }
+.bin-list li { display: flex; gap: calc(var(--u) * 1.5); align-items: center; background: #e3f4dc; border-radius: calc(var(--u) * 1.5); padding: calc(var(--u) * 1) calc(var(--u) * 2); }
+
+.match { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 4); }
+.match-col { display: flex; flex-direction: column; gap: calc(var(--u) * 2); }
+.match-col button { font-weight: 400; text-align: left; justify-content: flex-start; }
+.match-col button.paired { background: #e3f4dc; opacity: 1; }
+.match-col .n { font-weight: 700; min-width: 1.2em; }
+
+.strip { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--u) * 2); }
+.strip li { display: flex; gap: calc(var(--u) * 2); align-items: center; background: var(--paper-2); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 2) calc(var(--u) * 3); animation: pop .3s ease-out; }
+
+#hud .hud-right { display: flex; gap: calc(var(--u) * 2); align-items: center; }
+#hud .hud-items { display: flex; gap: calc(var(--u) * 1); background: rgba(20,18,28,.7); padding: calc(var(--u) * 1); border-radius: calc(var(--u) * 2); pointer-events: none; }
+#hud .hud-items .fx { --icon: calc(var(--u) * 8); }
+.journal .items li { display: flex; gap: calc(var(--u) * 2); align-items: center; list-style: none; }
+.journal .items { padding-left: 0; }
+
+.predict-top { display: grid; grid-template-columns: 2fr 3fr; gap: calc(var(--u) * 3); align-items: start; }
+.predict-top .picture { width: 100%; }
+.strip li { font-size: .9em; }

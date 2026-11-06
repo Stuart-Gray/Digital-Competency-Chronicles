@@ -99,6 +99,9 @@ export function showPanel(card, { onCancel } = {}) {
 }
 export function hidePanel() {
   panelEl.hidden = true; panelEl.innerHTML = ''; panelEl.onkeydown = null;
+  // Toasts that arrived while a card was open (so they did not cover the question) show now.
+  const waiting = pendingToasts.splice(0);
+  waiting.forEach((args, i) => setTimeout(() => toast(...args), 150 + i * 400));
 }
 
 export function isBusy() {
@@ -215,7 +218,9 @@ export function setHud(nodes) {
 }
 
 // ---------- toasts (achievements, notices) ----------
+const pendingToasts = [];
 export function toast(title, text, ms = 3500) {
+  if (!panelEl.hidden) { pendingToasts.push([title, text, ms]); return; }
   const node = el('div', { class: 'toast' }, el('span', { class: 't' }, title), text);
   toastsEl.appendChild(node);
   announce(title + '. ' + text);

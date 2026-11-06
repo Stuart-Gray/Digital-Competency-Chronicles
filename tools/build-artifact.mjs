@@ -33,9 +33,15 @@ const files = {};
 for (const f of readdirSync(join(root, 'content')).filter((n) => n.endsWith('.json'))) {
   files[`content/${f}`] = JSON.parse(readFileSync(join(root, 'content', f), 'utf8'));
 }
-const map = JSON.parse(readFileSync(join(root, 'maps/hub.tmj'), 'utf8'));
-files['maps/hub.tmj'] = map;
-for (const rel of ['assets/tiles/village.png', 'assets/sprites/hero.png', 'assets/sprites/npcs.png']) files[rel] = dataUri(rel);
+for (const f of readdirSync(join(root, 'maps')).filter((n) => n.endsWith('.tmj'))) {
+  files[`maps/${f}`] = JSON.parse(readFileSync(join(root, 'maps', f), 'utf8'));
+}
+const art = [
+  'assets/tiles/village.png', 'assets/tiles/dungeon.png',
+  'assets/sprites/hero.png', 'assets/sprites/npcs.png', 'assets/sprites/fx.png',
+  ...readdirSync(join(root, 'assets/pictures')).filter((n) => n.endsWith('.png')).map((n) => `assets/pictures/${n}`),
+];
+for (const rel of art) files[rel] = dataUri(rel);
 
 // 4. Page markup from index.html
 const html = readFileSync(join(root, 'index.html'), 'utf8');

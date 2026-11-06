@@ -3,6 +3,8 @@
 import * as content from '../systems/content.js';
 import { setUiStrings } from '../systems/i18n.js';
 
+const NPC_ROWS = 9; // rows in assets/sprites/npcs.png
+
 export default class Preload extends Phaser.Scene {
   constructor() { super('Preload'); }
 
@@ -21,7 +23,10 @@ export default class Preload extends Phaser.Scene {
       else this.load.json('content-' + name, `content/${name}.json`);
     }
     this.load.tilemapTiledJSON('hub', file('maps/hub.tmj'));
+    this.load.tilemapTiledJSON('area2', file('maps/area2.tmj'));
     this.load.image('tiles', file('assets/tiles/village.png'));
+    this.load.image('dungeon-tiles', file('assets/tiles/dungeon.png'));
+    this.load.spritesheet('fx', file('assets/sprites/fx.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('hero', file('assets/sprites/hero.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('npcs', file('assets/sprites/npcs.png'), { frameWidth: 16, frameHeight: 16 });
   }
@@ -42,7 +47,7 @@ export default class Preload extends Phaser.Scene {
         this.anims.create({ key: `hero${a}-idle-${d}`, frames: [{ key: 'hero', frame: base }] });
       });
     }
-    for (let n = 0; n < 4; n++) {
+    for (let n = 0; n < NPC_ROWS; n++) {
       this.anims.create({ key: `npc${n}-idle`, frames: this.anims.generateFrameNumbers('npcs', { frames: [n * 2, n * 2, n * 2 + 1] }), frameRate: 2, repeat: -1 });
     }
   }

@@ -25,7 +25,9 @@ export default class Title extends Phaser.Scene {
         startSlot(index, slot);
         layer.hideScreen();
         cam.fadeOut(250);
-        cam.once('camerafadeoutcomplete', () => this.scene.start('Hub'));
+        const loc = slot.location || {};
+        const scene = this.scene.get(loc.scene) ? loc.scene : 'Hub';
+        cam.once('camerafadeoutcomplete', () => this.scene.start(scene, { spawn: loc.x == null ? loc.spawn : undefined }));
       },
     };
     menus.titleScreen(go);

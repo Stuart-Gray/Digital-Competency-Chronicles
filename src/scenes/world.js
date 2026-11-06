@@ -1,8 +1,8 @@
 // Builds a Tiled map into a scene: ground and structure layers, collisions, and the object list.
 
-export function buildMap(scene, key) {
+export function buildMap(scene, key, [tilesetName, textureKey] = ['village', 'tiles']) {
   const map = scene.make.tilemap({ key });
-  const tiles = map.addTilesetImage('village', 'tiles');
+  const tiles = map.addTilesetImage(tilesetName, textureKey);
   const ground = map.createLayer('ground', tiles, 0, 0);
   const structures = map.createLayer('structures', tiles, 0, 0);
   ground.setCollisionByProperty({ collides: true });

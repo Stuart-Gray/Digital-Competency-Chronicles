@@ -6,7 +6,8 @@
 //   tiers     only shown for these cycles
 //   if/ifNot  only shown when a story flag is (not) set
 //   choices   [{ text, next, action }]
-//   action    "puzzle:<id>", "set:<flag>", "unset:<flag>" or "goto:<node>"
+//   action    "puzzle:<id>", "set:<flag>", "unset:<flag>", "goto:<node>",
+//             "give:<item>", "achieve:<id>" or "travel:<Scene>:<spawn>"
 // See docs/content-schema.md.
 
 import * as layer from '../ui/textLayer.js';
@@ -20,6 +21,7 @@ const END = '__end__'; // special "node" that stops the conversation
  *   flags: {},                       story flags of the save slot (read and written)
  *   vars: {},                        placeholder values, e.g. { name: 'Sam' }
  *   startPuzzle: async (id) => {},   called for "puzzle:<id>" actions
+ *   give, achieve, travel, changed    optional callbacks from the world scene
  * }
  */
 export async function run(file, nodeId, ctx) {
@@ -67,10 +69,13 @@ function showLine(line, ctx) {
 
 /** Runs an action. Returns a node id to jump to, or null. */
 async function doAction(action, ctx) {
-  const [kind, arg] = String(action).split(':');
-  if (kind === 'set') ctx.flags[arg] = true;
-  else if (kind === 'unset') delete ctx.flags[arg];
+  const [kind, arg, arg2] = String(action).split(':');
+  if (kind === 'set') { ctx.flags[arg] = true; ctx.changed && ctx.changed(); }
+  else if (kind === 'unset') { delete ctx.flags[arg]; ctx.changed && ctx.changed(); }
   else if (kind === 'goto') return arg;
+  else if (kind === 'give' && ctx.give) { ctx.give(arg); ctx.changed && ctx.changed(); }
+  else if (kind === 'achieve' && ctx.achieve) ctx.achieve(arg);
+  else if (kind === 'travel' && ctx.travel) { ctx.travel(arg, arg2); return END; }
   else if (kind === 'puzzle' && ctx.startPuzzle) {
     layer.closeDialogue();
     const result = await ctx.startPuzzle(arg);
