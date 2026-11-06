@@ -67,7 +67,10 @@ for x in range(2, W - 2):
 GATE_X = [5, 10, 15, 20, 25, 30, 35]
 for area, gx in enumerate(GATE_X, start=1):
     s(gx, 3, GATE_O if area == 2 else GATE_C)
-    obj(f"gate{area}", "gate", gx, 3, area=area, open=(area == 2))
+    if area == 2:
+        obj("gate2", "gate", gx, 3, area=2, open=True, dialogue="gate2_open")
+    else:
+        obj(f"gate{area}", "gate", gx, 3, area=area, open=False)
     s(gx, 2, STONE)
 
 # Path along the gates, and lanes down to the village
@@ -108,7 +111,8 @@ for x in range(29, 34):
 obj("fixer", "npc", 31, 12, npc="fixer", sprite=1, dialogue="fixer_intro")
 for cx in (30, 31, 32):
     obj(f"counter{cx}", "talk", cx, 13, target="fixer")
-obj("shop_sign", "sign", 34, 13, dialogue="hub_shop_sign")
+obj("shop_sign", "sign", 34, 13, dialogue="hub_shop_sign", ifNotFlag="area2_done")
+obj("shop_sign_open", "sign", 34, 13, dialogue="hub_shop_open", ifFlag="area2_done")
 s(34, 13, SIGN)
 
 # Pond with a bridge (bottom left)
@@ -138,8 +142,14 @@ for (x, y) in [(13, 22), (35, 23), (22, 22)]:
 s(18, 17, SIGN)
 obj("welcome_sign", "sign", 18, 17, dialogue="hub_welcome_sign")
 
+# The village grows when the Digital Identity badge comes home: a garden blooms around the plaza
+for i, (x, y) in enumerate([(15, 10), (15, 12), (15, 14), (24, 10), (24, 12), (24, 14), (17, 17), (22, 17),
+                            (18, 9), (21, 9), (9, 14), (5, 14), (28, 14), (34, 14)]):
+    obj(f"garden{i}", "deco", x, y, tile=FLOWERS, layer="ground", ifFlag="area2_done")
+
 # People
 obj("player", "spawn", 20, 18)
+obj("from_dungeon2", "spawn", 10, 5, facing="down")
 obj("guide", "npc", 21, 14, npc="guide", sprite=0, dialogue="guide_intro")
 obj("kid", "npc", 13, 5, npc="kid", sprite=2, dialogue="kid_gates")
 obj("elder", "npc", 14, 19, npc="elder", sprite=3, dialogue="elder_pond")

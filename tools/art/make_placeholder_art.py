@@ -438,16 +438,36 @@ AVATARS = [  # hair, skin, shirt, shirt shade, pants, shoes, accent (mouth)
     dict(H="e0b440", S="f6d6b8", E="1d1b26", C="3f8a37", D="2f6b2c", P="5a4a3a", B="2a2a34", A="d77a6a"),
     dict(H="7a3a8a", S="8d5a3a", E="1d1b26", C="e8a33a", D="b87a20", P="3a3a4a", B="2a2a34", A="6a3a2a"),
 ]
-NPCS = [  # guide (mayor), fixer (shopkeeper), kid, elder
-    dict(H="dcdcdc", S="f2c8a0", E="1d1b26", C="7a3a8a", D="5a2a6a", P="5a3a20", B="2a2a34", A="d77a6a"),
-    dict(H="5a3a20", S="c68c5e", E="1d1b26", C="e8a33a", D="b87a20", P="27458a", B="2a2a34", A="9c5a4a"),
-    dict(H="c0453b", S="f6d6b8", E="1d1b26", C="5b9cf0", D="3a64b8", P="3f8a37", B="2a2a34", A="d77a6a"),
-    dict(H="8d8f99", S="8d5a3a", E="1d1b26", C="3f8a37", D="2f6b2c", P="6b4a2b", B="2a2a34", A="6a3a2a"),
+NPCS = [  # rows of npcs.png: the "sprite" property on the map picks a row
+    dict(H="dcdcdc", S="f2c8a0", E="1d1b26", C="7a3a8a", D="5a2a6a", P="5a3a20", B="2a2a34", A="d77a6a"),  # 0 guide (Ada)
+    dict(H="5a3a20", S="c68c5e", E="1d1b26", C="e8a33a", D="b87a20", P="27458a", B="2a2a34", A="9c5a4a"),  # 1 fixer (Théo)
+    dict(H="c0453b", S="f6d6b8", E="1d1b26", C="5b9cf0", D="3a64b8", P="3f8a37", B="2a2a34", A="d77a6a"),  # 2 kid (Mika)
+    dict(H="8d8f99", S="8d5a3a", E="1d1b26", C="3f8a37", D="2f6b2c", P="6b4a2b", B="2a2a34", A="6a3a2a"),  # 3 elder (Rosa)
+    dict(H="f2f0e6", S="e8c39e", E="1d1b26", C="e0b440", D="b8902a", P="5a2a6a", B="2a2a34", A="d77a6a"),  # 4 lantern keeper (Lumi)
+    dict(H="2a1a10", S="a86a44", E="1d1b26", C="f27aa8", D="c0507e", P="3a3a4a", B="2a2a34", A="7a4030"),  # 5 Juno (Hall of Traces)
+    dict(H="e0b440", S="f2c8a0", E="1d1b26", C="2a9d8f", D="1d7268", P="4a4a5a", B="2a2a34", A="d77a6a"),  # 6 Kai (Vault of Keys)
+    dict(H="1d1b26", S="d9a77c", E="1d1b26", C="ffffff", D="c9c9d6", P="c0453b", B="2a2a34", A="9c5a4a"),  # 7 Nova (Window Gallery)
+    dict(H="3a2b5c", S="f2c8a0", E="ffe680", C="3a2b5c", D="241a3a", P="241a3a", B="1d1b26", A="7a3a8a", mask=True),  # 8 Mask Merchant
 ]
 
 
 def palette(d):
-    return {k: hexc(v) for k, v in d.items()}
+    return {k: hexc(v) for k, v in d.items() if isinstance(v, str)}
+
+
+def masked(rows):
+    """The Mask Merchant: a hood over the head and a gold mask over the face."""
+    r = [list(x) for x in rows]
+    for y in range(4, 8):
+        for x in range(4, 12):
+            if r[y][x] in "SEA":
+                r[y][x] = "M"
+    r[5][6] = "E"; r[5][9] = "E"
+    for x in range(3, 13):
+        if r[2][x] == "H" or r[3][x] == "H":
+            pass
+    r[3][3] = "H"; r[3][12] = "H"; r[4][3] = "H"; r[4][12] = "H"; r[5][3] = "H"; r[5][12] = "H"
+    return ["".join(x) for x in r]
 
 
 def build_hero():
@@ -469,9 +489,13 @@ def build_npcs():
     sheet = Image.new("RGBA", (2 * T, len(NPCS) * T), (0, 0, 0, 0))
     for row, n in enumerate(NPCS):
         c = palette(n)
-        a = draw(DOWN, c)
+        base = DOWN
+        if n.get("mask"):
+            c["M"] = hexc("e0b440")
+            base = masked(DOWN)
+        a = draw(base, c)
         b = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-        b.paste(draw(DOWN[1:] + ["................"], c), (0, 0))  # a little bob
+        b.paste(draw(base[1:] + ["................"], c), (0, 0))  # a little bob
         sheet.paste(a, (0, row * T)); sheet.paste(b, (T, row * T))
     path = os.path.join(ROOT, "assets", "sprites", "npcs.png")
     sheet.save(path)

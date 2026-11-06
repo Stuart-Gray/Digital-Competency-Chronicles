@@ -11,3 +11,4 @@ desktop.ini
 node_modules
 test-results/
 dist/
+__pycache__/
