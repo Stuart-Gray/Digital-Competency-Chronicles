@@ -191,6 +191,11 @@ async function touchCheck() {
       await page.waitForTimeout(150);
     }
     await shot(page, 'touch-hub');
+    // Open the menu card: the on-screen controls must hide behind it.
+    await page.tap('[data-test=menu]');
+    await page.waitForTimeout(150);
+    if (await page.locator('#touch .act').isVisible()) throw new Error('touch controls still showing over a card');
+    await shot(page, 'touch-menu');
     if (problems.length) throw new Error(problems.join('\n'));
     console.log('PASS touch');
   } catch (e) {

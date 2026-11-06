@@ -214,6 +214,8 @@ input[type="text"] {
 #touch .dpad .left { left: 0; top: 33%; } #touch .dpad .right { right: 0; top: 33%; }
 #touch .act { position: absolute; right: calc(var(--u) * 8); bottom: calc(var(--u) * 12); width: calc(var(--u) * 26); height: calc(var(--u) * 26); border-radius: 50%; opacity: .8; pointer-events: auto; font-family: var(--font-pixel); font-size: calc(var(--u) * 7); padding: 0; }
 #touch.dialogue-open .dpad { display: none; }
+/* Hide the on-screen controls behind puzzle cards, menus and full screens so they never cover text. */
+#screen:not([hidden]) ~ #touch, #panel:not([hidden]) ~ #touch { display: none !important; }
 
 #load-error { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; gap: 1em; padding: 2em; text-align: center; font-size: 1.2em; }
 #load-error[hidden] { display: none; }
