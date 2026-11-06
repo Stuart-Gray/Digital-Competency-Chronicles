@@ -245,6 +245,14 @@ async function solvePuzzle(page, tier, problems) {
     await page.click(`[data-spot="${p.spots.find((s) => !s.clue).id}"]`);
     await hint();
     for (const s of p.spots.filter((x) => x.clue)) await page.click(`[data-spot="${s.id}"]`);
+  } else if (p.type === 'sequence') {
+    const order = p.steps.map((x) => x.id);
+    for (const sid of [order[1], order[0], ...order.slice(2)]) await page.click(`[data-step=${sid}]`);
+    await page.click('[data-test=sequence-check]');
+    await hint();
+    const placed = await page.locator('[data-placed]').count();
+    for (const sid of order.slice(placed)) await page.click(`[data-step=${sid}]`);
+    await page.click('[data-test=sequence-check]');
   } else {
     throw new Error('test does not know puzzle type ' + p.type);
   }
@@ -300,6 +308,25 @@ async function dungeon(lang, tier) {
     await need('got_lantern');
     await shot(page, `d-${lang}-${tier}-1-atrium`);
     step('entered the temple, got the lantern');
+
+    // Leave early and come back: the player must still walk with the keyboard both ways
+    const canWalk = async (where) => {
+      const a = await page.evaluate(() => window.DCC.debug.pos());
+      await page.keyboard.down('ArrowUp'); await page.waitForTimeout(400); await page.keyboard.up('ArrowUp');
+      const b = await page.evaluate(() => window.DCC.debug.pos());
+      if (a.x === b.x && a.y === b.y) throw new Error('player cannot move after coming back to ' + where);
+    };
+    await page.evaluate(() => window.DCC.debug.walkTo('exit_a'));
+    await page.waitForFunction(() => window.DCC.debug.scene === 'Hub', null, { timeout: 5000 });
+    await page.waitForTimeout(700);
+    await converse(page, tier, solved, problems);
+    await canWalk('the village');
+    await go('gate2');
+    await page.waitForFunction(() => window.DCC.debug.scene === 'Dungeon2', null, { timeout: 5000 });
+    await page.waitForTimeout(700);
+    await converse(page, tier, solved, problems);
+    await canWalk('the temple');
+    step('left the temple early, came back, still walking');
 
     // Hall of Traces (2a)
     await go('juno_a');
@@ -385,10 +412,15 @@ async function dungeon(lang, tier) {
   }
 }
 
-await run('en', 'E3');
-await run('fr', 'E2');
-await touchCheck();
-for (const [lang, tier] of [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']]) await dungeon(lang, tier);
+// SMOKE_ONLY=dungeon runs just the dungeon play-throughs, and SMOKE_ONE=1 only the first of those
+// (faster while fixing a bug there)
+const only = process.env.SMOKE_ONLY;
+if (only !== 'dungeon') {
+  await run('en', 'E3');
+  await run('fr', 'E2');
+  await touchCheck();
+}
+for (const [lang, tier] of (process.env.SMOKE_ONE ? [['en','E2']] : [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']])) await dungeon(lang, tier);
 await browser.close();
 server.close();
 process.exit(failures ? 1 : 0);

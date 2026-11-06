@@ -50,7 +50,15 @@ export default class World extends Phaser.Scene {
     this.opts = opts;
   }
 
-  init(data) { this.arrival = data || {}; }
+  init(data) {
+    this.arrival = data || {};
+    // Phaser reuses one scene object for every visit, so per-visit state must be reset here.
+    // (Leaving the village set travelling = true, and it stayed true when the player came back.)
+    this.travelling = false;
+    this.target = null;
+    this.onExit = null;
+    this.onStone = undefined;
+  }
 
   get FILE() { return this.opts.file; }
 
@@ -132,6 +140,7 @@ export default class World extends Phaser.Scene {
     window.DCC.debug.slot = () => JSON.parse(JSON.stringify(state.slot));
     window.DCC.debug.flags = () => ({ ...state.slot.flags });
     window.DCC.debug.walkTo = (name) => this.debugWalkTo(name);
+    window.DCC.debug.pos = () => ({ x: Math.round(this.player.x), y: Math.round(this.player.y) });
 
     this.onArrive();
   }
