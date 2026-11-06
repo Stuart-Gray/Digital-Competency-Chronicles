@@ -36,11 +36,52 @@ Titles checked against the English and French sheets on 6 November 2026.
 | `fixer_first_try_c2` | Hub, Théo's Fix-it shop | choice | 2 | 4b | Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding. | Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus. |
 | `fixer_first_try_c3` | Hub, Théo's Fix-it shop | choice | 3 | 4b | Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding. | Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus. |
 
-The planned puzzles for Dungeon 2 are listed in `build-plan.md`, section 6.3, and move here as they are built.
+### Dungeon 2: the Temple of Traces (sheet 2, `content/area2.json`)
+
+Order of play: Atrium (Lumi gives the Lantern of Traces) → Hall of Traces (2a) → Vault of Keys (2b) → Window Gallery (2c) → Mask Hall (final room, one trick per element). Each wing ends with a chest holding one piece of the badge; the pieces open the next door.
+
+| Puzzle id | Place | Type | Cycle | Element | Sheet application (EN) | Application (FR) |
+|---|---|---|---|---|---|---|
+| `d2_traces_c2` | Hall of Traces, Juno | match | 2 | 2a | Recognize situations where an online action reveals information about a person, even unintentionally. | Reconnaître des situations où une action en ligne donne des informations sur une personne, même sans qu’on le veuille. |
+| `d2_traces_c3` | Hall of Traces, Juno | match | 3 | 2a | Recognize situations where an online action reveals information about a person, even unintentionally. | Reconnaître des situations où une action en ligne donne des informations sur une personne, même sans qu’on le veuille. |
+| `d2_vanishing_c2` | Hall of Traces, the board | predict | 2 | 2a | Explain what can happen after they post something, even if they delete it later. | Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite. |
+| `d2_vanishing_c3` | Hall of Traces, the board | predict | 3 | 2a | Explain what can happen after they post something, even if they delete it later. | Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite. |
+| `d2_profile_c2` | Hall of Traces, the mirror | choice | 2 | 2a | Choose an image that doesn’t show their face or create an avatar as their profile picture. | Choisir une image qui ne montre pas son visage ou se créer un avatar comme photo de profil. |
+| `d2_profile_c3` | Hall of Traces, the mirror | choice | 3 | 2a | Choose an image that doesn’t show their face or create an avatar as their profile picture. | Choisir une image qui ne montre pas son visage ou se créer un avatar comme photo de profil. |
+| `d2_personal_c2` | Vault of Keys, Kai | sort | 2 | 2b | In certain situations or examples, identify what constitutes personal information and decide whether or not it can be shared. | Identifier, à partir de situations ou d’exemples, ce qui est une information personnelle et décider si elle peut être partagée ou non. |
+| `d2_personal_c3` | Vault of Keys, Kai | sort | 3 | 2b | In certain situations or examples, identify what constitutes personal information and decide whether or not it can be shared. | Identifier, à partir de situations ou d’exemples, ce qui est une information personnelle et décider si elle peut être partagée ou non. |
+| `d2_request_c2` | Vault of Keys, Kai (a message) | choice | 2 | 2b | Recognize messages or requests seeking personal information and explain what to do in such cases. | Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas. |
+| `d2_request_c3` | Vault of Keys, Kai (a message) | choice | 3 | 2b | Recognize messages or requests seeking personal information and explain what to do in such cases. | Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas. |
+| `d2_password_c2` | Vault of Keys, Kai | sort | 2 | 2b | Compare an easy-to-guess password with a harder-to-guess password for protecting personal information. | Comparer un mot de passe facile à deviner à un mot de passe plus difficile à deviner pour protéger des informations personnelles. |
+| `d2_password_c3` | Vault of Keys, Kai | sort | 3 | 2b | Compare an easy-to-guess password with a harder-to-guess password for protecting personal information. | Comparer un mot de passe facile à deviner à un mot de passe plus difficile à deviner pour protéger des informations personnelles. |
+| `d2_photo_c2` | Window Gallery, the easel | spot | 2 | 2c | Identify elements in an image that reveal personal information and explain what could be hidden or not shown. | Repérer dans une image des éléments qui révèlent des informations personnelles et dire ce qu’on pourrait cacher ou éviter de montrer. |
+| `d2_photo_c3` | Window Gallery, the easel | spot | 3 | 2c | Identify elements in an image that reveal personal information and explain what could be hidden or not shown. | Repérer dans une image des éléments qui révèlent des informations personnelles et dire ce qu’on pourrait cacher ou éviter de montrer. |
+| `d2_access_c2` | Window Gallery, Nova | sort | 2 | 2c | Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help. | Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide. |
+| `d2_access_c3` | Window Gallery, Nova | sort | 3 | 2c | Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help. | Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide. |
+| `d2_camera_c2` | Window Gallery, the laptop | predict | 2 | 2c | Recognize when a camera and microphone are active in order to decide whether it is appropriate to leave them on. | Reconnaître quand une caméra et un micro sont actifs afin de décider s’il est approprié de les laisser ouverts. |
+| `d2_camera_c3` | Window Gallery, the laptop | predict | 3 | 2c | Recognize when a camera and microphone are active in order to decide whether it is appropriate to leave them on. | Reconnaître quand une caméra et un micro sont actifs afin de décider s’il est approprié de les laisser ouverts. |
+| `d2_boss1_c2` | Mask Hall, Mask Merchant (trick 1) | choice | 2 | 2b | Recognize messages or requests seeking personal information and explain what to do in such cases. | Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas. |
+| `d2_boss1_c3` | Mask Hall, Mask Merchant (trick 1) | choice | 3 | 2b | Explain what can happen to a person or a group if personal information is shared without permission. | Expliquer ce qui peut arriver à une personne ou à un groupe si des informations personnelles sont partagées sans permission. |
+| `d2_boss2_c2` | Mask Hall, Mask Merchant (trick 2) | choice | 2 | 2a | Explain what can happen after they post something, even if they delete it later. | Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite. |
+| `d2_boss2_c3` | Mask Hall, Mask Merchant (trick 2) | choice | 3 | 2a | Explain what can happen after they post something, even if they delete it later. | Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite. |
+| `d2_boss3_c2` | Mask Hall, Mask Merchant (trick 3) | choice | 2 | 2c | Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help. | Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide. |
+| `d2_boss3_c3` | Mask Hall, Mask Merchant (trick 3) | choice | 3 | 2c | Determine, in a given situation, whether it is better to share or keep private information such as a photo of one’s home showing the address, a person’s full name or a favourite pet. | Dire, dans une situation donnée, s’il est préférable de partager ou de garder privée une information telle qu’une photo de la maison avec adresse, un nom complet ou un animal préféré. |
+
+Notes on the Dungeon 2 puzzles:
+
+- Cycle 2 versions use the class message board, a classroom reading app, a cousin's photo and the class tablet, with 3 or 4 items and hints that point straight at the answer. Cycle 3 versions use the class blog and group chat, an online game account, a friend's photo run through an AI cartoon filter, and up to 6 items, with hints that give a clue to think about.
+- The Cycle 3 final room uses the sheet 2b application about sharing someone's information without permission (trick 1) and the 2c application about keeping a house photo or full name private (trick 3), so Cycle 3 meets every application on the sheet at least once.
+- The final room's three tricks are a chain of `choice` puzzles on purpose (build plan 5.5, rule 5). They are marked `"finale": true`, so the variety check skips them.
+- Sort puzzles accept more than one box when more than one answer is reasonable (for example "Ask an adult first" is always accepted alongside "Keep private" or "Don't allow"), so a careful answer is never marked as a mistake.
+
+World puzzles (no element, for pacing): the hidden door in the Hall of Traces (only the lantern shows it, after Juno's traces are matched) and the three key stones in the Vault of Keys (the lantern shows one, two and three footprints beside them).
 
 ## Flavour lines that are not puzzles
 
 Some village dialogue touches sheet themes without being a puzzle, so it does not claim to cover an element:
 
-- Rosa (pond): looking after devices, closing apps, locking or shutting down (a "question to consider" on sheet 4, element 4a).
-- Mika (gates): a teaser for the Lantern of Traces in Dungeon 2.
+- Rosa (pond): she is taking photos of the ducks with her tablet, then closes her apps, locks it and puts it in its case before crossing the bridge (device care near water; a "question to consider" on sheet 4, element 4a). After the Window Gallery she notices her house number in a duck photo and crops it out (a reminder of 2c, not a puzzle).
+- Mika (gates): a teaser for the Lantern of Traces before Dungeon 2; once the player has the lantern, a line about likes and comments as traces (2a reminder).
+- Ada and Théo: point to the next thing to do (Théo's shop, the purple gate), and notice when the village grows after the Digital Identity Badge comes home.
+
+Rule for all dialogue: what a character says must follow from where they are, what they are doing and how far the player has got. Characters change their lines with story flags (see `content-schema.md`, People), so nobody repeats advice the player has already acted on.

@@ -1,7 +1,9 @@
 // Smoke test (developers only, not needed to play).
 // Loads the game in a headless browser, once per language: picks a cycle, walks into the
 // village, talks to Théo, solves both Fix-it puzzles (with one wrong try), and fails on any
-// console error.
+// console error. Then plays all of Dungeon 2 (the Temple of Traces) for each cycle and
+// language: every puzzle (one wrong try each), the hidden door, the key stones, the chests,
+// the final room, a save-and-resume in the middle, and the trip home.
 //
 //   npm install --no-save playwright   (once)
 //   node tests/smoke.mjs               (SHOTS=dir to save screenshots)
@@ -33,6 +35,7 @@ const base = `http://127.0.0.1:${server.address().port}/`;
 if (SHOTS) await mkdir(SHOTS, { recursive: true });
 
 const hub = JSON.parse(await readFile(join(root, 'content/hub.json'), 'utf8'));
+const area2 = JSON.parse(await readFile(join(root, 'content/area2.json'), 'utf8'));
 const browser = await chromium.launch();
 let failures = 0;
 
@@ -206,9 +209,186 @@ async function touchCheck() {
   }
 }
 
+// ---------- Dungeon 2, start to finish ----------
+async function solvePuzzle(page, tier, problems) {
+  const card = page.locator('#panel [data-puzzle]');
+  const id = await card.getAttribute('data-puzzle');
+  const p = area2.puzzles.find((x) => x.id === id) || hub.puzzles.find((x) => x.id === id);
+  if (!p) throw new Error('unknown puzzle on screen: ' + id);
+  if (p.tiers && !p.tiers.includes(tier)) throw new Error(`${id} is not written for ${tier}`);
+  const hint = () => page.locator('#panel .feedback:not(.good):not(.note)').waitFor({ timeout: 2000 });
+  if (p.type === 'choice' || p.type === 'predict') {
+    while (await page.locator('[data-test=predict-next]').count()) await page.click('[data-test=predict-next]');
+    await page.locator('#panel .options button:not([data-correct])').first().click();
+    await hint();
+    await page.click('#panel [data-correct=true]');
+  } else if (p.type === 'sort') {
+    const binIds = p.bins.map((b) => b.id);
+    const ok = (it) => (Array.isArray(it.bin) ? it.bin : [it.bin]);
+    const strict = p.items.find((it) => ok(it).length < binIds.length);
+    await page.click(`[data-item="${strict.id}"]`);
+    await page.click(`[data-bin="${binIds.find((b) => !ok(strict).includes(b))}"]`);
+    await hint();
+    for (const it of p.items) {
+      await page.click(`[data-item="${it.id}"]`);
+      await page.click(`[data-bin="${ok(it)[0]}"]`);
+    }
+  } else if (p.type === 'match') {
+    await page.click(`[data-left="${p.pairs[0].id}"]`);
+    await page.click(`[data-right="${p.pairs[1].id}"]`);
+    await hint();
+    for (const pr of p.pairs) {
+      await page.click(`[data-left="${pr.id}"]`);
+      await page.click(`[data-right="${pr.id}"]`);
+    }
+  } else if (p.type === 'spot') {
+    await page.click(`[data-spot="${p.spots.find((s) => !s.clue).id}"]`);
+    await hint();
+    for (const s of p.spots.filter((x) => x.clue)) await page.click(`[data-spot="${s.id}"]`);
+  } else {
+    throw new Error('test does not know puzzle type ' + p.type);
+  }
+  await page.locator('[data-test=puzzle-continue]').click();
+  return p;
+}
+
+/** Talks, picks the first choice, solves any puzzle that opens, until everything closes. */
+async function converse(page, tier, solved, problems) {
+  for (let i = 0; i < 80; i++) {
+    await page.waitForTimeout(90);
+    if (await page.locator('#panel [data-puzzle]').count()) { solved.push((await solvePuzzle(page, tier, problems)).id); continue; }
+    if (!(await page.locator('#dialogue').isVisible())) {
+      await page.waitForTimeout(250);
+      if (!(await page.locator('#dialogue').isVisible()) && !(await page.locator('#panel [data-puzzle]').count())) return;
+      continue;
+    }
+    const choice = page.locator('#dialogue .choices button');
+    if (await choice.count()) { await choice.first().click(); continue; }
+    await page.keyboard.press('Space');
+  }
+  throw new Error('conversation did not end');
+}
+
+async function dungeon(lang, tier) {
+  const { context, page, problems } = await newPage(lang);
+  const step = (s) => console.log(`  [dungeon ${lang}/${tier}] ${s}`);
+  const solved = [];
+  const flags = () => page.evaluate(() => window.DCC.debug.flags());
+  const go = async (name) => {
+    const ok = await page.evaluate((n) => window.DCC.debug.goTo(n), name);
+    if (!ok) throw new Error('could not stand by ' + name);
+    await page.waitForTimeout(150);
+    await page.keyboard.press('Space');
+    await converse(page, tier, solved, problems);
+  };
+  const need = async (flag) => { if (!(await flags())[flag]) throw new Error('flag not set: ' + flag); };
+  try {
+    await page.goto(base);
+    await page.locator('[data-test=play]').waitFor({ timeout: 15000 });
+    await page.click('[data-test=play]');
+    await page.click('[data-test=slot-0]');
+    await page.click('[data-test=avatar-3]');
+    await page.click('[data-test=skip-name]');
+    await page.click(`[data-test=cycle-${tier}]`);
+    await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
+    await page.waitForTimeout(700);
+    await converse(page, tier, solved, problems);
+    await go('gate2');
+    await page.waitForFunction(() => window.DCC.debug.scene === 'Dungeon2', null, { timeout: 5000 });
+    await page.waitForTimeout(700);
+    await converse(page, tier, solved, problems);
+    await need('got_lantern');
+    await shot(page, `d-${lang}-${tier}-1-atrium`);
+    step('entered the temple, got the lantern');
+
+    // Hall of Traces (2a)
+    await go('juno_a');
+    await need('d2_traces_done');
+    await go('hidden_door');
+    await need('hall_door_open');
+    await go('juno_b');
+    await go('board');
+    await go('mirror');
+    await shot(page, `d-${lang}-${tier}-2-hall`);
+    await go('chest_traces');
+    await need('got_piece_traces');
+    step('Hall of Traces done');
+
+    // Vault of Keys (2b), with a save and resume in the middle
+    await go('kai');
+    await need('d2_password_done');
+    await page.click('[data-test=menu]');
+    await page.click('[data-test=quit]');
+    await page.locator('[data-test=play]').waitFor();
+    await page.click('[data-test=play]');
+    await page.click('[data-test=slot-0]');
+    await page.waitForFunction(() => window.DCC.debug.scene === 'Dungeon2', null, { timeout: 5000 });
+    await page.waitForTimeout(500);
+    step('saved and resumed inside the temple');
+    for (const s of ['stone2', 'stone1']) { await page.evaluate((n) => window.DCC.debug.walkTo(n), s); await page.waitForTimeout(250); }
+    await converse(page, tier, solved, problems); // wrong order: the stones pop back up
+    if ((await flags()).keystones_done) throw new Error('key stones opened in the wrong order');
+    for (const s of ['stone1', 'stone2', 'stone3']) { await page.evaluate((n) => window.DCC.debug.walkTo(n), s); await page.waitForTimeout(250); }
+    await converse(page, tier, solved, problems);
+    await need('keystones_done');
+    await go('chest_keys');
+    await need('got_piece_keys');
+    step('Vault of Keys done');
+
+    // Window Gallery (2c)
+    await go('nova');
+    await go('easel');
+    await go('nova');
+    await go('laptop');
+    await shot(page, `d-${lang}-${tier}-3-gallery`);
+    await go('chest_gallery');
+    await need('got_piece_gallery');
+    step('Window Gallery done');
+
+    // Final room
+    await go('merchant');
+    await need('area2_done');
+    await shot(page, `d-${lang}-${tier}-4-final`);
+    const slot = await page.evaluate(() => window.DCC.debug.slot());
+    if (!slot.items.includes('badge_2')) throw new Error('no badge');
+    const expected = area2.puzzles.filter((p) => p.tiers.includes(tier)).map((p) => p.id);
+    const missing = expected.filter((id) => !slot.puzzles[id]);
+    if (missing.length) throw new Error('puzzles not solved: ' + missing.join(', '));
+    for (const el of ['2a', '2b', '2c']) if (!slot.hints[el]) throw new Error('hints not counted for ' + el);
+    for (const a of ['lantern_lit', 'secret_door', 'wing_traces', 'wing_keys', 'wing_gallery', 'area2_badge']) if (!slot.achievements[a]) throw new Error('missing achievement ' + a);
+    step(`final room done, ${solved.length} puzzles solved`);
+
+    // Home again: the village has grown
+    await page.evaluate(() => window.DCC.debug.walkTo('exit_c'));
+    await page.waitForFunction(() => window.DCC.debug.scene === 'Hub', null, { timeout: 5000 });
+    await page.waitForTimeout(800);
+    await converse(page, tier, solved, problems);
+    await need('saw_village_grow');
+    await go('fixer');
+    await page.click('[data-test=menu]');
+    await page.click('[data-test=journal]');
+    await page.waitForTimeout(200);
+    await shot(page, `d-${lang}-${tier}-5-journal`);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    step('back in the village, garden and shop open');
+
+    if (problems.length) throw new Error(problems.join('\n'));
+    console.log(`PASS dungeon ${lang}/${tier}`);
+  } catch (e) {
+    failures++;
+    console.error(`FAIL dungeon ${lang}/${tier}: ${e.message}`);
+    if (problems.length) console.error(problems.join('\n'));
+    await shot(page, `d-${lang}-${tier}-fail`);
+  } finally {
+    await context.close();
+  }
+}
+
 await run('en', 'E3');
 await run('fr', 'E2');
 await touchCheck();
+for (const [lang, tier] of [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']]) await dungeon(lang, tier);
 await browser.close();
 server.close();
 process.exit(failures ? 1 : 0);

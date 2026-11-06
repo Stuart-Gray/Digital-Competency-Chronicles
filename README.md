@@ -13,7 +13,14 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 - **Live game:** https://stuart-gray.github.io/Digital-Competency-Chronicles/
 - **Content checker:** https://stuart-gray.github.io/Digital-Competency-Chronicles/tools/validate.html
 
-**Status (6 Nov 2026): milestone 1, engine skeleton.** Title screen, cycle choice (Cycle 2 or 3), five save slots with an optional first name, settings (English/French, read-aloud, text speed, large text, high contrast), the digital village with four people to talk to, seven gates (one open), and the first puzzles: Théo's Fix-it shop (element 4b) in a Cycle 2 and a Cycle 3 version, in both languages. Keyboard and touch both work. The full plan is in [docs/build-plan.md](docs/build-plan.md).
+**Status (6 Nov 2026): milestone 2, the Dungeon 2 slice.** Title → village → Dungeon 2 is playable from start to finish in English and French, for Cycle 2 and Cycle 3.
+
+- **The village:** four people whose lines follow the player's progress, Théo's Fix-it shop (4b), seven gates (the purple one opens), and a village that grows (a garden, Théo's shop opens) when the Digital Identity Badge comes home.
+- **Dungeon 2, the Temple of Traces** (sheet 2: 2a, 2b, 2c): Lumi gives the **Lantern of Traces**, which lights the dark temple and reveals hidden traces. Three wings (Hall of Traces, Vault of Keys, Window Gallery), each with three puzzles from the sheet's student applications, a world puzzle (a hidden door, three key stones) and a chest with a badge piece; then the Mask Merchant's three tricks in the final room. Every puzzle is written twice, for Cycle 2 and Cycle 3. See [docs/content-mapping.md](docs/content-mapping.md).
+- **Puzzle types:** choice, sequence, sort, match, spot (find clues in a picture) and predict (watch a scene, choose what happens next). No scores: a wrong try gives a hint, and hints are counted quietly for the teacher view.
+- **Engine:** cycle choice, five save slots, saves and resumes anywhere (including inside the dungeon), journal with items, badge pieces and achievements, keyboard and touch, real HTML text for Read&Write and screen readers.
+
+Next is milestone 3: the teacher corner and dashboard, the teacher guide for area 2, and testing on Chromebooks, Windows and iPads. The full plan is in [docs/build-plan.md](docs/build-plan.md).
 
 ### For developers and content editors
 
@@ -22,7 +29,7 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 - Check content: `node tools/validate.mjs` (also runs on every push before GitHub Pages publishes) or open `tools/validate.html`.
 - Smoke test: `npm install --no-save playwright` once, then `node tests/smoke.mjs`.
 - Single-file preview build (used for the Claude Artifact copy): `node tools/build-artifact.mjs`.
-- Placeholder art is drawn by `tools/art/make_placeholder_art.py`; the village map is in `maps/hub.tmj` (Tiled). Asset sources: [assets/CREDITS.md](assets/CREDITS.md).
+- Placeholder art is drawn by `tools/art/make_placeholder_art.py` (village, characters) and `tools/art/make_dungeon_art.py` (dungeon tiles, icons, puzzle pictures). Maps are Tiled files in `maps/` (`hub.tmj`, `area2.tmj`), first built by `tools/art/make_hub_map.py` and `tools/art/make_area2_map.py`. Asset sources: [assets/CREDITS.md](assets/CREDITS.md).
 - Licences: code under MIT ([LICENSE](LICENSE)); content and docs under CC BY 4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)).
 
 > Sections 5 to 7 below are the original kickoff notes. Where they differ from [docs/build-plan.md](docs/build-plan.md), the build plan wins.

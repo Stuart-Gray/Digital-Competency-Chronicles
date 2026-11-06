@@ -45,5 +45,12 @@ hold the button on the title screen) lets you clear one save or all saves on the
 | Where | Element | What students do | Ask afterwards |
 |---|---|---|---|
 | Village, Théo's Fix-it shop | 4b Apply troubleshooting strategies | Put the help steps in order (try yourself, Help section, a classmate, the teacher), then choose the best first step when an app freezes | Why is it a good idea to try on your own before asking for help? What could we add to our class troubleshooting poster? |
+| Temple of Traces, Hall of Traces (one session) | 2a Understand digital identity | Match online actions (photo, like, comment) to what they reveal; watch a "deleted" post get copied; choose a profile picture that doesn't show your face | What could someone learn about you from your last three online actions? Why might a deleted post still matter? |
+| Temple of Traces, Vault of Keys (one session) | 2b Understand personal information | Sort what is personal information; decide what to do when a stranger asks for it; sort easy- and hard-to-guess passwords | What words in a message make you think "this might be a trick"? How can a password be hard to guess but easy to remember? |
+| Temple of Traces, Window Gallery (one session) | 2c Understand online privacy protection | Find the clues in a photo (Cycle 3: a photo changed by an AI filter); decide which app requests to allow or ask about; notice a camera and mic still on after a call | Does changing a photo with AI make it safe to share? How can we tell if a camera or microphone is on? |
+| Temple of Traces, Mask Hall | 2a, 2b, 2c review | Answer the Mask Merchant's three tricks | What is one thing you would never share online? Why? |
 
-Reflection prompts, look-fors and the class progress view come in milestone 3.
+Each wing fits a 10 to 15 minute session and ends with a badge piece; the game saves and resumes
+inside the temple. The discussion questions and look-fors for area 2 are in `content/area2.json`
+(`teacher`) and on each puzzle (`teacherNote`). They will appear in the teacher corner in
+milestone 3, with the class progress view.

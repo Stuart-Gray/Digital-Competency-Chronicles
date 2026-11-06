@@ -12,7 +12,8 @@ After any change, check your work: open `tools/validate.html` on the live site (
 |---|---|
 | `ui.json` | Menus, buttons, settings, area names, achievements |
 | `hub.json` | The digital village: people, signs, gates, the Fix-it shop puzzles |
-| `area1.json` … `area7.json` | One per content area (from milestone 2, starting with `area2.json`) |
+| `area2.json` | Dungeon 2, the Temple of Traces (sheet 2: digital identity) |
+| `area1.json`, `area3.json` … `area7.json` | One per content area, added dungeon by dungeon |
 
 Every file starts with `"schemaVersion": 1`.
 
@@ -66,8 +67,13 @@ Language targets per cycle (a guide, not a rule):
 ```
 
 `dialogue` is a list of choices; the first one that fits is used. `if` means "only when this
-story flag is set", `ifNot` means "only when it is not set". The id (`fixer`) must match the
-`npc` property of the person on the Tiled map.
+story flag is set", `ifNot` means "only when it is not set" (an entry can have both). The id
+(`fixer`) must match the `npc` property of the person on the Tiled map.
+
+**Keep dialogue in the moment.** What a person says must follow from where they are, what they
+are doing, and how far the player has got. Put the newest situation first in the list
+(for example "after the badge", then "after the lantern", then the first meeting), so people
+move on with the story instead of repeating advice the player has already used.
 
 ## Dialogue
 
@@ -103,6 +109,12 @@ Actions:
 | `puzzle:<id or family>` | Opens a puzzle. If the player leaves it for later, the conversation ends there. |
 | `set:<flag>` / `unset:<flag>` | Sets or clears a story flag (saved with the player). |
 | `goto:<node>` | Jumps to another node. |
+| `give:<item>` | Gives an item, badge piece or badge from an `items` list (see below). Also sets the flag `got_<item>`. |
+| `achieve:<id>` | Unlocks an achievement from `ui.json`. |
+| `travel:<Scene>:<spawn>` | Goes to another place, e.g. `travel:Dungeon2:from_village`. |
+
+Story flags you can rely on: `got_<item>` when an item is given, `talked_<npc>` after talking to
+someone, and each puzzle's `flag` when it is solved.
 
 ## Puzzles
 
@@ -171,14 +183,82 @@ same length so the right answer is not the longest one.
 ]
 ```
 
-### Types coming in milestone 2
+Any option, sort item, sort box or match side can have an `"icon"`: one of the names in
+`src/ui/icons.js` (for example `photo`, `like`, `comment`, `lock`, `camera`, `mic`, `location`).
+A choice can also show a `"picture"` (see `spot`).
 
-`sort`, `spot`, `match`, `predict`, `cocreate` (see `build-plan.md`, section 5.4).
+**`predict`**: watch a short scene, then choose what happens next. `scene` is a list of moments
+shown one at a time; then `question` and the `options` (same rules as `choice`).
+
+```json
+"scene": [
+  { "icon": "post", "text": { … } },
+  { "icon": "trash", "text": { … } }
+],
+"question": { "en": "What happens next?", "fr": "Que se passe-t-il ensuite?" },
+"options": [ … ]
+```
+
+**`sort`**: tap a card, then the box it goes in. 2 or 3 `bins`. Each item names its right box in
+`bin`; when more than one box is a good answer, give a list (`"bin": ["ask", "private"]`). An item
+that can go in the wrong box needs a `hint`. An optional `why` is shown when it goes in a right box.
+
+```json
+"bins": [ { "id": "personal", "icon": "lock", "text": { … } }, { "id": "notpersonal", "text": { … } } ],
+"items": [ { "id": "address", "icon": "house", "text": { … }, "bin": "personal", "hint": { … } } ]
+```
+
+**`match`**: pair each thing on the left with one on the right. Write the pairs together; the game
+shuffles both columns. Each pair needs a `hint` (shown when its left side is paired wrongly).
+`leftTitle` and `rightTitle` are optional column headings.
+
+```json
+"pairs": [ { "id": "like", "left": { "icon": "like", "text": { … } }, "right": { "text": { … } }, "hint": { … } } ]
+```
+
+**`spot`**: find the clues in a picture. `picture` is a file in `assets/pictures/` (pictures have no
+words in them, so they work in both languages); `pictureAlt` says what it shows, for screen readers.
+`labels` put words on the picture (like a street name) from the content file. Each spot is a
+rectangle in percent of the picture (`x`, `y`, `w`, `h`). Spots with `"clue": true` must all be found
+and need `why`; the others are decoys and need a `hint`.
+
+```json
+"picture": "assets/pictures/photo_house.png",
+"labels": [ { "x": 80, "y": 32, "w": 19, "text": { "en": "Maple St", "fr": "rue des Érables" } } ],
+"spots": [
+  { "id": "number", "clue": true, "x": 59, "y": 52, "w": 14, "h": 15, "name": { … }, "why": { … } },
+  { "id": "dog", "clue": false, "x": 16, "y": 75, "w": 18, "h": 20, "name": { … }, "hint": { … } }
+]
+```
+
+### Type still to come
+
+`cocreate` (Area 5, see `build-plan.md`, section 5.4).
 
 ### Variety rule
 
 No two puzzles of the same type in a row (per cycle), in the order they appear in the file.
-The checker warns when this is broken.
+The checker warns when this is broken. The final room's chain of tricks is a chain of choices on
+purpose: mark those puzzles `"finale": true` and the check skips them.
+
+## Items, pieces and badges (`items`)
+
+```json
+"items": {
+  "lantern": { "kind": "item", "fx": 6, "name": { … }, "desc": { … }, "achievement": "lantern_lit" },
+  "piece_traces": { "kind": "piece", "fx": 7, "name": { … }, "desc": { … }, "wing": ["d2_traces", "d2_vanishing", "d2_profile"] }
+}
+```
+
+`kind` is `item`, `piece` or `badge`; `fx` is the picture (a frame of `assets/sprites/fx.png`);
+`achievement` is unlocked when the item is given. `wing` lists the puzzle families of a wing:
+finishing them all without a hint quietly unlocks the *Clear thinker* achievement.
+
+## Teacher notes (`teacher`)
+
+Each area file has `teacher.before` and `teacher.after` (reflection prompts) and
+`teacher.lookFors` (what to watch and listen for, by element). They are for the teacher corner
+and the teacher guide, and are never shown to students as a checklist.
 
 ## Achievements (`ui.json`)
 
@@ -204,5 +284,15 @@ Maps are Tiled files (`.tmj`) in `/maps`. Objects on the `objects` layer:
 | `sign` | `dialogue` (node id) | Something to read or look at |
 | `gate` | `area` (1 to 7), `open` (true/false) | A gate to a content area |
 | `talk` | `target` (another object's name) | Talking here talks to the target (e.g. across a counter) |
+| `door` | `flag` (opens when set; `a,b` means all of them), `w`, `h`, `dialogue` (said when closed), `closed`, `closedTop` (tiles) | A door that opens with the story |
+| `chest` | `flag` (set when opened), `dialogue` (usually with a `give:` action) | A treasure chest |
+| `keystone` | `group`, `order` (1, 2, 3…), `flag` (set when the group is pressed in order), `resetDialogue`, `doneDialogue` | A floor stone to step on |
+| `trace` | `fx` (frame of `fx.png`) | A glowing trace on the floor |
+| `exit` | `to` (scene), `spawn` (spawn name there) | Walking onto it goes to another place |
+| `deco` | `tile`, `layer` (`ground` or `structures`) | Changes a tile, usually with `ifFlag` (the village grows) |
 
-Tiles with the `collides` property block walking.
+Any object can also have `ifFlag` / `ifNotFlag` (only there when a flag is or is not set) and
+`lantern: true` (only seen and used inside the lantern's light). A `spawn` can have `facing`.
+
+Tiles with the `collides` property block walking. The maps are made by `tools/art/make_hub_map.py`
+and `tools/art/make_area2_map.py`; once someone edits a map in Tiled, stop running its script.

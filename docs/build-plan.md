@@ -1,6 +1,6 @@
 # Build plan: The Digital Competency Chronicles
 
-Status: **v3, agreed** (6 November 2026). Milestone 1 (engine skeleton) built on 6 November 2026; see the README for what is in it. v2 folded in Stuart's feedback of 6 November (cycle selection, save slots, Area 5, achievements, Read&Write, variety, teacher dashboard) and the full set of Ministry PDFs. v3 records Stuart's decisions on the open items (section 11) and the language rules (section 1).
+Status: **v3, agreed** (6 November 2026). Milestone 1 (engine skeleton) and milestone 2 (the Dungeon 2 slice) built on 6 November 2026; see the README for what is in them and `content-mapping.md` for every puzzle. v2 folded in Stuart's feedback of 6 November (cycle selection, save slots, Area 5, achievements, Read&Write, variety, teacher dashboard) and the full set of Ministry PDFs. v3 records Stuart's decisions on the open items (section 11) and the language rules (section 1).
 
 ---
 
