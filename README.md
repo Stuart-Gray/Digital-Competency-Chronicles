@@ -8,6 +8,24 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 - *Legend of the 12 Dimensions*
 - *Rise of the Digital Citizen*
 
+## Play it
+
+- **Live game:** https://stuart-gray.github.io/Digital-Competency-Chronicles/
+- **Content checker:** https://stuart-gray.github.io/Digital-Competency-Chronicles/tools/validate.html
+
+**Status (6 Nov 2026): milestone 1, engine skeleton.** Title screen, cycle choice (Cycle 2 or 3), five save slots with an optional first name, settings (English/French, read-aloud, text speed, large text, high contrast), the digital village with four people to talk to, seven gates (one open), and the first puzzles: Théo's Fix-it shop (element 4b) in a Cycle 2 and a Cycle 3 version, in both languages. Keyboard and touch both work. The full plan is in [docs/build-plan.md](docs/build-plan.md).
+
+### For developers and content editors
+
+- No build step. Serve the folder with any static server (for example `npx http-server .` or `python3 -m http.server`) and open `http://localhost:8080/`. Opening `index.html` straight from disk does not work because browsers block loading the JSON files that way.
+- Words, dialogue and puzzles live in [`content/`](content/). The format is explained in [docs/content-schema.md](docs/content-schema.md).
+- Check content: `node tools/validate.mjs` (also runs on every push before GitHub Pages publishes) or open `tools/validate.html`.
+- Smoke test: `npm install --no-save playwright` once, then `node tests/smoke.mjs`.
+- Placeholder art is drawn by `tools/art/make_placeholder_art.py`; the village map is in `maps/hub.tmj` (Tiled). Asset sources: [assets/CREDITS.md](assets/CREDITS.md).
+- Licences: code under MIT ([LICENSE](LICENSE)); content and docs under CC BY 4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)).
+
+> Sections 5 to 7 below are the original kickoff notes. Where they differ from [docs/build-plan.md](docs/build-plan.md), the build plan wins.
+
 ---
 
 ## 1. Project purpose
