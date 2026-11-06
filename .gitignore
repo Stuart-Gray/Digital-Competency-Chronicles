@@ -1,0 +1,8 @@
+# Ministry of Education PDFs (Gouvernement du Québec copyright) stay local; the repo links to the official URLs
+Digital Competency documents/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.url
