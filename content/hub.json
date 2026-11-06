@@ -1,90 +1,314 @@
 {
   "schemaVersion": 1,
-  "about": "The digital village (hub): people, signs, gates and the Fix-it shop task. Every text needs both en and fr. See docs/content-schema.md.",
+  "about": "The digital village (hub): people, signs, gates and the Fix-it shop task. Every text needs both en and fr. People say different things as the player's adventure moves on (see the \"if\" flags). See docs/content-schema.md.",
   "npcs": {
     "guide": {
-      "name": { "en": "Ada", "fr": "Ada" },
+      "name": {"en": "Ada", "fr": "Ada"},
       "dialogue": [
-        { "ifNot": "met_guide", "node": "hub_welcome" },
-        { "node": "guide_again" }
+        {"ifNot": "met_guide", "node": "hub_welcome"},
+        {"node": "guide_again"}
       ]
     },
     "fixer": {
-      "name": { "en": "Théo", "fr": "Théo" },
+      "name": {"en": "Théo", "fr": "Théo"},
       "dialogue": [
-        { "if": "fixer_done", "node": "fixer_thanks" },
-        { "node": "fixer_intro" }
+        {"if": "area2_done", "ifNot": "fixer_done", "node": "fixer_intro"},
+        {"if": "area2_done", "node": "fixer_open"},
+        {"if": "fixer_done", "node": "fixer_thanks"},
+        {"node": "fixer_intro"}
       ]
     },
     "kid": {
-      "name": { "en": "Mika", "fr": "Mika" },
-      "dialogue": [{ "node": "kid_gates" }]
+      "name": {"en": "Mika", "fr": "Mika"},
+      "dialogue": [
+        {"if": "area2_done", "node": "kid_badge"},
+        {"if": "got_lantern", "node": "kid_lantern"},
+        {"node": "kid_gates"}
+      ]
     },
     "elder": {
-      "name": { "en": "Rosa", "fr": "Rosa" },
-      "dialogue": [{ "node": "elder_pond" }]
+      "name": {"en": "Rosa", "fr": "Rosa"},
+      "dialogue": [
+        {"if": "d2_photo_done", "node": "elder_photo"},
+        {"node": "elder_pond"}
+      ]
     }
   },
   "dialogue": {
     "hub_welcome": [
-      { "speaker": "guide", "text": { "en": "Hello, {name}! Welcome to the Digital Village. I'm Ada.", "fr": "Bonjour, {name}! Bienvenue au village numérique. Je m’appelle Ada." } },
-      { "speaker": "guide", "text": { "en": "Up north, there are seven gates. Each one leads to a new adventure.", "fr": "Au nord, il y a sept portes. Chacune mène à une nouvelle aventure." } },
-      { "speaker": "guide", "text": { "en": "Only one gate is open for now. The others will open later.", "fr": "Pour l’instant, une seule porte est ouverte. Les autres s’ouvriront plus tard." } },
-      { "speaker": "guide", "tiers": ["E2"], "text": { "en": "Walk with the arrow keys. Press Space or tap A to talk.", "fr": "Marche avec les flèches. Appuie sur la barre d’espacement ou touche A pour parler." } },
-      { "speaker": "guide", "tiers": ["E3"], "text": { "en": "Use the arrow keys or WASD to walk. Press Space, Enter or the A button to talk and look at things.", "fr": "Utilise les flèches ou les touches WASD pour marcher. Appuie sur Espace, Entrée ou le bouton A pour parler et observer." } },
-      { "speaker": "guide", "text": { "en": "Théo, at the blue shop, needs a hand. Why not go say hello?", "fr": "Théo, à la boutique bleue, a besoin d’un coup de main. Va lui dire bonjour!" }, "action": "set:met_guide" }
+      {
+        "speaker": "guide",
+        "text": {"en": "Hello, {name}! Welcome to the Digital Village. I'm Ada.", "fr": "Bonjour, {name}! Bienvenue au village numérique. Je m’appelle Ada."}
+      },
+      {
+        "speaker": "guide",
+        "text": {"en": "Up north, there are seven gates. Each one leads to a new adventure.", "fr": "Au nord, il y a sept portes. Chacune mène à une nouvelle aventure."}
+      },
+      {
+        "speaker": "guide",
+        "text": {"en": "Only one gate is open for now. The others will open later.", "fr": "Pour l’instant, une seule porte est ouverte. Les autres s’ouvriront plus tard."}
+      },
+      {
+        "speaker": "guide",
+        "tiers": ["E2"],
+        "text": {"en": "Walk with the arrow keys. Press Space or tap A to talk.", "fr": "Marche avec les flèches. Appuie sur la barre d’espacement ou touche A pour parler."}
+      },
+      {
+        "speaker": "guide",
+        "tiers": ["E3"],
+        "text": {"en": "Use the arrow keys or WASD to walk. Press Space, Enter or the A button to talk and look at things.", "fr": "Utilise les flèches ou les touches WASD pour marcher. Appuie sur Espace, Entrée ou le bouton A pour parler et observer."}
+      },
+      {
+        "speaker": "guide",
+        "text": {"en": "Théo, at the blue shop, needs a hand. Why not go say hello?", "fr": "Théo, à la boutique bleue, a besoin d’un coup de main. Va lui dire bonjour!"},
+        "action": "set:met_guide"
+      }
     ],
     "guide_again": [
-      { "speaker": "guide", "ifNot": "fixer_done", "text": { "en": "Théo's shop is the one with the blue roof, to the east.", "fr": "La boutique de Théo, c’est celle au toit bleu, à l’est." } },
-      { "speaker": "guide", "if": "fixer_done", "text": { "en": "Théo says you fixed his tablet. Well done, {name}!", "fr": "Théo dit que tu as réparé sa tablette. Bravo, {name}!" } }
+      {
+        "speaker": "guide",
+        "ifNot": "fixer_done",
+        "text": {"en": "Théo's shop is the one with the blue roof, to the east.", "fr": "La boutique de Théo, c’est celle au toit bleu, à l’est."}
+      },
+      {
+        "speaker": "guide",
+        "if": "fixer_done",
+        "ifNot": "got_lantern",
+        "text": {"en": "Théo says you fixed his tablet. Well done, {name}!", "fr": "Théo dit que tu as réparé sa tablette. Bravo, {name}!"}
+      },
+      {
+        "speaker": "guide",
+        "ifNot": "got_lantern",
+        "text": {"en": "The purple gate to the north is open. Want to explore it?", "fr": "La porte mauve, au nord, est ouverte. Veux-tu l’explorer?"}
+      },
+      {
+        "speaker": "guide",
+        "tiers": ["E2"],
+        "if": "got_lantern",
+        "ifNot": "area2_done",
+        "text": {"en": "Is that a lantern? You've been through the purple gate!", "fr": "Est-ce une lanterne? Tu as franchi la porte mauve!"}
+      },
+      {
+        "speaker": "guide",
+        "tiers": ["E3"],
+        "if": "got_lantern",
+        "ifNot": "area2_done",
+        "text": {"en": "I see you carry Lumi's lantern. You can rest here and go back in anytime.", "fr": "Je vois que tu portes la lanterne de Lumi. Tu peux te reposer ici et y retourner quand tu veux."}
+      },
+      {
+        "speaker": "guide",
+        "if": "area2_done",
+        "text": {"en": "The garden bloomed when you brought the badge home. The village is growing, thanks to you!", "fr": "Le jardin a fleuri quand tu as rapporté l’insigne. Le village grandit grâce à toi!"}
+      }
     ],
     "fixer_intro": [
-      { "speaker": "fixer", "text": { "en": "Oh no! The app on my tablet is frozen. It won't respond at all.", "fr": "Oh non! L’application de ma tablette est gelée. Elle ne répond plus du tout." } },
-      { "speaker": "fixer", "tiers": ["E2"], "text": { "en": "When something stops working, there are good steps to follow. Can you help me put them in order?", "fr": "Quand quelque chose ne fonctionne plus, il y a de bonnes étapes à suivre. Peux-tu m’aider à les mettre en ordre?" },
+      {
+        "speaker": "fixer",
+        "text": {"en": "Oh no! The app on my tablet is frozen. It won't respond at all.", "fr": "Oh non! L’application de ma tablette est gelée. Elle ne répond plus du tout."}
+      },
+      {
+        "speaker": "fixer",
+        "tiers": ["E2"],
+        "text": {"en": "When something stops working, there are good steps to follow. Can you help me put them in order?", "fr": "Quand quelque chose ne fonctionne plus, il y a de bonnes étapes à suivre. Peux-tu m’aider à les mettre en ordre?"},
         "choices": [
-          { "text": { "en": "Yes, I'll help!", "fr": "Oui, je vais t’aider!" }, "action": "puzzle:fixer_steps", "next": "fixer_try" },
-          { "text": { "en": "Maybe later.", "fr": "Peut-être plus tard." }, "next": null }
-        ] },
-      { "speaker": "fixer", "tiers": ["E3"], "text": { "en": "Our class needs a troubleshooting plan for problems like this. Can you help me put the steps in order?", "fr": "Notre classe a besoin d’une procédure de dépannage pour ce genre de problème. Peux-tu m’aider à placer les étapes dans l’ordre?" },
+          {
+            "text": {"en": "Yes, I'll help!", "fr": "Oui, je vais t’aider!"},
+            "action": "puzzle:fixer_steps",
+            "next": "fixer_try"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "fixer",
+        "tiers": ["E3"],
+        "text": {"en": "Our class needs a troubleshooting plan for problems like this. Can you help me put the steps in order?", "fr": "Notre classe a besoin d’une procédure de dépannage pour ce genre de problème. Peux-tu m’aider à placer les étapes dans l’ordre?"},
         "choices": [
-          { "text": { "en": "Sure, let's do it!", "fr": "Bien sûr, allons-y!" }, "action": "puzzle:fixer_steps", "next": "fixer_try" },
-          { "text": { "en": "Maybe later.", "fr": "Peut-être plus tard." }, "next": null }
-        ] }
+          {
+            "text": {"en": "Sure, let's do it!", "fr": "Bien sûr, allons-y!"},
+            "action": "puzzle:fixer_steps",
+            "next": "fixer_try"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
     ],
     "fixer_try": [
-      { "speaker": "fixer", "text": { "en": "That's a great plan! Now let's use it on my frozen app.", "fr": "C’est un excellent plan! Maintenant, essayons-le sur mon application gelée." }, "action": "puzzle:fixer_first_try" },
-      { "speaker": "fixer", "text": { "en": "It works again! Thank you, {name}.", "fr": "Ça fonctionne de nouveau! Merci, {name}." }, "action": "set:fixer_done" },
-      { "speaker": "fixer", "text": { "en": "Try it yourself first. Then check the Help section. Then ask a friend. Then ask your teacher.", "fr": "D’abord, essaie toi-même. Ensuite, regarde la section « Aide ». Puis, demande à un ami ou à une amie. Enfin, demande à ton enseignant ou à ton enseignante." } }
+      {
+        "speaker": "fixer",
+        "text": {"en": "That's a great plan! Now let's use it on my frozen app.", "fr": "C’est un excellent plan! Maintenant, essayons-le sur mon application gelée."},
+        "action": "puzzle:fixer_first_try"
+      },
+      {
+        "speaker": "fixer",
+        "text": {"en": "It works again! Thank you, {name}.", "fr": "Ça fonctionne de nouveau! Merci, {name}."},
+        "action": "set:fixer_done"
+      },
+      {
+        "speaker": "fixer",
+        "text": {"en": "Try it yourself first. Then check the Help section. Then ask a friend. Then ask your teacher.", "fr": "D’abord, essaie toi-même. Ensuite, regarde la section « Aide ». Puis, demande à un ami ou à une amie. Enfin, demande à ton enseignant ou à ton enseignante."}
+      }
     ],
     "fixer_thanks": [
-      { "speaker": "fixer", "text": { "en": "My tablet works great now. When the village grows, my shop will open!", "fr": "Ma tablette fonctionne très bien maintenant. Quand le village grandira, ma boutique ouvrira!" } }
+      {
+        "speaker": "fixer",
+        "text": {"en": "My tablet works great now. Thanks again, {name}!", "fr": "Ma tablette fonctionne très bien maintenant. Merci encore, {name}!"}
+      },
+      {
+        "speaker": "fixer",
+        "text": {"en": "When the village grows, my shop will open. They say it starts at the purple gate.", "fr": "Quand le village grandira, ma boutique ouvrira. Il paraît que tout commence à la porte mauve."}
+      }
     ],
     "kid_gates": [
-      { "speaker": "kid", "text": { "en": "Did you see the gates? The purple one is open!", "fr": "As-tu vu les portes? La mauve est ouverte!" } },
-      { "speaker": "kid", "text": { "en": "They say there's a lantern inside that shows hidden traces. Spooky!", "fr": "Il paraît qu’il y a une lanterne à l’intérieur qui montre des traces cachées. Ça fait peur!" } }
+      {
+        "speaker": "kid",
+        "text": {"en": "Did you see the gates? The purple one is open!", "fr": "As-tu vu les portes? La mauve est ouverte!"}
+      },
+      {
+        "speaker": "kid",
+        "text": {"en": "They say there's a lantern inside that shows hidden traces. Spooky!", "fr": "Il paraît qu’il y a une lanterne à l’intérieur qui montre des traces cachées. Ça fait peur!"}
+      }
     ],
     "elder_pond": [
-      { "speaker": "elder", "text": { "en": "I love this pond. It's calm here.", "fr": "J’adore cet étang. C’est calme, ici." } },
-      { "speaker": "elder", "tiers": ["E2"], "text": { "en": "Tablets need care too. Put yours away safely when you're done.", "fr": "Les tablettes aussi ont besoin de soin. Range la tienne en lieu sûr quand tu as fini." } },
-      { "speaker": "elder", "tiers": ["E3"], "text": { "en": "Devices need care too. When you're done, close your apps, lock or shut down your device and put it away safely.", "fr": "Les appareils aussi ont besoin de soin. Quand tu as fini, ferme tes applications, verrouille ou éteins ton appareil et range-le en lieu sûr." } }
+      {
+        "speaker": "elder",
+        "tiers": ["E2"],
+        "text": {"en": "Hello! I'm taking photos of the ducks on the pond with my tablet.", "fr": "Bonjour! Je prends des photos des canards de l’étang avec ma tablette."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E2"],
+        "text": {"en": "I'm done now. So I close my apps and put my tablet in its case.", "fr": "J’ai fini. Alors, je ferme mes applications et je range ma tablette dans son étui."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E2"],
+        "text": {"en": "Near water, a tablet needs extra care!", "fr": "Près de l’eau, une tablette a besoin d’encore plus de soin!"}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E3"],
+        "text": {"en": "Hello! I came down to the pond to take photos of the ducks with my tablet.", "fr": "Bonjour! Je suis venue à l’étang pour prendre des photos des canards avec ma tablette."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E3"],
+        "text": {"en": "Now that I'm finished, I close my apps, lock the screen and put it in its case.", "fr": "Maintenant que j’ai fini, je ferme mes applications, je verrouille l’écran et je la range dans son étui."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E3"],
+        "text": {"en": "Water and tablets don't mix, so I always put mine away before I cross the bridge.", "fr": "L’eau et les tablettes, ça ne va pas ensemble. Je range toujours la mienne avant de traverser le pont."}
+      }
     ],
     "hub_welcome_sign": [
-      { "text": { "en": "DIGITAL VILLAGE. Gates: north. Fix-it shop: east. Home: west.", "fr": "VILLAGE NUMÉRIQUE. Portes : au nord. Boutique de réparation : à l’est. Maison : à l’ouest." } }
+      {
+        "text": {"en": "DIGITAL VILLAGE. Gates: north. Fix-it shop: east. Home: west.", "fr": "VILLAGE NUMÉRIQUE. Portes : au nord. Boutique de réparation : à l’est. Maison : à l’ouest."}
+      }
     ],
     "hub_home": [
-      { "text": { "en": "Your house. Nothing to do here yet.", "fr": "Ta maison. Rien à faire ici pour l’instant." } }
+      {
+        "text": {"en": "Your house. Nothing to do here yet.", "fr": "Ta maison. Rien à faire ici pour l’instant."}
+      }
     ],
     "hub_shop_sign": [
-      { "text": { "en": "THÉO'S FIX-IT SHOP. Opening when the village grows!", "fr": "BOUTIQUE DE RÉPARATION DE THÉO. Ouverture quand le village grandira!" } }
+      {
+        "text": {"en": "THÉO'S FIX-IT SHOP. Opening when the village grows!", "fr": "BOUTIQUE DE RÉPARATION DE THÉO. Ouverture quand le village grandira!"}
+      }
     ],
     "hub_well": [
-      { "text": { "en": "A wishing well. You see your reflection. Looking good!", "fr": "Un puits à souhaits. Tu vois ton reflet. Belle allure!" } }
+      {
+        "text": {"en": "A wishing well. You see your reflection. Looking good!", "fr": "Un puits à souhaits. Tu vois ton reflet. Belle allure!"}
+      }
     ],
     "gate_open": [
-      { "text": { "en": "The gate to: {area}. It's open, but the path inside is still being built. Come back soon!", "fr": "La porte vers : {area}. Elle est ouverte, mais le chemin à l’intérieur est encore en construction. Reviens bientôt!" } }
+      {
+        "text": {"en": "The gate to: {area}. It's open.", "fr": "La porte vers : {area}. Elle est ouverte."}
+      }
     ],
     "gate_closed": [
-      { "text": { "en": "The gate to: {area}. It's locked for now. It will open on another adventure.", "fr": "La porte vers : {area}. Elle est verrouillée pour l’instant. Elle s’ouvrira lors d’une autre aventure." } }
+      {
+        "text": {"en": "The gate to: {area}. It's locked for now. It will open on another adventure.", "fr": "La porte vers : {area}. Elle est verrouillée pour l’instant. Elle s’ouvrira lors d’une autre aventure."}
+      }
+    ],
+    "fixer_open": [
+      {
+        "speaker": "fixer",
+        "text": {"en": "Look, my shop is open! The village grew when you brought the badge home.", "fr": "Regarde, ma boutique est ouverte! Le village a grandi quand tu as rapporté l’insigne."}
+      },
+      {
+        "speaker": "fixer",
+        "text": {"en": "I'll have new things to show you soon. Come back and visit!", "fr": "J’aurai bientôt de nouvelles choses à te montrer. Reviens me voir!"}
+      }
+    ],
+    "kid_lantern": [
+      {
+        "speaker": "kid",
+        "text": {"en": "You found the lantern! Did it show you hidden traces?", "fr": "Tu as trouvé la lanterne! Est-ce qu’elle t’a montré des traces cachées?"}
+      },
+      {
+        "speaker": "kid",
+        "tiers": ["E2"],
+        "text": {"en": "My big sister says even a like leaves a trace. Is that true?", "fr": "Ma grande sœur dit que même un « j’aime » laisse une trace. C’est vrai?"}
+      },
+      {
+        "speaker": "kid",
+        "tiers": ["E3"],
+        "text": {"en": "My big sister says even a like or a comment adds to your digital identity. Wild!", "fr": "Ma grande sœur dit que même un « j’aime » ou un commentaire construit ton identité numérique. Incroyable!"}
+      }
+    ],
+    "kid_badge": [
+      {
+        "speaker": "kid",
+        "text": {"en": "Is that the Digital Identity Badge? So cool!", "fr": "C’est l’insigne de l’identité numérique? Trop cool!"}
+      },
+      {
+        "speaker": "kid",
+        "text": {"en": "I wonder what's behind the other six gates.", "fr": "Je me demande ce qu’il y a derrière les six autres portes."}
+      }
+    ],
+    "elder_photo": [
+      {
+        "speaker": "elder",
+        "text": {"en": "Look at this duck photo I took. Can you see my house behind the ducks?", "fr": "Regarde la photo de canards que j’ai prise. Vois-tu ma maison derrière les canards?"}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E2"],
+        "text": {"en": "The house number shows! I'll crop that part out before I share it.", "fr": "On voit le numéro de la maison! Je vais rogner cette partie avant de la partager."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E3"],
+        "text": {"en": "The house number shows. I'll crop it out before I send it to my grandson's class.", "fr": "On voit le numéro de la maison. Je vais le rogner avant de l’envoyer à la classe de mon petit-fils."}
+      }
+    ],
+    "gate2_open": [
+      {
+        "text": {"en": "The purple gate: {area}. It's open.", "fr": "La porte mauve : {area}. Elle est ouverte."},
+        "choices": [
+          {
+            "text": {"en": "Go in", "fr": "Entrer"},
+            "action": "travel:Dungeon2:from_village",
+            "next": null
+          },
+          {"text": {"en": "Not now", "fr": "Pas maintenant"}, "next": null}
+        ]
+      }
+    ],
+    "village_grew": [
+      {
+        "text": {"en": "As you walk back into the village, flowers bloom all around the plaza!", "fr": "Quand tu reviens au village, des fleurs éclosent tout autour de la place!"}
+      },
+      {
+        "text": {"en": "From the east, you hear Théo: \"My shop is open! Come and see!\"", "fr": "De l’est, tu entends Théo : « Ma boutique est ouverte! Viens voir! »"},
+        "action": "set:saw_village_grow"
+      }
+    ],
+    "hub_shop_open": [
+      {
+        "text": {"en": "THÉO'S FIX-IT SHOP. Open! Come in and say hello.", "fr": "BOUTIQUE DE RÉPARATION DE THÉO. Ouverte! Entre dire bonjour."}
+      }
     ]
   },
   "puzzles": [
@@ -94,23 +318,32 @@
       "tiers": ["E2"],
       "element": "4b",
       "type": "sequence",
-      "application": {
-        "en": "Establish a troubleshooting procedure for the group.",
-        "fr": "Établir une procédure de dépannage en groupe."
-      },
-      "prompt": { "en": "Put the help steps in order. Tap a step to add it.", "fr": "Place les étapes d’aide dans l’ordre. Touche une étape pour l’ajouter." },
+      "application": {"en": "Establish a troubleshooting procedure for the group.", "fr": "Établir une procédure de dépannage en groupe."},
+      "prompt": {"en": "Put the help steps in order. Tap a step to add it.", "fr": "Place les étapes d’aide dans l’ordre. Touche une étape pour l’ajouter."},
       "steps": [
-        { "id": "self", "text": { "en": "Look closely. Try to find the problem yourself.", "fr": "Regarde bien. Essaie de trouver le problème toi-même." },
-          "hint": { "en": "What can you do all by yourself, before you ask anyone?", "fr": "Que peux-tu faire tout seul ou toute seule, avant de demander à quelqu’un?" } },
-        { "id": "help", "text": { "en": "Look in the Help section of the app.", "fr": "Regarde dans la section « Aide » de l’application." },
-          "hint": { "en": "Many apps have a Help section. Look there before asking people.", "fr": "Beaucoup d’applications ont une section « Aide ». Regarde là avant de demander aux autres." } },
-        { "id": "peer", "text": { "en": "Ask a classmate for advice.", "fr": "Demande conseil à un ami ou à une amie de la classe." },
-          "hint": { "en": "A classmate might know how to fix it. Ask them before your teacher.", "fr": "Un ami ou une amie de la classe sait peut-être comment faire. Demande-lui avant ton enseignant ou ton enseignante." } },
-        { "id": "teacher", "text": { "en": "Ask your teacher for help.", "fr": "Demande de l’aide à ton enseignant ou à ton enseignante." },
-          "hint": { "en": "Your teacher can help when the other steps did not work.", "fr": "Ton enseignant ou ton enseignante peut t’aider quand les autres étapes n’ont pas fonctionné." } }
+        {
+          "id": "self",
+          "text": {"en": "Look closely. Try to find the problem yourself.", "fr": "Regarde bien. Essaie de trouver le problème toi-même."},
+          "hint": {"en": "What can you do all by yourself, before you ask anyone?", "fr": "Que peux-tu faire tout seul ou toute seule, avant de demander à quelqu’un?"}
+        },
+        {
+          "id": "help",
+          "text": {"en": "Look in the Help section of the app.", "fr": "Regarde dans la section « Aide » de l’application."},
+          "hint": {"en": "Many apps have a Help section. Look there before asking people.", "fr": "Beaucoup d’applications ont une section « Aide ». Regarde là avant de demander aux autres."}
+        },
+        {
+          "id": "peer",
+          "text": {"en": "Ask a classmate for advice.", "fr": "Demande conseil à un ami ou à une amie de la classe."},
+          "hint": {"en": "A classmate might know how to fix it. Ask them before your teacher.", "fr": "Un ami ou une amie de la classe sait peut-être comment faire. Demande-lui avant ton enseignant ou ton enseignante."}
+        },
+        {
+          "id": "teacher",
+          "text": {"en": "Ask your teacher for help.", "fr": "Demande de l’aide à ton enseignant ou à ton enseignante."},
+          "hint": {"en": "Your teacher can help when the other steps did not work.", "fr": "Ton enseignant ou ton enseignante peut t’aider quand les autres étapes n’ont pas fonctionné."}
+        }
       ],
-      "success": { "en": "That's the right order! Try first, then Help, then a friend, then your teacher.", "fr": "C’est le bon ordre! D’abord toi, puis l’aide, puis un ami ou une amie, puis ton enseignant ou ton enseignante." },
-      "teacherNote": { "en": "Ask: why is it a good idea to try on your own before asking for help?", "fr": "Demandez : pourquoi est-ce une bonne idée d’essayer par soi-même avant de demander de l’aide?" }
+      "success": {"en": "That's the right order! Try first, then Help, then a friend, then your teacher.", "fr": "C’est le bon ordre! D’abord toi, puis l’aide, puis un ami ou une amie, puis ton enseignant ou ton enseignante."},
+      "teacherNote": {"en": "Ask: why is it a good idea to try on your own before asking for help?", "fr": "Demandez : pourquoi est-ce une bonne idée d’essayer par soi-même avant de demander de l’aide?"}
     },
     {
       "id": "fixer_steps_c3",
@@ -118,23 +351,32 @@
       "tiers": ["E3"],
       "element": "4b",
       "type": "sequence",
-      "application": {
-        "en": "Establish a troubleshooting procedure for the group.",
-        "fr": "Établir une procédure de dépannage en groupe."
-      },
-      "prompt": { "en": "Build the class troubleshooting plan. Tap the steps in the order you would use them.", "fr": "Construis la procédure de dépannage de la classe. Touche les étapes dans l’ordre où tu les utiliserais." },
+      "application": {"en": "Establish a troubleshooting procedure for the group.", "fr": "Établir une procédure de dépannage en groupe."},
+      "prompt": {"en": "Build the class troubleshooting plan. Tap the steps in the order you would use them.", "fr": "Construis la procédure de dépannage de la classe. Touche les étapes dans l’ordre où tu les utiliserais."},
       "steps": [
-        { "id": "self", "text": { "en": "Try to find the source of the problem on your own.", "fr": "Essaie de trouver par toi-même la source du problème." },
-          "hint": { "en": "Start with what you can do yourself: observe and think about what went wrong.", "fr": "Commence par ce que tu peux faire toi-même : observe et réfléchis à ce qui s’est passé." } },
-        { "id": "help", "text": { "en": "Check the Help, Support or Tutorial section of the tool.", "fr": "Consulte la section « Aide », « Soutien » ou « Tutoriel » de l’outil." },
-          "hint": { "en": "Most tools explain how to fix common problems. Where could you read about it?", "fr": "La plupart des outils expliquent comment régler les problèmes courants. Où pourrais-tu lire à ce sujet?" } },
-        { "id": "peer", "text": { "en": "Ask a classmate for advice.", "fr": "Demande conseil à un ou une camarade." },
-          "hint": { "en": "Classmates often know tricks. Who else in the room could help before the teacher?", "fr": "Tes camarades connaissent souvent des trucs. Qui d’autre dans la classe pourrait t’aider avant ton enseignant ou ton enseignante?" } },
-        { "id": "teacher", "text": { "en": "Ask your teacher for help.", "fr": "Demande l’aide de ton enseignant ou de ton enseignante." },
-          "hint": { "en": "Your teacher is there when the other steps have not solved it.", "fr": "Ton enseignant ou ton enseignante est là quand les autres étapes n’ont pas réglé le problème." } }
+        {
+          "id": "self",
+          "text": {"en": "Try to find the source of the problem on your own.", "fr": "Essaie de trouver par toi-même la source du problème."},
+          "hint": {"en": "Start with what you can do yourself: observe and think about what went wrong.", "fr": "Commence par ce que tu peux faire toi-même : observe et réfléchis à ce qui s’est passé."}
+        },
+        {
+          "id": "help",
+          "text": {"en": "Check the Help, Support or Tutorial section of the tool.", "fr": "Consulte la section « Aide », « Soutien » ou « Tutoriel » de l’outil."},
+          "hint": {"en": "Most tools explain how to fix common problems. Where could you read about it?", "fr": "La plupart des outils expliquent comment régler les problèmes courants. Où pourrais-tu lire à ce sujet?"}
+        },
+        {
+          "id": "peer",
+          "text": {"en": "Ask a classmate for advice.", "fr": "Demande conseil à un ou une camarade."},
+          "hint": {"en": "Classmates often know tricks. Who else in the room could help before the teacher?", "fr": "Tes camarades connaissent souvent des trucs. Qui d’autre dans la classe pourrait t’aider avant ton enseignant ou ton enseignante?"}
+        },
+        {
+          "id": "teacher",
+          "text": {"en": "Ask your teacher for help.", "fr": "Demande l’aide de ton enseignant ou de ton enseignante."},
+          "hint": {"en": "Your teacher is there when the other steps have not solved it.", "fr": "Ton enseignant ou ton enseignante est là quand les autres étapes n’ont pas réglé le problème."}
+        }
       ],
-      "success": { "en": "Your plan is ready! Persevere and observe first, then use Help, a classmate and your teacher.", "fr": "Ta procédure est prête! Persévère et observe d’abord, puis utilise l’aide, un ou une camarade et ton enseignant ou ton enseignante." },
-      "teacherNote": { "en": "Ask: what could we add to our class troubleshooting poster?", "fr": "Demandez : qu’est-ce qu’on pourrait ajouter à l’affiche de dépannage de la classe?" }
+      "success": {"en": "Your plan is ready! Persevere and observe first, then use Help, a classmate and your teacher.", "fr": "Ta procédure est prête! Persévère et observe d’abord, puis utilise l’aide, un ou une camarade et ton enseignant ou ton enseignante."},
+      "teacherNote": {"en": "Ask: what could we add to our class troubleshooting poster?", "fr": "Demandez : qu’est-ce qu’on pourrait ajouter à l’affiche de dépannage de la classe?"}
     },
     {
       "id": "fixer_first_try_c2",
@@ -142,22 +384,26 @@
       "tiers": ["E2"],
       "element": "4b",
       "type": "choice",
-      "application": {
-        "en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.",
-        "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."
-      },
-      "prompt": { "en": "Théo's drawing app is stuck. Nothing happens when he taps. What should he try first?", "fr": "L’application de dessin de Théo est bloquée. Il ne se passe rien quand il touche l’écran. Que devrait-il essayer en premier?" },
+      "application": {"en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.", "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."},
+      "prompt": {"en": "Théo's drawing app is stuck. Nothing happens when he taps. What should he try first?", "fr": "L’application de dessin de Théo est bloquée. Il ne se passe rien quand il touche l’écran. Que devrait-il essayer en premier?"},
       "options": [
-        { "text": { "en": "Wait a little and watch. Then close the app and open it again.", "fr": "Attendre un peu et observer. Ensuite, fermer l’application et l’ouvrir de nouveau." }, "correct": true },
-        { "text": { "en": "Tap the screen really hard, again and again.", "fr": "Taper très fort sur l’écran, encore et encore." },
-          "hint": { "en": "Tapping harder won't help, and it could hurt the tablet. What could he try calmly?", "fr": "Taper plus fort n’aidera pas et pourrait abîmer la tablette. Que pourrait-il essayer calmement?" } },
-        { "text": { "en": "Give up and stop working.", "fr": "Abandonner et arrêter de travailler." },
-          "hint": { "en": "Don't give up yet! There are steps he can try on his own.", "fr": "N’abandonne pas tout de suite! Il y a des étapes qu’il peut essayer lui-même." } }
+        {
+          "text": {"en": "Wait a little and watch. Then close the app and open it again.", "fr": "Attendre un peu et observer. Ensuite, fermer l’application et l’ouvrir de nouveau."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Tap the screen really hard, again and again.", "fr": "Taper très fort sur l’écran, encore et encore."},
+          "hint": {"en": "Tapping harder won't help, and it could hurt the tablet. What could he try calmly?", "fr": "Taper plus fort n’aidera pas et pourrait abîmer la tablette. Que pourrait-il essayer calmement?"}
+        },
+        {
+          "text": {"en": "Give up and stop working.", "fr": "Abandonner et arrêter de travailler."},
+          "hint": {"en": "Don't give up yet! There are steps he can try on his own.", "fr": "N’abandonne pas tout de suite! Il y a des étapes qu’il peut essayer lui-même."}
+        }
       ],
-      "success": { "en": "It works again! Waiting, watching and restarting the app often fixes it.", "fr": "Ça fonctionne de nouveau! Attendre, observer et redémarrer l’application règle souvent le problème." },
+      "success": {"en": "It works again! Waiting, watching and restarting the app often fixes it.", "fr": "Ça fonctionne de nouveau! Attendre, observer et redémarrer l’application règle souvent le problème."},
       "flag": "fixer_fixed",
       "achievement": "first_fix",
-      "teacherNote": { "en": "Ask: what other problems have you fixed on your own?", "fr": "Demandez : quels autres problèmes avez-vous réglés par vous-mêmes?" }
+      "teacherNote": {"en": "Ask: what other problems have you fixed on your own?", "fr": "Demandez : quels autres problèmes avez-vous réglés par vous-mêmes?"}
     },
     {
       "id": "fixer_first_try_c3",
@@ -165,24 +411,30 @@
       "tiers": ["E3"],
       "element": "4b",
       "type": "choice",
-      "application": {
-        "en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.",
-        "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."
-      },
-      "prompt": { "en": "Théo's slideshow app stopped responding in the middle of his project. What is the best first step?", "fr": "L’application de présentation de Théo ne répond plus au milieu de son projet. Quelle est la meilleure première étape?" },
+      "application": {"en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.", "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."},
+      "prompt": {"en": "Théo's slideshow app stopped responding in the middle of his project. What is the best first step?", "fr": "L’application de présentation de Théo ne répond plus au milieu de son projet. Quelle est la meilleure première étape?"},
       "options": [
-        { "text": { "en": "Wait a moment and observe. If it's still frozen, close the app and reopen it.", "fr": "Attendre un moment et observer. Si elle est encore gelée, fermer l’application et la rouvrir." }, "correct": true },
-        { "text": { "en": "Ask the teacher right away, before trying anything.", "fr": "Demander tout de suite à l’enseignant ou à l’enseignante, avant d’essayer quoi que ce soit." },
-          "hint": { "en": "Your teacher can help, but first try to find the source of the problem yourself.", "fr": "Ton enseignant ou ton enseignante peut t’aider, mais essaie d’abord de trouver la source du problème toi-même." } },
-        { "text": { "en": "Press every button until something happens.", "fr": "Appuyer sur tous les boutons jusqu’à ce qu’il se passe quelque chose." },
-          "hint": { "en": "Pressing random buttons can make things worse. Observe what is happening first.", "fr": "Appuyer sur n’importe quel bouton peut empirer les choses. Observe d’abord ce qui se passe." } },
-        { "text": { "en": "Decide the app is broken forever.", "fr": "Décider que l’application est brisée pour toujours." },
-          "hint": { "en": "Most problems can be fixed! Be patient and try a simple fix first.", "fr": "La plupart des problèmes se règlent! Sois patient ou patiente et essaie d’abord une solution simple." } }
+        {
+          "text": {"en": "Wait a moment and observe. If it's still frozen, close the app and reopen it.", "fr": "Attendre un moment et observer. Si elle est encore gelée, fermer l’application et la rouvrir."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Ask the teacher right away, before trying anything.", "fr": "Demander tout de suite à l’enseignant ou à l’enseignante, avant d’essayer quoi que ce soit."},
+          "hint": {"en": "Your teacher can help, but first try to find the source of the problem yourself.", "fr": "Ton enseignant ou ton enseignante peut t’aider, mais essaie d’abord de trouver la source du problème toi-même."}
+        },
+        {
+          "text": {"en": "Press every button until something happens.", "fr": "Appuyer sur tous les boutons jusqu’à ce qu’il se passe quelque chose."},
+          "hint": {"en": "Pressing random buttons can make things worse. Observe what is happening first.", "fr": "Appuyer sur n’importe quel bouton peut empirer les choses. Observe d’abord ce qui se passe."}
+        },
+        {
+          "text": {"en": "Decide the app is broken forever.", "fr": "Décider que l’application est brisée pour toujours."},
+          "hint": {"en": "Most problems can be fixed! Be patient and try a simple fix first.", "fr": "La plupart des problèmes se règlent! Sois patient ou patiente et essaie d’abord une solution simple."}
+        }
       ],
-      "success": { "en": "It works again! Patience and observation solved it. If not, the next step would be the Help section.", "fr": "Ça fonctionne de nouveau! La patience et l’observation ont réglé le problème. Sinon, la prochaine étape aurait été la section « Aide »." },
+      "success": {"en": "It works again! Patience and observation solved it. If not, the next step would be the Help section.", "fr": "Ça fonctionne de nouveau! La patience et l’observation ont réglé le problème. Sinon, la prochaine étape aurait été la section « Aide »."},
       "flag": "fixer_fixed",
       "achievement": "first_fix",
-      "teacherNote": { "en": "Ask: why is patience important when a tool does not respond right away?", "fr": "Demandez : pourquoi la patience est-elle importante quand un outil ne réagit pas tout de suite?" }
+      "teacherNote": {"en": "Ask: why is patience important when a tool does not respond right away?", "fr": "Demandez : pourquoi la patience est-elle importante quand un outil ne réagit pas tout de suite?"}
     }
   ]
 }

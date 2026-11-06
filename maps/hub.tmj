@@ -10,7 +10,7 @@
  "tilewidth": 16,
  "tileheight": 16,
  "nextlayerid": 4,
- "nextobjectid": 20,
+ "nextobjectid": 36,
  "properties": [
   {
    "name": "note",
@@ -2387,6 +2387,11 @@
        "name": "open",
        "type": "bool",
        "value": true
+      },
+      {
+       "name": "dialogue",
+       "type": "string",
+       "value": "gate2_open"
       }
      ]
     },
@@ -2650,11 +2655,40 @@
        "name": "dialogue",
        "type": "string",
        "value": "hub_shop_sign"
+      },
+      {
+       "name": "ifNotFlag",
+       "type": "string",
+       "value": "area2_done"
       }
      ]
     },
     {
      "id": 15,
+     "name": "shop_sign_open",
+     "type": "sign",
+     "x": 552.0,
+     "y": 216.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "dialogue",
+       "type": "string",
+       "value": "hub_shop_open"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 16,
      "name": "welcome_sign",
      "type": "sign",
      "x": 296.0,
@@ -2673,7 +2707,413 @@
      ]
     },
     {
-     "id": 16,
+     "id": 17,
+     "name": "garden0",
+     "type": "deco",
+     "x": 248.0,
+     "y": 168.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 18,
+     "name": "garden1",
+     "type": "deco",
+     "x": 248.0,
+     "y": 200.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 19,
+     "name": "garden2",
+     "type": "deco",
+     "x": 248.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 20,
+     "name": "garden3",
+     "type": "deco",
+     "x": 392.0,
+     "y": 168.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 21,
+     "name": "garden4",
+     "type": "deco",
+     "x": 392.0,
+     "y": 200.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 22,
+     "name": "garden5",
+     "type": "deco",
+     "x": 392.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 23,
+     "name": "garden6",
+     "type": "deco",
+     "x": 280.0,
+     "y": 280.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 24,
+     "name": "garden7",
+     "type": "deco",
+     "x": 360.0,
+     "y": 280.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 25,
+     "name": "garden8",
+     "type": "deco",
+     "x": 296.0,
+     "y": 152.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 26,
+     "name": "garden9",
+     "type": "deco",
+     "x": 344.0,
+     "y": 152.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 27,
+     "name": "garden10",
+     "type": "deco",
+     "x": 152.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 28,
+     "name": "garden11",
+     "type": "deco",
+     "x": 88.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 29,
+     "name": "garden12",
+     "type": "deco",
+     "x": 456.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 30,
+     "name": "garden13",
+     "type": "deco",
+     "x": 552.0,
+     "y": 232.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "tile",
+       "type": "int",
+       "value": 1
+      },
+      {
+       "name": "layer",
+       "type": "string",
+       "value": "ground"
+      },
+      {
+       "name": "ifFlag",
+       "type": "string",
+       "value": "area2_done"
+      }
+     ]
+    },
+    {
+     "id": 31,
      "name": "player",
      "type": "spawn",
      "x": 328.0,
@@ -2685,7 +3125,26 @@
      "visible": true
     },
     {
-     "id": 17,
+     "id": 32,
+     "name": "from_dungeon2",
+     "type": "spawn",
+     "x": 168.0,
+     "y": 88.0,
+     "point": true,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "facing",
+       "type": "string",
+       "value": "down"
+      }
+     ]
+    },
+    {
+     "id": 33,
      "name": "guide",
      "type": "npc",
      "x": 344.0,
@@ -2714,7 +3173,7 @@
      ]
     },
     {
-     "id": 18,
+     "id": 34,
      "name": "kid",
      "type": "npc",
      "x": 216.0,
@@ -2743,7 +3202,7 @@
      ]
     },
     {
-     "id": 19,
+     "id": 35,
      "name": "elder",
      "type": "npc",
      "x": 232.0,

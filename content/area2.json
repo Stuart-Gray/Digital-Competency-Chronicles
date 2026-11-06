@@ -1,0 +1,1916 @@
+{
+  "schemaVersion": 1,
+  "about": "Dungeon 2, the Temple of Traces: sheet 2, Understanding digital identity (elements 2a, 2b, 2c). Every text needs both en and fr. See docs/content-schema.md and docs/content-mapping.md.",
+  "area": 2,
+  "title": {"en": "Understanding digital identity", "fr": "Comprendre l’identité numérique"},
+  "dcfDimensions": ["D1", "D11"],
+  "elements": {
+    "2a": {"en": "Understand digital identity", "fr": "Comprendre l’identité numérique"},
+    "2b": {"en": "Understand personal information", "fr": "Comprendre les renseignements personnels"},
+    "2c": {"en": "Understand online privacy protection", "fr": "Comprendre la protection de la vie privée en ligne"}
+  },
+  "npcs": {
+    "lumi": {
+      "name": {"en": "Lumi", "fr": "Lumi"},
+      "dialogue": [
+        {"if": "area2_done", "node": "lumi_done"},
+        {"if": "got_piece_gallery", "node": "lumi_final"},
+        {"if": "got_piece_keys", "node": "lumi_to_gallery"},
+        {"if": "got_piece_traces", "node": "lumi_to_vault"},
+        {"if": "met_lumi", "node": "lumi_to_hall"},
+        {"node": "lumi_intro"}
+      ]
+    },
+    "juno": {
+      "name": {"en": "Juno", "fr": "Juno"},
+      "dialogue": [
+        {"if": "opened_chest_traces", "node": "juno_bye"},
+        {"if": "d2_profile_done", "ifNot": "d2_vanishing_done", "node": "juno_board"},
+        {"if": "d2_vanishing_done", "ifNot": "d2_profile_done", "node": "juno_mirror"},
+        {"if": "d2_profile_done", "node": "juno_chest"},
+        {"if": "hall_door_open", "node": "juno_board"},
+        {"if": "d2_traces_done", "node": "juno_wall"},
+        {"node": "juno_intro"}
+      ]
+    },
+    "kai": {
+      "name": {"en": "Kai", "fr": "Kai"},
+      "dialogue": [
+        {"if": "got_piece_keys", "node": "kai_bye"},
+        {"if": "keystones_done", "node": "kai_vault_open"},
+        {"if": "d2_password_done", "node": "kai_stones"},
+        {"if": "d2_request_done", "node": "kai_password"},
+        {"if": "d2_personal_done", "node": "kai_request"},
+        {"node": "kai_intro"}
+      ]
+    },
+    "nova": {
+      "name": {"en": "Nova", "fr": "Nova"},
+      "dialogue": [
+        {"if": "got_piece_gallery", "node": "nova_bye"},
+        {"if": "d2_camera_done", "node": "nova_chest"},
+        {"if": "d2_access_done", "node": "nova_call"},
+        {"if": "d2_photo_done", "node": "nova_app"},
+        {"node": "nova_intro"}
+      ]
+    },
+    "merchant": {
+      "name": {"en": "Mask Merchant", "fr": "Marchand de masques"},
+      "dialogue": [
+        {"if": "d2_boss2_done", "node": "merchant_round3"},
+        {"if": "d2_boss1_done", "node": "merchant_round2"},
+        {"if": "met_merchant", "node": "merchant_again"},
+        {"node": "merchant_intro"}
+      ]
+    }
+  },
+  "dialogue": {
+    "lumi_intro": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "Welcome, {name}! I'm Lumi. I look after the Temple of Traces.", "fr": "Bienvenue, {name}! Je m’appelle Lumi. Je veille sur le temple des traces."}
+      },
+      {
+        "speaker": "lumi",
+        "tiers": ["E2"],
+        "text": {"en": "Everything we do online leaves a trace. A trace is like a footprint.", "fr": "Tout ce qu’on fait en ligne laisse une trace. Une trace, c’est comme une empreinte de pas."}
+      },
+      {
+        "speaker": "lumi",
+        "tiers": ["E2"],
+        "text": {"en": "All your traces together show who you are online. That's your digital identity.", "fr": "Toutes tes traces ensemble montrent qui tu es en ligne. C’est ton identité numérique."}
+      },
+      {
+        "speaker": "lumi",
+        "tiers": ["E3"],
+        "text": {"en": "When you post, share, like or comment online, you leave digital traces.", "fr": "Quand tu publies, partages, aimes ou commentes en ligne, tu laisses des traces numériques."}
+      },
+      {
+        "speaker": "lumi",
+        "tiers": ["E3"],
+        "text": {"en": "Those traces shape your digital identity: the image people get of you online.", "fr": "Ces traces construisent ton identité numérique : l’image que les autres se font de toi en ligne."}
+      },
+      {
+        "speaker": "lumi",
+        "text": {"en": "Here, take this lantern. Its light shows traces that are hard to see.", "fr": "Tiens, prends cette lanterne. Sa lumière montre les traces difficiles à voir."},
+        "action": "give:lantern"
+      },
+      {
+        "speaker": "lumi",
+        "text": {"en": "My friend Juno is in the Hall of Traces, through the passage on the left. She needs help!", "fr": "Mon amie Juno est dans la salle des traces, par le passage à gauche. Elle a besoin d’aide!"},
+        "action": "set:met_lumi"
+      }
+    ],
+    "lumi_to_hall": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "Juno is in the Hall of Traces, through the passage on the left. Keep your lantern close!", "fr": "Juno est dans la salle des traces, par le passage à gauche. Garde ta lanterne près de toi!"}
+      }
+    ],
+    "lumi_to_vault": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "The pink piece opened the north door. Kai is waiting in the Vault of Keys.", "fr": "Le morceau rose a ouvert la porte du nord. Kai t’attend dans la chambre forte des clés."}
+      }
+    ],
+    "lumi_to_gallery": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "Two pieces! The east door is open now. Nova is in the Window Gallery.", "fr": "Deux morceaux! La porte de l’est est ouverte. Nova est dans la galerie des fenêtres."}
+      }
+    ],
+    "lumi_final": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "All three pieces! The big door at the top of the gallery is open.", "fr": "Les trois morceaux! La grande porte en haut de la galerie est ouverte."}
+      },
+      {
+        "speaker": "lumi",
+        "text": {"en": "Someone with a mask lives behind it. Be ready for some tricks!", "fr": "Quelqu’un avec un masque vit derrière. Prépare-toi à des ruses!"}
+      }
+    ],
+    "lumi_done": [
+      {
+        "speaker": "lumi",
+        "text": {"en": "You did it, {name}! Step on a glowing circle when you're ready to go home.", "fr": "Tu as réussi, {name}! Marche sur un cercle lumineux quand tu veux rentrer au village."}
+      }
+    ],
+    "atrium_plaque": [
+      {
+        "text": {"en": "A stone plaque: \"Three wings, three pieces. Bring them together to open the Mask Hall.\"", "fr": "Une plaque de pierre : « Trois ailes, trois morceaux. Réunis-les pour ouvrir la salle des masques. »"}
+      }
+    ],
+    "door_vault_closed": [
+      {
+        "text": {"en": "The north door is sealed. A pink gem shape glows in the middle.", "fr": "La porte du nord est scellée. Une forme de pierre rose brille au milieu."}
+      },
+      {
+        "text": {"en": "Maybe a piece from the Hall of Traces fits here.", "fr": "Un morceau de la salle des traces pourrait peut-être aller ici."}
+      }
+    ],
+    "door_gallery_closed": [
+      {
+        "text": {"en": "The east door is sealed. A blue gem shape glows in the middle.", "fr": "La porte de l’est est scellée. Une forme de pierre bleue brille au milieu."}
+      },
+      {
+        "text": {"en": "Maybe a piece from the Vault of Keys fits here.", "fr": "Un morceau de la chambre forte des clés pourrait peut-être aller ici."}
+      }
+    ],
+    "door_final_closed": [
+      {
+        "text": {"en": "A huge door with three gem shapes: pink, blue and gold.", "fr": "Une immense porte avec trois formes de pierres : rose, bleue et dorée."}
+      },
+      {
+        "text": {"en": "Behind it, someone is laughing. Only all three pieces will open it.", "fr": "Derrière, quelqu’un rit. Seuls les trois morceaux réunis l’ouvriront."}
+      }
+    ],
+    "juno_intro": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "Hi! I'm Juno. My class just started a message board online.", "fr": "Salut! Moi, c’est Juno. Ma classe vient de commencer un babillard en ligne."}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "I posted, I liked and I commented. Now glowing footprints follow me everywhere!", "fr": "J’ai publié, j’ai aimé et j’ai commenté. Maintenant, des empreintes lumineuses me suivent partout!"}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "Hi, I'm Juno. I just joined my class blog and our class group chat.", "fr": "Salut, moi c’est Juno. Je viens de m’inscrire au blogue de la classe et à notre conversation de groupe."}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "Every time I post, like or comment, a glowing footprint appears. What do they say about me?", "fr": "Chaque fois que je publie, que j’aime ou que je commente, une empreinte lumineuse apparaît. Qu’est-ce qu’elles disent sur moi?"}
+      },
+      {
+        "speaker": "juno",
+        "text": {"en": "Can you help me find what each trace shows about me?", "fr": "Peux-tu m’aider à trouver ce que chaque trace montre sur moi?"},
+        "choices": [
+          {
+            "text": {"en": "Yes, let's look!", "fr": "Oui, regardons!"},
+            "action": "puzzle:d2_traces",
+            "next": "juno_traces_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "juno_traces_after": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "Wow. My traces tell a lot about me, even when I didn't mean it!", "fr": "Wow! Mes traces en disent beaucoup sur moi, même quand je ne le voulais pas!"}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "So even a like or a comment says something about me. I never thought of that.", "fr": "Donc, même un « j’aime » ou un commentaire dit quelque chose sur moi. Je n’y avais jamais pensé."}
+      },
+      {
+        "speaker": "juno",
+        "text": {"en": "Hey, look! Your lantern shows footprints going right into that wall.", "fr": "Hé, regarde! Ta lanterne montre des empreintes qui vont droit dans ce mur."}
+      }
+    ],
+    "juno_wall": [
+      {
+        "speaker": "juno",
+        "text": {"en": "The footprints stop at the wall. Hold your lantern close to it!", "fr": "Les empreintes s’arrêtent au mur. Approche ta lanterne!"}
+      }
+    ],
+    "hidden_door": [
+      {
+        "text": {"en": "In the lantern light, a crack shaped like a door glows in the wall. You push... and it opens!", "fr": "Dans la lumière de la lanterne, une fente en forme de porte brille dans le mur. Tu pousses... et elle s’ouvre!"},
+        "action": "set:hall_door_open"
+      },
+      {
+        "speaker": "juno",
+        "text": {"en": "A secret room! Traces can lead to places we don't expect. Let's go in.", "fr": "Une pièce secrète! Les traces peuvent mener à des endroits inattendus. Entrons."},
+        "action": "achieve:secret_door"
+      }
+    ],
+    "hall_wall_note": [
+      {
+        "text": {"en": "Words are carved in the floor: \"Traces stay longer than you think.\"", "fr": "Des mots sont gravés dans le sol : « Les traces restent plus longtemps qu’on pense. »"}
+      }
+    ],
+    "juno_board": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "Uh-oh. I posted a photo of me making a silly face. Then I deleted it.", "fr": "Oh non! J’ai publié une photo de moi qui fais une grimace. Ensuite, je l’ai effacée."}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "Last night I posted a joke about a classmate in the group chat. It wasn't nice, so I deleted it.", "fr": "Hier soir, j’ai publié une blague sur un camarade dans la conversation de groupe. Elle n’était pas gentille, alors je l’ai effacée."}
+      },
+      {
+        "speaker": "juno",
+        "text": {"en": "That board shows what happened to my post. Can you check it?", "fr": "Ce babillard montre ce qui est arrivé à ma publication. Peux-tu aller voir?"}
+      }
+    ],
+    "board_vanishing": [
+      {
+        "text": {"en": "The board shows Juno's post. Next to it, there is a little trash can.", "fr": "Le babillard montre la publication de Juno. À côté, il y a une petite poubelle."},
+        "choices": [
+          {
+            "text": {"en": "Watch what happens", "fr": "Regarder ce qui se passe"},
+            "action": "puzzle:d2_vanishing",
+            "next": "board_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "board_after": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "So deleting doesn't always make a post go away. I'll think before I post!", "fr": "Donc, effacer ne fait pas toujours disparaître une publication. Je vais réfléchir avant de publier!"}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "So copies can stay, even after I delete. Next time, I'll think before I post.", "fr": "Donc, des copies peuvent rester, même après avoir effacé. La prochaine fois, je vais réfléchir avant de publier."}
+      },
+      {
+        "speaker": "juno",
+        "ifNot": "d2_profile_done",
+        "text": {"en": "Now I need a profile picture. Can you help me at the mirror?", "fr": "Maintenant, j’ai besoin d’une photo de profil. Peux-tu m’aider au miroir?"}
+      },
+      {
+        "speaker": "juno",
+        "if": "d2_profile_done",
+        "text": {"en": "Look! A chest just appeared by the wall.", "fr": "Regarde! Un coffre vient d’apparaître près du mur."}
+      }
+    ],
+    "juno_mirror": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "I need a profile picture for the class board. The mirror shows some choices.", "fr": "J’ai besoin d’une photo de profil pour le babillard de la classe. Le miroir montre des choix."}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "I need a profile picture for the class blog. The mirror shows a few choices.", "fr": "J’ai besoin d’une photo de profil pour le blogue de la classe. Le miroir montre quelques choix."}
+      }
+    ],
+    "mirror_profile": [
+      {
+        "text": {"en": "A tall mirror. It shows the pictures Juno could use for her profile.", "fr": "Un grand miroir. Il montre les images que Juno pourrait utiliser pour son profil."},
+        "choices": [
+          {
+            "text": {"en": "Help Juno choose", "fr": "Aider Juno à choisir"},
+            "action": "puzzle:d2_profile",
+            "next": "mirror_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "mirror_after": [
+      {
+        "speaker": "juno",
+        "text": {"en": "I love my avatar! It shows my style, but not my face.", "fr": "J’adore mon avatar! Il montre mon style, mais pas mon visage."}
+      },
+      {
+        "speaker": "juno",
+        "ifNot": "d2_vanishing_done",
+        "text": {"en": "Now, can you check the board? I want to know what happened to my post.", "fr": "Maintenant, peux-tu regarder le babillard? Je veux savoir ce qui est arrivé à ma publication."}
+      },
+      {
+        "speaker": "juno",
+        "if": "d2_vanishing_done",
+        "text": {"en": "Look! A chest just appeared by the wall.", "fr": "Regarde! Un coffre vient d’apparaître près du mur."}
+      }
+    ],
+    "juno_chest": [
+      {
+        "speaker": "juno",
+        "text": {"en": "That chest appeared when we finished. Go on, open it!", "fr": "Ce coffre est apparu quand on a fini. Vas-y, ouvre-le!"}
+      }
+    ],
+    "juno_bye": [
+      {
+        "speaker": "juno",
+        "tiers": ["E2"],
+        "text": {"en": "Thanks, {name}! From now on, I'll think before I post.", "fr": "Merci, {name}! À partir de maintenant, je vais réfléchir avant de publier."}
+      },
+      {
+        "speaker": "juno",
+        "tiers": ["E3"],
+        "text": {"en": "Thanks, {name}. My traces tell my story, so I want them to tell a good one.", "fr": "Merci, {name}. Mes traces racontent mon histoire, alors je veux qu’elles en racontent une belle."}
+      }
+    ],
+    "chest_traces": [
+      {
+        "text": {"en": "Inside the chest: the pink Piece of Traces!", "fr": "Dans le coffre : le morceau rose des traces!"},
+        "action": "give:piece_traces"
+      },
+      {
+        "text": {"en": "It hums softly. The north door, back where Lumi is, should open now.", "fr": "Il vibre doucement. La porte du nord, là où se trouve Lumi, devrait s’ouvrir maintenant."}
+      }
+    ],
+    "kai_intro": [
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "Hi! I'm Kai. Our teacher is helping us set up a new reading app.", "fr": "Salut! Moi, c’est Kai. Notre enseignante nous aide à nous inscrire à une nouvelle application de lecture."}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "The app asks lots of questions. Which answers are about me?", "fr": "L’application pose plein de questions. Quelles réponses parlent de moi?"}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "Hey, I'm Kai. I'm making an account for a new online game.", "fr": "Salut, moi c’est Kai. Je me crée un compte pour un nouveau jeu en ligne."}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "The sign-up form wants a lot of information. What should I share?", "fr": "Le formulaire d’inscription demande beaucoup d’informations. Qu’est-ce que je devrais partager?"}
+      },
+      {
+        "speaker": "kai",
+        "text": {"en": "Can you help me sort it out?", "fr": "Peux-tu m’aider à faire le tri?"},
+        "choices": [
+          {
+            "text": {"en": "Sure!", "fr": "Bien sûr!"},
+            "action": "puzzle:d2_personal",
+            "next": "kai_request"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "kai_request": [
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "Thanks! Oh, a message just popped up on the tablet.", "fr": "Merci! Oh, un message vient d’apparaître sur la tablette."}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "Thanks! Wait, someone I don't know just wrote to me in the game chat.", "fr": "Merci! Attends, quelqu’un que je ne connais pas vient de m’écrire dans le clavardage du jeu."}
+      },
+      {
+        "speaker": "kai",
+        "text": {"en": "What should I do?", "fr": "Qu’est-ce que je devrais faire?"},
+        "choices": [
+          {
+            "text": {"en": "Let me see", "fr": "Montre-moi"},
+            "action": "puzzle:d2_request",
+            "next": "kai_password"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "kai_password": [
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "Phew. Now the app wants a password. Which ones are hard to guess?", "fr": "Ouf! Maintenant, l’application veut un mot de passe. Lesquels sont difficiles à deviner?"}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "Okay. Last step: I need a password that protects my account.", "fr": "D’accord. Dernière étape : j’ai besoin d’un mot de passe qui protège mon compte."}
+      },
+      {
+        "speaker": "kai",
+        "text": {"en": "Will you help me pick?", "fr": "Veux-tu m’aider à choisir?"},
+        "choices": [
+          {
+            "text": {"en": "Let's do it", "fr": "Allons-y"},
+            "action": "puzzle:d2_password",
+            "next": "kai_after_password"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "kai_after_password": [
+      {
+        "speaker": "kai",
+        "text": {"en": "My account is safe now. Thanks, {name}!", "fr": "Mon compte est en sécurité maintenant. Merci, {name}!"}
+      },
+      {
+        "speaker": "kai",
+        "text": {"en": "See the key stones on the floor? They open the vault. But which one goes first?", "fr": "Vois-tu les pierres-clés sur le sol? Elles ouvrent le coffre-fort. Mais laquelle va en premier?"}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "Use your lantern. Look for the footprints: one, then two, then three.", "fr": "Utilise ta lanterne. Cherche les empreintes : une, puis deux, puis trois."}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "Use your lantern. The traces beside each stone show the order.", "fr": "Utilise ta lanterne. Les traces à côté de chaque pierre montrent l’ordre."}
+      }
+    ],
+    "kai_stones": [
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "Look for the footprints near each stone. Step on one, then two, then three!", "fr": "Cherche les empreintes près de chaque pierre. Marche sur une, puis deux, puis trois!"}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "The traces beside the stones show the order. Count the footprints.", "fr": "Les traces à côté des pierres montrent l’ordre. Compte les empreintes."}
+      }
+    ],
+    "stones_reset": [
+      {
+        "text": {"en": "Click! The stones pop back up. Look at the traces again.", "fr": "Clic! Les pierres remontent. Regarde encore les traces."}
+      }
+    ],
+    "stones_done": [
+      {
+        "text": {"en": "Rumble... The vault door slides open!", "fr": "Grondement... La porte du coffre-fort s’ouvre!"}
+      }
+    ],
+    "vault_door_closed": [
+      {
+        "text": {"en": "A heavy vault door. There is no keyhole.", "fr": "Une lourde porte de coffre-fort. Il n’y a pas de serrure."}
+      },
+      {
+        "ifNot": "d2_password_done",
+        "text": {"en": "Maybe Kai knows how it opens.", "fr": "Kai sait peut-être comment l’ouvrir."}
+      },
+      {
+        "if": "d2_password_done",
+        "text": {"en": "The key stones on the floor might open it.", "fr": "Les pierres-clés sur le sol pourraient l’ouvrir."}
+      }
+    ],
+    "kai_vault_open": [
+      {
+        "speaker": "kai",
+        "text": {"en": "The vault is open! Go see what's inside.", "fr": "Le coffre-fort est ouvert! Va voir ce qu’il y a dedans."}
+      }
+    ],
+    "kai_bye": [
+      {
+        "speaker": "kai",
+        "tiers": ["E2"],
+        "text": {"en": "I'll keep my password a secret. Good luck, {name}!", "fr": "Je vais garder mon mot de passe secret. Bonne chance, {name}!"}
+      },
+      {
+        "speaker": "kai",
+        "tiers": ["E3"],
+        "text": {"en": "My account is safe thanks to you. Good luck in the gallery!", "fr": "Mon compte est protégé grâce à toi. Bonne chance dans la galerie!"}
+      }
+    ],
+    "chest_keys": [
+      {
+        "text": {"en": "Inside the vault: the blue Piece of Keys!", "fr": "Dans le coffre-fort : le morceau bleu des clés!"},
+        "action": "give:piece_keys"
+      },
+      {
+        "text": {"en": "It hums softly. The east door, back where Lumi is, should open now.", "fr": "Il vibre doucement. La porte de l’est, là où se trouve Lumi, devrait s’ouvrir maintenant."}
+      }
+    ],
+    "nova_intro": [
+      {
+        "speaker": "nova",
+        "tiers": ["E2"],
+        "text": {"en": "Hi! I'm Nova. I took a photo of my cousin Léo in front of his house.", "fr": "Salut! Moi, c’est Nova. J’ai pris une photo de mon cousin Léo devant sa maison."}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E2"],
+        "text": {"en": "I want to put it on our class page. It's on the easel. Can you check it first?", "fr": "Je veux la mettre sur la page de notre classe. Elle est sur le chevalet. Peux-tu la vérifier avant?"}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E3"],
+        "text": {"en": "Hi, I'm Nova. My friend Sam sent me a photo, and an AI app turned it into a cartoon.", "fr": "Salut, moi c’est Nova. Mon ami Sam m’a envoyé une photo, et une application d’IA l’a transformée en dessin animé."}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E3"],
+        "text": {"en": "I want to post it. A cartoon hides everything... right? It's on the easel.", "fr": "Je veux la publier. Un dessin animé cache tout... non? Elle est sur le chevalet."}
+      }
+    ],
+    "easel_photo": [
+      {
+        "tiers": ["E2"],
+        "text": {"en": "Nova's photo of Léo, on the easel.", "fr": "La photo de Léo prise par Nova, sur le chevalet."},
+        "choices": [
+          {
+            "text": {"en": "Look for clues", "fr": "Chercher des indices"},
+            "action": "puzzle:d2_photo",
+            "next": "easel_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      },
+      {
+        "tiers": ["E3"],
+        "text": {"en": "The cartoon version of Sam's photo, made by an AI app.", "fr": "La version dessin animé de la photo de Sam, faite par une application d’IA."},
+        "choices": [
+          {
+            "text": {"en": "Look for clues", "fr": "Chercher des indices"},
+            "action": "puzzle:d2_photo",
+            "next": "easel_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "easel_after": [
+      {
+        "speaker": "nova",
+        "tiers": ["E2"],
+        "text": {"en": "Oh! I didn't see those. I'll hide the number, the sign and the logo first.", "fr": "Oh! Je ne les avais pas vus. Je vais d’abord cacher le numéro, la plaque et le logo."}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E3"],
+        "text": {"en": "Wow, the filter didn't hide anything important. I'll ask Sam first, and crop out the clues.", "fr": "Wow, le filtre n’a rien caché d’important. Je vais demander à Sam d’abord, puis rogner les indices."}
+      },
+      {
+        "speaker": "nova",
+        "ifNot": "d2_access_done",
+        "text": {"en": "Can you help me with my new photo app too? Come talk to me.", "fr": "Peux-tu aussi m’aider avec ma nouvelle application photo? Viens me parler."}
+      }
+    ],
+    "nova_app": [
+      {
+        "speaker": "nova",
+        "tiers": ["E2"],
+        "text": {"en": "My new photo app wants to use things on my tablet. Should I say yes?", "fr": "Ma nouvelle application photo veut utiliser des choses sur ma tablette. Est-ce que je dis oui?"}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E3"],
+        "text": {"en": "I just installed some new apps. They all want access to things on my tablet.", "fr": "Je viens d’installer de nouvelles applications. Elles veulent toutes accéder à des choses sur ma tablette."}
+      },
+      {
+        "speaker": "nova",
+        "text": {"en": "Can you help me decide?", "fr": "Peux-tu m’aider à décider?"},
+        "choices": [
+          {
+            "text": {"en": "Let's look", "fr": "Regardons"},
+            "action": "puzzle:d2_access",
+            "next": "nova_after_access"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "nova_after_access": [
+      {
+        "speaker": "nova",
+        "text": {"en": "Got it. An app only gets what it really needs.", "fr": "Compris. Une application reçoit seulement ce dont elle a vraiment besoin."}
+      },
+      {
+        "speaker": "nova",
+        "text": {"en": "Oh! Our class video call just ended. Can you check the laptop over there?", "fr": "Oh! L’appel vidéo de notre classe vient de finir. Peux-tu vérifier l’ordinateur portable, là-bas?"}
+      }
+    ],
+    "nova_call": [
+      {
+        "speaker": "nova",
+        "text": {"en": "Our class video call just ended. Can you check the laptop by the wall?", "fr": "L’appel vidéo de notre classe vient de finir. Peux-tu vérifier l’ordinateur portable près du mur?"}
+      }
+    ],
+    "laptop_call": [
+      {
+        "text": {"en": "The class laptop. The video call just ended.", "fr": "L’ordinateur portable de la classe. L’appel vidéo vient de finir."},
+        "choices": [
+          {
+            "text": {"en": "Look closely", "fr": "Regarder de près"},
+            "action": "puzzle:d2_camera",
+            "next": "laptop_after"
+          },
+          {"text": {"en": "Not now.", "fr": "Pas maintenant."}, "next": null}
+        ]
+      }
+    ],
+    "laptop_after": [
+      {
+        "speaker": "nova",
+        "text": {"en": "Good catch! Now nobody can see or hear our class.", "fr": "Bien vu! Maintenant, personne ne peut voir ou entendre notre classe."}
+      },
+      {
+        "speaker": "nova",
+        "if": "d2_photo_done",
+        "text": {"en": "Look! A chest just appeared in the corner.", "fr": "Regarde! Un coffre vient d’apparaître dans le coin."}
+      }
+    ],
+    "nova_chest": [
+      {
+        "speaker": "nova",
+        "text": {"en": "The chest in the corner appeared when we finished. Open it!", "fr": "Le coffre dans le coin est apparu quand on a fini. Ouvre-le!"}
+      }
+    ],
+    "nova_bye": [
+      {
+        "speaker": "nova",
+        "tiers": ["E2"],
+        "text": {"en": "I'll check my photos before I post them. Bye, {name}!", "fr": "Je vais vérifier mes photos avant de les publier. Au revoir, {name}!"}
+      },
+      {
+        "speaker": "nova",
+        "tiers": ["E3"],
+        "text": {"en": "From now on, I'll ask before I post photos of my friends.", "fr": "À partir de maintenant, je vais demander la permission avant de publier des photos de mes amis."}
+      }
+    ],
+    "chest_gallery": [
+      {
+        "text": {"en": "Inside the chest: the gold Piece of Windows!", "fr": "Dans le coffre : le morceau doré des fenêtres!"},
+        "action": "give:piece_gallery"
+      },
+      {
+        "text": {"en": "All three pieces glow together. Far away, a big door rumbles open.", "fr": "Les trois morceaux brillent ensemble. Au loin, une grande porte s’ouvre en grondant."}
+      }
+    ],
+    "merchant_intro": [
+      {
+        "speaker": "merchant",
+        "text": {"en": "Welcome, welcome! I'm the Mask Merchant. I collect faces, names and secrets!", "fr": "Bienvenue, bienvenue! Je suis le marchand de masques. Je collectionne les visages, les noms et les secrets!"},
+        "action": "set:met_merchant"
+      },
+      {
+        "speaker": "merchant",
+        "tiers": ["E2"],
+        "text": {"en": "Let's play a game of tricks. Can you see through my masks?", "fr": "Jouons à un jeu de ruses. Peux-tu voir à travers mes masques?"}
+      },
+      {
+        "speaker": "merchant",
+        "tiers": ["E3"],
+        "text": {"en": "I hear you're good at spotting tricks. Let's see if you can see through my masks!", "fr": "Il paraît que tu sais repérer les ruses. Voyons si tu peux voir à travers mes masques!"}
+      },
+      {
+        "speaker": "merchant",
+        "text": {"en": "Ready?", "fr": "Prêt ou prête?"},
+        "choices": [
+          {
+            "text": {"en": "Bring it on!", "fr": "Allons-y!"},
+            "action": "puzzle:d2_boss1",
+            "next": "merchant_round2"
+          },
+          {"text": {"en": "Not yet.", "fr": "Pas encore."}, "next": null}
+        ]
+      }
+    ],
+    "merchant_again": [
+      {
+        "speaker": "merchant",
+        "text": {"en": "Back for my game of tricks? Here comes my first mask!", "fr": "Tu reviens pour mon jeu de ruses? Voici mon premier masque!"},
+        "choices": [
+          {
+            "text": {"en": "Bring it on!", "fr": "Allons-y!"},
+            "action": "puzzle:d2_boss1",
+            "next": "merchant_round2"
+          },
+          {"text": {"en": "Not yet.", "fr": "Pas encore."}, "next": null}
+        ]
+      }
+    ],
+    "merchant_round2": [
+      {
+        "speaker": "merchant",
+        "text": {"en": "Hmph! You saw through that one. Here's my next mask...", "fr": "Hum! Tu as vu à travers celui-là. Voici mon prochain masque..."},
+        "choices": [
+          {
+            "text": {"en": "I'm ready", "fr": "Je suis prêt ou prête"},
+            "action": "puzzle:d2_boss2",
+            "next": "merchant_round3"
+          },
+          {"text": {"en": "Not yet.", "fr": "Pas encore."}, "next": null}
+        ]
+      }
+    ],
+    "merchant_round3": [
+      {
+        "speaker": "merchant",
+        "text": {"en": "Grr! One last mask. This is my best trick!", "fr": "Grr! Un dernier masque. C’est ma meilleure ruse!"},
+        "choices": [
+          {
+            "text": {"en": "I'm ready", "fr": "Je suis prêt ou prête"},
+            "action": "puzzle:d2_boss3",
+            "next": "merchant_end"
+          },
+          {"text": {"en": "Not yet.", "fr": "Pas encore."}, "next": null}
+        ]
+      }
+    ],
+    "merchant_end": [
+      {
+        "speaker": "merchant",
+        "text": {"en": "Ha! You saw through every mask!", "fr": "Ha! Tu as vu à travers tous mes masques!"}
+      },
+      {
+        "speaker": "merchant",
+        "text": {"en": "You kept your traces, your personal information and your privacy safe.", "fr": "Tu as protégé tes traces, tes renseignements personnels et ta vie privée."}
+      },
+      {
+        "text": {"en": "The Mask Merchant gives you a shining badge.", "fr": "Le marchand de masques te remet un insigne brillant."},
+        "action": "give:badge_2"
+      },
+      {
+        "speaker": "merchant",
+        "text": {"en": "Remember: think before you post, keep personal information safe, and ask for help when in doubt.", "fr": "Souviens-toi : réfléchis avant de publier, protège tes renseignements personnels et demande de l’aide en cas de doute."}
+      },
+      {
+        "text": {"en": "Poof! The Mask Merchant vanishes in a puff of glitter.", "fr": "Pouf! Le marchand de masques disparaît dans un nuage de brillants."},
+        "action": "set:area2_done"
+      },
+      {
+        "speaker": "lumi",
+        "text": {"en": "You did it, {name}! A glowing circle appeared. Step on it to go home.", "fr": "Tu as réussi, {name}! Un cercle lumineux est apparu. Marche dessus pour rentrer au village."}
+      },
+      {
+        "speaker": "lumi",
+        "text": {"en": "I think the village has a surprise for you.", "fr": "Je pense que le village te réserve une surprise."}
+      }
+    ]
+  },
+  "puzzles": [
+    {
+      "id": "d2_traces_c2",
+      "family": "d2_traces",
+      "tiers": ["E2"],
+      "element": "2a",
+      "type": "match",
+      "application": {"en": "Recognize situations where an online action reveals information about a person, even unintentionally.", "fr": "Reconnaître des situations où une action en ligne donne des informations sur une personne, même sans qu’on le veuille."},
+      "prompt": {"en": "Match each of Juno's traces to what it shows about her.", "fr": "Associe chaque trace de Juno à ce qu’elle montre sur elle."},
+      "leftTitle": {"en": "Juno's trace", "fr": "La trace de Juno"},
+      "rightTitle": {"en": "What it shows", "fr": "Ce qu’elle montre"},
+      "pairs": [
+        {
+          "id": "photo",
+          "left": {
+            "icon": "photo",
+            "text": {"en": "A photo of Juno at her soccer game", "fr": "Une photo de Juno à son match de soccer"}
+          },
+          "right": {"text": {"en": "Juno plays soccer", "fr": "Juno joue au soccer"}},
+          "hint": {"en": "Look at the photo. What is Juno doing in it?", "fr": "Regarde la photo. Que fait Juno?"}
+        },
+        {
+          "id": "like",
+          "left": {
+            "icon": "like",
+            "text": {"en": "Juno likes a post about cats", "fr": "Juno aime une publication sur les chats"}
+          },
+          "right": {"text": {"en": "Juno loves cats", "fr": "Juno adore les chats"}},
+          "hint": {"en": "What was the post about?", "fr": "De quoi parlait la publication?"}
+        },
+        {
+          "id": "birthday",
+          "left": {
+            "icon": "comment",
+            "text": {"en": "Juno writes: \"Today I'm 9!\"", "fr": "Juno écrit : « Aujourd’hui, j’ai 9 ans! »"}
+          },
+          "right": {"text": {"en": "Juno's age and birthday", "fr": "L’âge et l’anniversaire de Juno"}},
+          "hint": {"en": "Juno says how old she is. What else does \"today\" tell us?", "fr": "Juno dit son âge. Que nous apprend aussi « aujourd’hui »?"}
+        },
+        {
+          "id": "kind",
+          "left": {
+            "icon": "star",
+            "text": {"en": "Juno writes \"Great job!\" on a friend's drawing", "fr": "Juno écrit « Bravo! » sous le dessin d’un ami"}
+          },
+          "right": {"text": {"en": "Juno is kind to others", "fr": "Juno est gentille avec les autres"}},
+          "hint": {"en": "What do her words show about how she treats people?", "fr": "Que montrent ses mots sur sa façon de traiter les autres?"}
+        }
+      ],
+      "success": {"en": "You matched them all! Each trace shows something about Juno. Together, they make her digital identity.", "fr": "Tu les as toutes associées! Chaque trace montre quelque chose sur Juno. Ensemble, elles forment son identité numérique."},
+      "flag": "d2_traces_done",
+      "teacherNote": {"en": "Ask: what traces might you leave when you use a tablet at school?", "fr": "Demandez : quelles traces pourriez-vous laisser quand vous utilisez une tablette à l’école?"}
+    },
+    {
+      "id": "d2_traces_c3",
+      "family": "d2_traces",
+      "tiers": ["E3"],
+      "element": "2a",
+      "type": "match",
+      "application": {"en": "Recognize situations where an online action reveals information about a person, even unintentionally.", "fr": "Reconnaître des situations où une action en ligne donne des informations sur une personne, même sans qu’on le veuille."},
+      "prompt": {"en": "Match each of Juno's traces to what it reveals about her, even if she didn't mean it to.", "fr": "Associe chaque trace de Juno à ce qu’elle révèle sur elle, même sans qu’elle le veuille."},
+      "leftTitle": {"en": "Juno's trace", "fr": "La trace de Juno"},
+      "rightTitle": {"en": "What it reveals", "fr": "Ce qu’elle révèle"},
+      "pairs": [
+        {
+          "id": "selfie",
+          "left": {
+            "icon": "photo",
+            "text": {"en": "A selfie in her school T-shirt", "fr": "Un égoportrait avec le chandail de son école"}
+          },
+          "right": {"text": {"en": "Which school she goes to", "fr": "L’école qu’elle fréquente"}},
+          "hint": {"en": "Look closely at what she is wearing in the selfie.", "fr": "Regarde bien ce qu’elle porte sur l’égoportrait."}
+        },
+        {
+          "id": "walk",
+          "left": {
+            "icon": "comment",
+            "text": {"en": "\"Walking my dog on Pine Street, like every morning!\"", "fr": "« Je promène mon chien sur la rue des Pins, comme chaque matin! »"}
+          },
+          "right": {"text": {"en": "Where she is every morning", "fr": "Où elle se trouve chaque matin"}},
+          "hint": {"en": "The comment names a street and a time. What could a stranger learn?", "fr": "Le commentaire donne une rue et un moment. Qu’est-ce qu’un inconnu pourrait apprendre?"}
+        },
+        {
+          "id": "likes",
+          "left": {
+            "icon": "like",
+            "text": {"en": "She liked 20 skateboarding videos", "fr": "Elle a aimé 20 vidéos de planche à roulettes"}
+          },
+          "right": {"text": {"en": "What she likes to do", "fr": "Ce qu’elle aime faire"}},
+          "hint": {"en": "Many likes on one topic say something. What is the topic?", "fr": "Beaucoup de « j’aime » sur un même sujet, ça en dit long. Quel est le sujet?"}
+        },
+        {
+          "id": "mean",
+          "left": {
+            "icon": "chat",
+            "text": {"en": "A mean comment she wrote about a classmate's drawing", "fr": "Un commentaire méchant qu’elle a écrit sur le dessin d’un camarade"}
+          },
+          "right": {
+            "text": {"en": "How others may see her: as unkind", "fr": "Comment les autres peuvent la voir : pas gentille"}
+          },
+          "hint": {"en": "Our online behaviour changes how others see us. What would readers think of her?", "fr": "Nos comportements en ligne changent la façon dont les autres nous voient. Que penseraient les lecteurs?"}
+        }
+      ],
+      "success": {"en": "All matched! Photos, likes and comments reveal things about us, even when we don't mean to. They also shape how others see us.", "fr": "Tout est associé! Les photos, les « j’aime » et les commentaires révèlent des choses sur nous, même sans qu’on le veuille. Ils influencent aussi ce que les autres pensent de nous."},
+      "flag": "d2_traces_done",
+      "teacherNote": {"en": "Ask: what could someone learn about you from your last three online actions?", "fr": "Demandez : qu’est-ce que quelqu’un pourrait apprendre sur vous à partir de vos trois dernières actions en ligne?"}
+    },
+    {
+      "id": "d2_vanishing_c2",
+      "family": "d2_vanishing",
+      "tiers": ["E2"],
+      "element": "2a",
+      "type": "predict",
+      "application": {"en": "Explain what can happen after they post something, even if they delete it later.", "fr": "Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite."},
+      "prompt": {"en": "Watch what happens to Juno's post.", "fr": "Regarde ce qui arrive à la publication de Juno."},
+      "scene": [
+        {
+          "icon": "post",
+          "text": {"en": "Juno posts a photo of her silly face on the class board.", "fr": "Juno publie une photo de sa grimace sur le babillard de la classe."}
+        },
+        {
+          "icon": "screenshot",
+          "text": {"en": "Three friends see it. One friend takes a screenshot.", "fr": "Trois amis la voient. Un ami fait une capture d’écran."}
+        },
+        {
+          "icon": "trash",
+          "text": {"en": "Juno deletes her post.", "fr": "Juno efface sa publication."}
+        }
+      ],
+      "question": {"en": "What happens next?", "fr": "Que se passe-t-il ensuite?"},
+      "options": [
+        {
+          "text": {"en": "The photo can still be out there. The screenshot is a copy.", "fr": "La photo peut encore circuler. La capture d’écran est une copie."},
+          "correct": true
+        },
+        {
+          "text": {"en": "The photo is gone forever. Nobody can ever see it.", "fr": "La photo a disparu pour toujours. Personne ne peut la voir."},
+          "hint": {"en": "Remember the screenshot. A screenshot is a copy of the screen.", "fr": "Souviens-toi de la capture d’écran. C’est une copie de l’écran."}
+        },
+        {
+          "text": {"en": "The photo goes back to Juno's tablet only.", "fr": "La photo retourne seulement sur la tablette de Juno."},
+          "hint": {"en": "Once a photo is posted, others can keep it. Who saw it?", "fr": "Une fois publiée, une photo peut être gardée par d’autres. Qui l’a vue?"}
+        }
+      ],
+      "success": {"en": "Right! Deleting a post does not always make it disappear. Think before you post.", "fr": "Oui! Effacer une publication ne la fait pas toujours disparaître. Réfléchis avant de publier."},
+      "flag": "d2_vanishing_done",
+      "teacherNote": {"en": "Ask: what could you check before you post a photo?", "fr": "Demandez : que pourriez-vous vérifier avant de publier une photo?"}
+    },
+    {
+      "id": "d2_vanishing_c3",
+      "family": "d2_vanishing",
+      "tiers": ["E3"],
+      "element": "2a",
+      "type": "predict",
+      "application": {"en": "Explain what can happen after they post something, even if they delete it later.", "fr": "Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite."},
+      "prompt": {"en": "Watch what happens to Juno's message.", "fr": "Regarde ce qui arrive au message de Juno."},
+      "scene": [
+        {
+          "icon": "chat",
+          "text": {"en": "Juno posts a joke about a classmate in the group chat.", "fr": "Juno publie une blague sur un camarade dans la conversation de groupe."}
+        },
+        {
+          "icon": "screenshot",
+          "text": {"en": "Twelve people read it. Two take screenshots. One shares it with another group.", "fr": "Douze personnes la lisent. Deux font une capture d’écran. Une la partage dans un autre groupe."}
+        },
+        {
+          "icon": "trash",
+          "text": {"en": "Five minutes later, Juno deletes her message.", "fr": "Cinq minutes plus tard, Juno efface son message."}
+        }
+      ],
+      "question": {"en": "What can happen next?", "fr": "Qu’est-ce qui peut arriver ensuite?"},
+      "options": [
+        {
+          "text": {"en": "Copies can keep spreading, and people may remember what she wrote.", "fr": "Des copies peuvent circuler, et les gens peuvent se souvenir de ce qu’elle a écrit."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Deleting it erases every copy, so it's like it never happened.", "fr": "L’effacer supprime toutes les copies, comme si rien ne s’était passé."},
+          "hint": {"en": "Think about the screenshots and the other group. Can Juno delete those?", "fr": "Pense aux captures d’écran et à l’autre groupe. Juno peut-elle les effacer?"}
+        },
+        {
+          "text": {"en": "Only Juno's best friends will ever see the joke now.", "fr": "Seuls les meilleurs amis de Juno verront la blague maintenant."},
+          "hint": {"en": "Twelve people read it, and it was shared. Who else could see it?", "fr": "Douze personnes l’ont lue, et elle a été partagée. Qui d’autre pourrait la voir?"}
+        },
+        {
+          "text": {"en": "The app sends the joke back to Juno, in private.", "fr": "L’application renvoie la blague à Juno, en privé."},
+          "hint": {"en": "Apps can't take back what others saved. What did the readers do?", "fr": "Les applications ne reprennent pas ce que les autres ont gardé. Qu’ont fait les lecteurs?"}
+        }
+      ],
+      "success": {"en": "Exactly. Posts can stay online over time, through screenshots, shares and copies. What we post also shapes how others see us.", "fr": "Exactement. Les publications peuvent rester en ligne longtemps, par des captures d’écran, des partages et des copies. Ce qu’on publie influence aussi ce que les autres pensent de nous."},
+      "flag": "d2_vanishing_done",
+      "teacherNote": {"en": "Ask: why might a deleted post still affect someone's digital identity?", "fr": "Demandez : pourquoi une publication effacée peut-elle encore avoir un effet sur l’identité numérique de quelqu’un?"}
+    },
+    {
+      "id": "d2_profile_c2",
+      "family": "d2_profile",
+      "tiers": ["E2"],
+      "element": "2a",
+      "type": "choice",
+      "application": {"en": "Choose an image that doesn’t show their face or create an avatar as their profile picture.", "fr": "Choisir une image qui ne montre pas son visage ou se créer un avatar comme photo de profil."},
+      "prompt": {"en": "Which picture should Juno use for her profile?", "fr": "Quelle image Juno devrait-elle utiliser pour son profil?"},
+      "options": [
+        {
+          "icon": "avatar",
+          "text": {"en": "An avatar she made herself", "fr": "Un avatar qu’elle a créé elle-même"},
+          "correct": true
+        },
+        {
+          "icon": "face",
+          "text": {"en": "A close-up photo of her face", "fr": "Une photo de son visage, de près"},
+          "hint": {"en": "A photo of her face shows who she is. What could she use instead?", "fr": "Une photo de son visage montre qui elle est. Que pourrait-elle utiliser à la place?"}
+        },
+        {
+          "icon": "school",
+          "text": {"en": "A photo of her in front of her school", "fr": "Une photo d’elle devant son école"},
+          "hint": {"en": "This shows her face and her school. Pick one that keeps her private.", "fr": "On voit son visage et son école. Choisis une image qui la protège."}
+        }
+      ],
+      "success": {"en": "Great choice! An avatar shows your style without showing your face.", "fr": "Excellent choix! Un avatar montre ton style sans montrer ton visage."},
+      "flag": "d2_profile_done",
+      "teacherNote": {"en": "Ask: what would you put on your own avatar?", "fr": "Demandez : qu’est-ce que vous mettriez sur votre propre avatar?"}
+    },
+    {
+      "id": "d2_profile_c3",
+      "family": "d2_profile",
+      "tiers": ["E3"],
+      "element": "2a",
+      "type": "choice",
+      "application": {"en": "Choose an image that doesn’t show their face or create an avatar as their profile picture.", "fr": "Choisir une image qui ne montre pas son visage ou se créer un avatar comme photo de profil."},
+      "prompt": {"en": "Juno needs a profile picture for the class blog. Which one protects her best?", "fr": "Juno a besoin d’une photo de profil pour le blogue de la classe. Laquelle la protège le mieux?"},
+      "options": [
+        {
+          "icon": "avatar",
+          "text": {"en": "A cartoon avatar she designed herself", "fr": "Un avatar de style bande dessinée qu’elle a conçu"},
+          "correct": true
+        },
+        {
+          "icon": "face",
+          "text": {"en": "Her school photo, with her full name under it", "fr": "Sa photo d’école, avec son nom complet dessous"},
+          "hint": {"en": "That shows her face and her full name. Which choice tells less about her?", "fr": "On voit son visage et son nom complet. Quel choix en dit moins sur elle?"}
+        },
+        {
+          "icon": "house",
+          "text": {"en": "A selfie on her front steps, house number showing", "fr": "Un égoportrait sur son perron, avec le numéro de maison"},
+          "hint": {"en": "Her face and her address! What could she show instead?", "fr": "Son visage et son adresse! Que pourrait-elle montrer à la place?"}
+        },
+        {
+          "icon": "person",
+          "text": {"en": "A group photo of her with three friends", "fr": "Une photo de groupe avec trois amies"},
+          "hint": {"en": "That shows her friends' faces too. Did they agree to be on her profile?", "fr": "On voit aussi le visage de ses amies. Ont-elles accepté d’être sur son profil?"}
+        }
+      ],
+      "success": {"en": "Good pick! An avatar or an image without your face keeps your identity safer online.", "fr": "Bon choix! Un avatar ou une image sans ton visage protège mieux ton identité en ligne."},
+      "flag": "d2_profile_done",
+      "teacherNote": {"en": "Ask: why might someone choose an avatar instead of a real photo?", "fr": "Demandez : pourquoi choisir un avatar plutôt qu’une vraie photo?"}
+    },
+    {
+      "id": "d2_personal_c2",
+      "family": "d2_personal",
+      "tiers": ["E2"],
+      "element": "2b",
+      "type": "sort",
+      "application": {"en": "In certain situations or examples, identify what constitutes personal information and decide whether or not it can be shared.", "fr": "Identifier, à partir de situations ou d’exemples, ce qui est une information personnelle et décider si elle peut être partagée ou non."},
+      "prompt": {"en": "Is it personal information? Sort each card.", "fr": "Est-ce un renseignement personnel? Classe chaque carte."},
+      "bins": [
+        {
+          "id": "personal",
+          "icon": "lock",
+          "text": {"en": "Personal: keep it safe", "fr": "Personnel : je le protège"}
+        },
+        {
+          "id": "notpersonal",
+          "icon": "star",
+          "text": {"en": "Not personal", "fr": "Pas personnel"}
+        }
+      ],
+      "items": [
+        {
+          "id": "address",
+          "icon": "house",
+          "text": {"en": "Your home address", "fr": "Ton adresse"},
+          "bin": "personal",
+          "hint": {"en": "An address shows where you live. That is about you!", "fr": "Une adresse montre où tu habites. Ça parle de toi!"}
+        },
+        {
+          "id": "birthday",
+          "icon": "cake",
+          "text": {"en": "Your birthday", "fr": "Ta date de naissance"},
+          "bin": "personal",
+          "hint": {"en": "Your birthday can help someone find out who you are.", "fr": "Ta date de naissance peut aider quelqu’un à savoir qui tu es."}
+        },
+        {
+          "id": "colour",
+          "icon": "palette",
+          "text": {"en": "Your favourite colour", "fr": "Ta couleur préférée"},
+          "bin": "notpersonal",
+          "hint": {"en": "Lots of people like the same colour. Does it show who you are?", "fr": "Beaucoup de gens aiment la même couleur. Est-ce que ça montre qui tu es?"}
+        },
+        {
+          "id": "book",
+          "icon": "book",
+          "text": {"en": "Your favourite book", "fr": "Ton livre préféré"},
+          "bin": "notpersonal",
+          "hint": {"en": "Many kids love the same book. Can it tell someone where you live?", "fr": "Beaucoup d’enfants aiment le même livre. Est-ce que ça dit où tu habites?"}
+        }
+      ],
+      "success": {"en": "Well done! Your address and your birthday are personal information. Keep them safe.", "fr": "Bravo! Ton adresse et ta date de naissance sont des renseignements personnels. Protège-les."},
+      "flag": "d2_personal_done",
+      "teacherNote": {"en": "Ask: what other information is about you and only you?", "fr": "Demandez : quelles autres informations parlent de vous, et seulement de vous?"}
+    },
+    {
+      "id": "d2_personal_c3",
+      "family": "d2_personal",
+      "tiers": ["E3"],
+      "element": "2b",
+      "type": "sort",
+      "application": {"en": "In certain situations or examples, identify what constitutes personal information and decide whether or not it can be shared.", "fr": "Identifier, à partir de situations ou d’exemples, ce qui est une information personnelle et décider si elle peut être partagée ou non."},
+      "prompt": {"en": "The game's sign-up form asks for all of this. Sort each card.", "fr": "Le formulaire du jeu demande tout ceci. Classe chaque carte."},
+      "bins": [
+        {
+          "id": "fine",
+          "icon": "star",
+          "text": {"en": "Fine to share", "fr": "Je peux le partager"}
+        },
+        {
+          "id": "ask",
+          "icon": "question",
+          "text": {"en": "Ask an adult first", "fr": "Je demande d’abord à un adulte"}
+        },
+        {
+          "id": "private",
+          "icon": "lock",
+          "text": {"en": "Keep private", "fr": "Je le garde privé"}
+        }
+      ],
+      "items": [
+        {
+          "id": "game",
+          "icon": "game",
+          "text": {"en": "Your favourite game", "fr": "Ton jeu préféré"},
+          "bin": "fine",
+          "hint": {"en": "This doesn't tell anyone who you are or where to find you.", "fr": "Ça ne dit à personne qui tu es ni où te trouver."}
+        },
+        {
+          "id": "username",
+          "icon": "avatar",
+          "text": {"en": "A made-up username, like StarFox27", "fr": "Un pseudo inventé, comme RenardÉtoile27"},
+          "bin": "fine",
+          "hint": {"en": "A made-up username hides your real name. That's what it's for!", "fr": "Un pseudo inventé cache ton vrai nom. C’est fait pour ça!"}
+        },
+        {
+          "id": "dob",
+          "icon": "cake",
+          "text": {"en": "Your date of birth", "fr": "Ta date de naissance"},
+          "bin": ["ask", "private"],
+          "hint": {"en": "Your birth date can help identify you. Should you decide alone?", "fr": "Ta date de naissance peut t’identifier. Devrais-tu décider seul ou seule?"}
+        },
+        {
+          "id": "email",
+          "icon": "email",
+          "text": {"en": "Your email address", "fr": "Ton adresse courriel"},
+          "bin": ["ask", "private"],
+          "hint": {"en": "An email address lets people contact you directly.", "fr": "Une adresse courriel permet de te joindre directement."}
+        },
+        {
+          "id": "home",
+          "icon": "house",
+          "text": {"en": "Your home address", "fr": "Ton adresse à la maison"},
+          "bin": "private",
+          "hint": {"en": "A game never needs to know where you live.", "fr": "Un jeu n’a jamais besoin de savoir où tu habites."}
+        },
+        {
+          "id": "fullname",
+          "icon": "school",
+          "text": {"en": "Your full name and your school", "fr": "Ton nom complet et ton école"},
+          "bin": ["private", "ask"],
+          "hint": {"en": "Together, these say exactly who you are and where to find you.", "fr": "Ensemble, ils disent exactement qui tu es et où te trouver."}
+        }
+      ],
+      "success": {"en": "Well sorted! Your address, full name, school or birth date can identify you. When a form asks for them, check with an adult first.", "fr": "Bien classé! Ton adresse, ton nom complet, ton école ou ta date de naissance peuvent t’identifier. Si un formulaire les demande, vérifie d’abord avec un adulte."},
+      "flag": "d2_personal_done",
+      "teacherNote": {"en": "Ask: why do some forms ask for personal information? How can you tell if it's really needed?", "fr": "Demandez : pourquoi certains formulaires demandent-ils des renseignements personnels? Comment savoir si c’est vraiment nécessaire?"}
+    },
+    {
+      "id": "d2_request_c2",
+      "family": "d2_request",
+      "tiers": ["E2"],
+      "element": "2b",
+      "type": "choice",
+      "application": {"en": "Recognize messages or requests seeking personal information and explain what to do in such cases.", "fr": "Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas."},
+      "prompt": {"en": "A message pops up: \"Hi! What is your address? I will send you a prize!\" What should Kai do?", "fr": "Un message apparaît : « Salut! Quelle est ton adresse? Je vais t’envoyer un prix! » Que devrait faire Kai?"},
+      "options": [
+        {
+          "text": {"en": "Not answer, and show the message to an adult", "fr": "Ne pas répondre et montrer le message à un adulte"},
+          "correct": true
+        },
+        {
+          "text": {"en": "Write his address. A prize is fun!", "fr": "Écrire son adresse. Un prix, c’est amusant!"},
+          "hint": {"en": "A prize can be a trick to get his address. Who should Kai tell?", "fr": "Un prix peut être une ruse pour avoir son adresse. À qui Kai devrait-il le dire?"}
+        },
+        {
+          "text": {"en": "Write only the name of his street", "fr": "Écrire seulement le nom de sa rue"},
+          "hint": {"en": "Even part of an address is personal. What could Kai do instead?", "fr": "Même une partie d’adresse est personnelle. Que pourrait faire Kai à la place?"}
+        }
+      ],
+      "success": {"en": "Yes! When someone asks for personal information, don't answer. Tell an adult you trust.", "fr": "Oui! Quand quelqu’un demande un renseignement personnel, ne réponds pas. Parles-en à un adulte de confiance."},
+      "flag": "d2_request_done",
+      "teacherNote": {"en": "Ask: who are the adults you could show a message like this to?", "fr": "Demandez : à quels adultes pourriez-vous montrer un message comme celui-ci?"}
+    },
+    {
+      "id": "d2_request_c3",
+      "family": "d2_request",
+      "tiers": ["E3"],
+      "element": "2b",
+      "type": "choice",
+      "application": {"en": "Recognize messages or requests seeking personal information and explain what to do in such cases.", "fr": "Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas."},
+      "prompt": {"en": "In the game chat, a player Kai doesn't know writes: \"Nice moves! What school do you go to? I'll send you free coins.\" What should Kai do?", "fr": "Dans le clavardage du jeu, un joueur que Kai ne connaît pas écrit : « Bien joué! À quelle école vas-tu? Je vais t’envoyer des pièces gratuites. » Que devrait faire Kai?"},
+      "options": [
+        {
+          "text": {"en": "Not answer, report the player and tell an adult", "fr": "Ne pas répondre, signaler le joueur et le dire à un adulte"},
+          "correct": true
+        },
+        {
+          "text": {"en": "Answer, since the player seems friendly", "fr": "Répondre, puisque le joueur a l’air gentil"},
+          "hint": {"en": "Friendly words and free gifts are common tricks. Is a school name personal?", "fr": "Les mots gentils et les cadeaux gratuits sont des ruses courantes. Le nom d’une école, est-ce personnel?"}
+        },
+        {
+          "text": {"en": "Give the name of a different school as a joke", "fr": "Donner le nom d’une autre école pour rire"},
+          "hint": {"en": "Replying keeps the chat going. What's the safest way to end it?", "fr": "Répondre continue la conversation. Quelle est la façon la plus sûre d’y mettre fin?"}
+        },
+        {
+          "text": {"en": "Ask the player's school first, then decide", "fr": "Demander d’abord l’école du joueur, puis décider"},
+          "hint": {"en": "That still keeps Kai talking with a stranger. Who could help him?", "fr": "Kai continue alors de parler à un inconnu. Qui pourrait l’aider?"}
+        }
+      ],
+      "success": {"en": "Exactly. A stranger asking for personal information is a warning sign. Don't answer, report it, and tell a trusted adult.", "fr": "Exactement. Un inconnu qui demande des renseignements personnels, c’est un signal d’alarme. Ne réponds pas, signale-le et parles-en à un adulte de confiance."},
+      "flag": "d2_request_done",
+      "teacherNote": {"en": "Ask: what words or offers in a message make you think \"this might be a trick\"?", "fr": "Demandez : quels mots ou quelles offres dans un message vous font penser « c’est peut-être une ruse »?"}
+    },
+    {
+      "id": "d2_password_c2",
+      "family": "d2_password",
+      "tiers": ["E2"],
+      "element": "2b",
+      "type": "sort",
+      "application": {"en": "Compare an easy-to-guess password with a harder-to-guess password for protecting personal information.", "fr": "Comparer un mot de passe facile à deviner à un mot de passe plus difficile à deviner pour protéger des informations personnelles."},
+      "prompt": {"en": "Which passwords are hard to guess? Sort them.", "fr": "Quels mots de passe sont difficiles à deviner? Classe-les."},
+      "bins": [
+        {"id": "easy", "icon": "key", "text": {"en": "Easy to guess", "fr": "Facile à deviner"}},
+        {
+          "id": "hard",
+          "icon": "lock",
+          "text": {"en": "Hard to guess", "fr": "Difficile à deviner"}
+        }
+      ],
+      "items": [
+        {
+          "id": "1234",
+          "text": {"en": "1234", "fr": "1234"},
+          "bin": "easy",
+          "hint": {"en": "Lots of people use 1234. It's the first thing someone would try.", "fr": "Beaucoup de gens utilisent 1234. C’est la première chose qu’on essaierait."}
+        },
+        {
+          "id": "kai",
+          "text": {"en": "kai", "fr": "kai"},
+          "bin": "easy",
+          "hint": {"en": "It's just his name! Anyone who knows Kai could guess it.", "fr": "C’est juste son nom! Tous ceux qui connaissent Kai pourraient le deviner."}
+        },
+        {
+          "id": "frog",
+          "text": {"en": "BlueFrogJumps7", "fr": "GrenouilleBleueSaute7"},
+          "bin": "hard",
+          "hint": {"en": "It's long, with words and a number. Would that be easy to guess?", "fr": "Il est long, avec des mots et un chiffre. Est-ce facile à deviner?"}
+        },
+        {
+          "id": "sun",
+          "text": {"en": "Sun!Pizza5Moon", "fr": "Soleil!Pizza5Lune"},
+          "bin": "hard",
+          "hint": {"en": "It mixes words, a number and a symbol. That's hard to guess!", "fr": "Il mélange des mots, un chiffre et un symbole. C’est difficile à deviner!"}
+        }
+      ],
+      "success": {"en": "Great! Long passwords with words, numbers and symbols are hard to guess. Keep yours a secret.", "fr": "Super! Les longs mots de passe avec des mots, des chiffres et des symboles sont difficiles à deviner. Garde le tien secret."},
+      "flag": "d2_password_done",
+      "teacherNote": {"en": "Ask: why shouldn't we use our name as a password?", "fr": "Demandez : pourquoi ne pas utiliser son nom comme mot de passe?"}
+    },
+    {
+      "id": "d2_password_c3",
+      "family": "d2_password",
+      "tiers": ["E3"],
+      "element": "2b",
+      "type": "sort",
+      "application": {"en": "Compare an easy-to-guess password with a harder-to-guess password for protecting personal information.", "fr": "Comparer un mot de passe facile à deviner à un mot de passe plus difficile à deviner pour protéger des informations personnelles."},
+      "prompt": {"en": "Kai is choosing a password. Sort each one.", "fr": "Kai choisit un mot de passe. Classe chacun."},
+      "bins": [
+        {"id": "easy", "icon": "key", "text": {"en": "Easy to guess", "fr": "Facile à deviner"}},
+        {
+          "id": "hard",
+          "icon": "lock",
+          "text": {"en": "Harder to guess", "fr": "Plus difficile à deviner"}
+        }
+      ],
+      "items": [
+        {
+          "id": "password",
+          "text": {"en": "password", "fr": "motdepasse"},
+          "bin": "easy",
+          "hint": {"en": "This is one of the most common passwords in the world.", "fr": "C’est un des mots de passe les plus courants au monde."}
+        },
+        {
+          "id": "kai2015",
+          "text": {"en": "Kai2015", "fr": "Kai2015"},
+          "bin": "easy",
+          "hint": {"en": "His name and birth year: someone who knows him could guess it.", "fr": "Son nom et son année de naissance : quelqu’un qui le connaît pourrait le deviner."}
+        },
+        {
+          "id": "qwerty",
+          "text": {"en": "qwerty", "fr": "qwerty"},
+          "bin": "easy",
+          "hint": {"en": "These are just letters in a row on the keyboard.", "fr": "Ce sont juste des lettres qui se suivent sur le clavier."}
+        },
+        {
+          "id": "dog",
+          "text": {"en": "MyDogBiscuit", "fr": "MonChienBiscuit"},
+          "bin": "easy",
+          "hint": {"en": "Pet names often show up in our posts. Could someone find it?", "fr": "Le nom d’un animal se retrouve souvent dans nos publications. Quelqu’un pourrait-il le trouver?"}
+        },
+        {
+          "id": "tacos",
+          "text": {"en": "Tacos!Rain4Guitar", "fr": "Tacos!Pluie4Guitare"},
+          "bin": "hard",
+          "hint": {"en": "Unrelated words, a number and a symbol. Is that easy to guess?", "fr": "Des mots sans lien, un chiffre et un symbole. Est-ce facile à deviner?"}
+        },
+        {
+          "id": "socks",
+          "text": {"en": "7Lanterns&BlueSocks", "fr": "7Lanternes&BasBleus"},
+          "bin": "hard",
+          "hint": {"en": "It's long and mixes different kinds of characters.", "fr": "Il est long et mélange différentes sortes de caractères."}
+        }
+      ],
+      "success": {"en": "Nicely done! Long passwords that mix unrelated words, numbers and symbols are harder to guess. Never use your name, birthday or pet's name.", "fr": "Bien joué! Les longs mots de passe qui mélangent des mots sans lien, des chiffres et des symboles sont plus difficiles à deviner. N’utilise jamais ton nom, ta date de naissance ou le nom de ton animal."},
+      "flag": "d2_password_done",
+      "teacherNote": {"en": "Ask: how can you make a password that's hard to guess but easy for you to remember?", "fr": "Demandez : comment créer un mot de passe difficile à deviner, mais facile à retenir pour vous?"}
+    },
+    {
+      "id": "d2_photo_c2",
+      "family": "d2_photo",
+      "tiers": ["E2"],
+      "element": "2c",
+      "type": "spot",
+      "application": {"en": "Identify elements in an image that reveal personal information and explain what could be hidden or not shown.", "fr": "Repérer dans une image des éléments qui révèlent des informations personnelles et dire ce qu’on pourrait cacher ou éviter de montrer."},
+      "prompt": {"en": "Find the 3 clues that show where Léo lives or goes to school.", "fr": "Trouve les 3 indices qui montrent où Léo habite ou va à l’école."},
+      "picture": "assets/pictures/photo_house.png",
+      "pictureAlt": {"en": "Léo and his dog in front of a house, next to a tree and a street sign.", "fr": "Léo et son chien devant une maison, à côté d’un arbre et d’une plaque de rue."},
+      "labels": [
+        {"x": 80, "y": 32, "w": 19, "text": {"en": "Maple St", "fr": "rue des Érables"}}
+      ],
+      "spots": [
+        {
+          "id": "number",
+          "clue": true,
+          "x": 59,
+          "y": 52,
+          "w": 14,
+          "h": 15,
+          "name": {"en": "The house number", "fr": "Le numéro de la maison"},
+          "why": {"en": "It shows Léo's address.", "fr": "Il montre l’adresse de Léo."}
+        },
+        {
+          "id": "street",
+          "clue": true,
+          "x": 79,
+          "y": 25,
+          "w": 20,
+          "h": 15,
+          "name": {"en": "The street sign", "fr": "La plaque de rue"},
+          "why": {"en": "It names Léo's street.", "fr": "Elle donne le nom de la rue de Léo."}
+        },
+        {
+          "id": "crest",
+          "clue": true,
+          "x": 39,
+          "y": 72,
+          "w": 10,
+          "h": 14,
+          "name": {"en": "The school logo on the shirt", "fr": "Le logo de l’école sur le chandail"},
+          "why": {"en": "It shows which school Léo goes to.", "fr": "Il montre l’école de Léo."}
+        },
+        {
+          "id": "dog",
+          "clue": false,
+          "x": 16,
+          "y": 75,
+          "w": 18,
+          "h": 20,
+          "name": {"en": "The dog", "fr": "Le chien"},
+          "hint": {"en": "A dog doesn't show where someone lives. Look for words, numbers and logos!", "fr": "Un chien ne montre pas où quelqu’un habite. Cherche des mots, des chiffres et des logos!"}
+        },
+        {
+          "id": "tree",
+          "clue": false,
+          "x": 3,
+          "y": 22,
+          "w": 19,
+          "h": 52,
+          "name": {"en": "The tree", "fr": "L’arbre"},
+          "hint": {"en": "Trees are everywhere. Look for something that shows an address or a school.", "fr": "Il y a des arbres partout. Cherche quelque chose qui montre une adresse ou une école."}
+        }
+      ],
+      "success": {"en": "You found all 3! Before posting, Nova can hide or crop out the number, the sign and the logo.", "fr": "Tu as trouvé les 3! Avant de publier, Nova peut cacher ou rogner le numéro, la plaque et le logo."},
+      "flag": "d2_photo_done",
+      "teacherNote": {"en": "Ask: what could you leave out of a photo before you share it?", "fr": "Demandez : qu’est-ce qu’on pourrait éviter de montrer dans une photo avant de la partager?"}
+    },
+    {
+      "id": "d2_photo_c3",
+      "family": "d2_photo",
+      "tiers": ["E3"],
+      "element": "2c",
+      "type": "spot",
+      "application": {"en": "Identify elements in an image that reveal personal information and explain what could be hidden or not shown.", "fr": "Repérer dans une image des éléments qui révèlent des informations personnelles et dire ce qu’on pourrait cacher ou éviter de montrer."},
+      "prompt": {"en": "An AI app turned Sam's photo into a cartoon. Find the 3 clues that still reveal personal information.", "fr": "Une application d’IA a transformé la photo de Sam en dessin animé. Trouve les 3 indices qui révèlent encore des informations personnelles."},
+      "picture": "assets/pictures/photo_house_ai.png",
+      "pictureAlt": {"en": "A cartoon version of Sam and his dog in front of a house, next to a tree and a street sign.", "fr": "Une version dessin animé de Sam et son chien devant une maison, à côté d’un arbre et d’une plaque de rue."},
+      "labels": [
+        {"x": 80, "y": 32, "w": 19, "text": {"en": "Pine St", "fr": "rue des Pins"}}
+      ],
+      "spots": [
+        {
+          "id": "number",
+          "clue": true,
+          "x": 59,
+          "y": 52,
+          "w": 14,
+          "h": 15,
+          "name": {"en": "The house number", "fr": "Le numéro de la maison"},
+          "why": {"en": "It shows Sam's address.", "fr": "Il montre l’adresse de Sam."}
+        },
+        {
+          "id": "street",
+          "clue": true,
+          "x": 79,
+          "y": 25,
+          "w": 20,
+          "h": 15,
+          "name": {"en": "The street sign", "fr": "La plaque de rue"},
+          "why": {"en": "It names Sam's street.", "fr": "Elle donne le nom de la rue de Sam."}
+        },
+        {
+          "id": "crest",
+          "clue": true,
+          "x": 39,
+          "y": 72,
+          "w": 10,
+          "h": 14,
+          "name": {"en": "The school logo on the shirt", "fr": "Le logo de l’école sur le chandail"},
+          "why": {"en": "It shows which school Sam goes to.", "fr": "Il montre l’école de Sam."}
+        },
+        {
+          "id": "dog",
+          "clue": false,
+          "x": 16,
+          "y": 75,
+          "w": 18,
+          "h": 20,
+          "name": {"en": "The dog", "fr": "Le chien"},
+          "hint": {"en": "The dog is cute, but it doesn't reveal where Sam lives.", "fr": "Le chien est mignon, mais il ne révèle pas où Sam habite."}
+        },
+        {
+          "id": "tree",
+          "clue": false,
+          "x": 3,
+          "y": 22,
+          "w": 19,
+          "h": 52,
+          "name": {"en": "The tree", "fr": "L’arbre"},
+          "hint": {"en": "Trees are everywhere. Look for something that shows an address or a school.", "fr": "Il y a des arbres partout. Cherche quelque chose qui montre une adresse ou une école."}
+        },
+        {
+          "id": "crown",
+          "clue": false,
+          "x": 39,
+          "y": 53,
+          "w": 11,
+          "h": 13,
+          "name": {"en": "The cartoon crown", "fr": "La couronne de dessin animé"},
+          "hint": {"en": "The crown is a filter effect. It doesn't reveal anything real.", "fr": "La couronne est un effet du filtre. Elle ne révèle rien de vrai."}
+        }
+      ],
+      "success": {"en": "All 3 found! An AI filter changes the style, not the facts. Nova should ask Sam first, then hide or crop the clues.", "fr": "Les 3 sont trouvés! Un filtre d’IA change le style, pas les faits. Nova devrait demander à Sam d’abord, puis cacher ou rogner les indices."},
+      "flag": "d2_photo_done",
+      "teacherNote": {"en": "Ask: does changing a photo with AI make it safe to share? Why or why not?", "fr": "Demandez : est-ce que modifier une photo avec l’IA la rend sécuritaire à partager? Pourquoi?"}
+    },
+    {
+      "id": "d2_access_c2",
+      "family": "d2_access",
+      "tiers": ["E2"],
+      "element": "2c",
+      "type": "sort",
+      "application": {"en": "Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help.", "fr": "Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide."},
+      "prompt": {"en": "Nova's apps want to use things on her tablet. What should she do?", "fr": "Les applications de Nova veulent utiliser des choses sur sa tablette. Que devrait-elle faire?"},
+      "bins": [
+        {
+          "id": "allow",
+          "icon": "star",
+          "text": {"en": "Allow: the app needs it", "fr": "Accepter : l’application en a besoin"}
+        },
+        {
+          "id": "ask",
+          "icon": "question",
+          "text": {"en": "Ask an adult for help", "fr": "Demander de l’aide à un adulte"}
+        }
+      ],
+      "items": [
+        {
+          "id": "cam",
+          "icon": "camera",
+          "text": {"en": "The camera app wants the camera", "fr": "L’application Appareil photo veut la caméra"},
+          "bin": ["allow", "ask"],
+          "why": {"en": "A camera app needs the camera, so that makes sense. Asking an adult is always OK too.", "fr": "Une application photo a besoin de la caméra, c’est logique. Demander à un adulte, c’est toujours correct aussi."}
+        },
+        {
+          "id": "rec",
+          "icon": "mic",
+          "text": {"en": "The voice recorder wants the microphone", "fr": "L’enregistreur vocal veut le micro"},
+          "bin": ["allow", "ask"],
+          "why": {"en": "A voice recorder needs the microphone to record. That makes sense!", "fr": "Un enregistreur vocal a besoin du micro pour enregistrer. C’est logique!"}
+        },
+        {
+          "id": "colour",
+          "icon": "location",
+          "text": {"en": "A colouring game wants to know where you are", "fr": "Un jeu de coloriage veut savoir où tu es"},
+          "bin": "ask",
+          "hint": {"en": "A colouring game doesn't need to know where you are. Ask an adult.", "fr": "Un jeu de coloriage n’a pas besoin de savoir où tu es. Demande à un adulte."}
+        },
+        {
+          "id": "draw",
+          "icon": "mic",
+          "text": {"en": "A drawing app wants the microphone", "fr": "Une application de dessin veut le micro"},
+          "bin": "ask",
+          "hint": {"en": "Does drawing need a microphone? When it doesn't make sense, ask for help.", "fr": "Est-ce que dessiner a besoin d’un micro? Quand ce n’est pas logique, demande de l’aide."}
+        }
+      ],
+      "success": {"en": "Good thinking! Allow only what an app really needs. When you're not sure, ask an adult.", "fr": "Bonne réflexion! Accepte seulement ce dont une application a vraiment besoin. Si tu n’es pas sûr ou sûre, demande à un adulte."},
+      "flag": "d2_access_done",
+      "teacherNote": {"en": "Ask: how can you tell if an app really needs the camera or the microphone?", "fr": "Demandez : comment savoir si une application a vraiment besoin de la caméra ou du micro?"}
+    },
+    {
+      "id": "d2_access_c3",
+      "family": "d2_access",
+      "tiers": ["E3"],
+      "element": "2c",
+      "type": "sort",
+      "application": {"en": "Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help.", "fr": "Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide."},
+      "prompt": {"en": "Each app asks for access. Decide what to do.", "fr": "Chaque application demande un accès. Décide quoi faire."},
+      "bins": [
+        {"id": "allow", "icon": "star", "text": {"en": "Allow", "fr": "Accepter"}},
+        {"id": "deny", "icon": "lock", "text": {"en": "Don't allow", "fr": "Refuser"}},
+        {
+          "id": "ask",
+          "icon": "question",
+          "text": {"en": "Ask an adult first", "fr": "Demander d’abord à un adulte"}
+        }
+      ],
+      "items": [
+        {
+          "id": "call",
+          "icon": "camera",
+          "text": {"en": "Your class video call app asks for the camera", "fr": "L’application d’appel vidéo de ta classe demande la caméra"},
+          "bin": ["allow", "ask"],
+          "hint": {"en": "A video call needs the camera to work. Does this request make sense?", "fr": "Un appel vidéo a besoin de la caméra. Cette demande est-elle logique?"},
+          "why": {"en": "A video call needs the camera. Allow it, or check with your teacher.", "fr": "Un appel vidéo a besoin de la caméra. Accepte, ou vérifie avec ton enseignant ou ton enseignante."}
+        },
+        {
+          "id": "map",
+          "icon": "location",
+          "text": {"en": "A map app asks for your location, to show the way to the library", "fr": "Une application de cartes demande ta localisation, pour montrer le chemin de la bibliothèque"},
+          "bin": ["allow", "ask"],
+          "hint": {"en": "A map needs to know where you are to show the way. Does that make sense?", "fr": "Une carte doit savoir où tu es pour montrer le chemin. Est-ce logique?"},
+          "why": {"en": "A map needs your location to guide you. You can also check with an adult.", "fr": "Une carte a besoin de ta localisation pour te guider. Tu peux aussi vérifier avec un adulte."}
+        },
+        {
+          "id": "song",
+          "icon": "mic",
+          "text": {"en": "A singing app asks for the microphone to record your song", "fr": "Une application de chant demande le micro pour enregistrer ta chanson"},
+          "bin": ["allow", "ask"],
+          "hint": {"en": "Recording a song needs a microphone. Is that a fair request?", "fr": "Enregistrer une chanson demande un micro. Est-ce une demande logique?"}
+        },
+        {
+          "id": "flash",
+          "icon": "location",
+          "text": {"en": "A flashlight app asks for your location", "fr": "Une application de lampe de poche demande ta localisation"},
+          "bin": ["deny", "ask"],
+          "hint": {"en": "A flashlight doesn't need to know where you are. Why would it ask?", "fr": "Une lampe de poche n’a pas besoin de savoir où tu es. Pourquoi le demande-t-elle?"}
+        },
+        {
+          "id": "puzzlegame",
+          "icon": "mic",
+          "text": {"en": "A puzzle game asks for the microphone", "fr": "Un jeu de casse-tête demande le micro"},
+          "bin": ["deny", "ask"],
+          "hint": {"en": "Puzzles don't need to hear you. Should it get the microphone?", "fr": "Un casse-tête n’a pas besoin de t’entendre. Devrait-il avoir le micro?"}
+        },
+        {
+          "id": "unknown",
+          "icon": "question",
+          "text": {"en": "A new app you don't know asks for camera, microphone and location at once", "fr": "Une nouvelle application que tu ne connais pas demande la caméra, le micro et la localisation d’un coup"},
+          "bin": ["ask", "deny"],
+          "hint": {"en": "Asking for everything at once is a warning sign. Is \"Allow\" safe here?", "fr": "Tout demander d’un coup, c’est un signal d’alarme. Est-ce prudent d’accepter?"}
+        }
+      ],
+      "success": {"en": "Well judged! Allow access only when an app truly needs it. If a request doesn't make sense, or you're unsure, say no or ask an adult.", "fr": "Bien jugé! Accepte seulement quand une application en a vraiment besoin. Si une demande n’est pas logique ou si tu hésites, refuse ou demande à un adulte."},
+      "flag": "d2_access_done",
+      "teacherNote": {"en": "Ask: where on a tablet can you see which apps have access to the camera, microphone or location?", "fr": "Demandez : où peut-on voir, sur une tablette, quelles applications ont accès à la caméra, au micro ou à la localisation?"}
+    },
+    {
+      "id": "d2_camera_c2",
+      "family": "d2_camera",
+      "tiers": ["E2"],
+      "element": "2c",
+      "type": "predict",
+      "application": {"en": "Recognize when a camera and microphone are active in order to decide whether it is appropriate to leave them on.", "fr": "Reconnaître quand une caméra et un micro sont actifs afin de décider s’il est approprié de les laisser ouverts."},
+      "prompt": {"en": "Look at the class laptop after the video call.", "fr": "Regarde l’ordinateur portable de la classe après l’appel vidéo."},
+      "picture": "assets/pictures/call_camera_on.png",
+      "pictureAlt": {"en": "A laptop on a desk. A small green light is on next to the camera.", "fr": "Un ordinateur portable sur un bureau. Une petite lumière verte est allumée à côté de la caméra."},
+      "scene": [
+        {
+          "icon": "camera",
+          "text": {"en": "The class says goodbye to the other class.", "fr": "La classe dit au revoir à l’autre classe."}
+        },
+        {
+          "icon": "eye",
+          "text": {"en": "The call is over. But the little light by the camera is still on!", "fr": "L’appel est fini. Mais la petite lumière près de la caméra est encore allumée!"}
+        },
+        {
+          "icon": "mic",
+          "text": {"en": "The microphone picture is not crossed out.", "fr": "L’image du micro n’est pas barrée."}
+        }
+      ],
+      "question": {"en": "What does this mean? What should you do?", "fr": "Qu’est-ce que ça veut dire? Que devrais-tu faire?"},
+      "options": [
+        {
+          "text": {"en": "They're still on. Turn them off, or ask the teacher.", "fr": "Ils sont encore ouverts. On les ferme ou on demande au prof."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Nothing. The light is just a decoration.", "fr": "Rien. La lumière, c’est juste une décoration."},
+          "hint": {"en": "The light tells you something. What does a light by a camera mean?", "fr": "La lumière veut dire quelque chose. Que signifie une lumière près d’une caméra?"}
+        },
+        {
+          "text": {"en": "Leave them on. It doesn't matter now.", "fr": "Les laisser ouverts. Ça n’a plus d’importance."},
+          "hint": {"en": "If they're on, someone might still see and hear the class. Is that OK?", "fr": "S’ils sont ouverts, quelqu’un pourrait encore voir et entendre la classe. Est-ce correct?"}
+        }
+      ],
+      "success": {"en": "Yes! A light by the camera means it's on. Turn off the camera and microphone when you're done.", "fr": "Oui! Une lumière près de la caméra veut dire qu’elle est ouverte. Ferme la caméra et le micro quand tu as fini."},
+      "flag": "d2_camera_done",
+      "teacherNote": {"en": "Ask: on our class devices, how can we tell if the camera or microphone is on?", "fr": "Demandez : sur les appareils de la classe, comment savoir si la caméra ou le micro est ouvert?"}
+    },
+    {
+      "id": "d2_camera_c3",
+      "family": "d2_camera",
+      "tiers": ["E3"],
+      "element": "2c",
+      "type": "predict",
+      "application": {"en": "Recognize when a camera and microphone are active in order to decide whether it is appropriate to leave them on.", "fr": "Reconnaître quand une caméra et un micro sont actifs afin de décider s’il est approprié de les laisser ouverts."},
+      "prompt": {"en": "Look at the class laptop after the video call.", "fr": "Regarde l’ordinateur portable de la classe après l’appel vidéo."},
+      "picture": "assets/pictures/call_camera_on.png",
+      "pictureAlt": {"en": "A laptop on a desk. A small green light is on next to the camera.", "fr": "Un ordinateur portable sur un bureau. Une petite lumière verte est allumée à côté de la caméra."},
+      "scene": [
+        {
+          "icon": "camera",
+          "text": {"en": "Your class finishes a video call with a class from another school.", "fr": "Ta classe termine un appel vidéo avec une classe d’une autre école."}
+        },
+        {
+          "icon": "eye",
+          "text": {"en": "Everyone waves goodbye, but the call window is still open.", "fr": "Tout le monde se dit au revoir, mais la fenêtre de l’appel est encore ouverte."}
+        },
+        {
+          "icon": "mic",
+          "text": {"en": "The camera light is still on, and the microphone icon isn't crossed out.", "fr": "La lumière de la caméra est encore allumée, et l’icône du micro n’est pas barrée."}
+        }
+      ],
+      "question": {"en": "What is happening, and what is the best thing to do?", "fr": "Que se passe-t-il, et quelle est la meilleure chose à faire?"},
+      "options": [
+        {
+          "text": {"en": "They're still active. Turn them off and end the call.", "fr": "Ils sont encore actifs. On les ferme et on termine l’appel."},
+          "correct": true
+        },
+        {
+          "text": {"en": "The light only means the laptop is charging.", "fr": "La lumière veut seulement dire que l’ordinateur se recharge."},
+          "hint": {"en": "Look where the light is: right beside the camera. What does it show?", "fr": "Regarde où est la lumière : juste à côté de la caméra. Que montre-t-elle?"}
+        },
+        {
+          "text": {"en": "It's fine to leave them on, since the call is over.", "fr": "On peut les laisser ouverts, puisque l’appel est fini."},
+          "hint": {"en": "If they're still active, others could see or hear the class. Is that private?", "fr": "S’ils sont encore actifs, d’autres pourraient voir ou entendre la classe. Est-ce privé?"}
+        },
+        {
+          "text": {"en": "Put a book over the screen so no one sees it.", "fr": "Mettre un livre sur l’écran pour que personne ne le voie."},
+          "hint": {"en": "Covering the screen doesn't turn off the camera or the mic. What would?", "fr": "Couvrir l’écran ne ferme pas la caméra ni le micro. Qu’est-ce qui les fermerait?"}
+        }
+      ],
+      "success": {"en": "Right. A camera light or a mic icon that isn't crossed out means they're active. Turn them off when you don't need them, to protect your class's privacy.", "fr": "C’est ça. Une lumière de caméra ou une icône de micro non barrée veut dire qu’ils sont actifs. Ferme-les quand tu n’en as pas besoin, pour protéger la vie privée de ta classe."},
+      "flag": "d2_camera_done",
+      "teacherNote": {"en": "Ask: when is it OK to leave a camera or microphone on, and when is it not?", "fr": "Demandez : quand est-il correct de laisser une caméra ou un micro ouverts, et quand ne l’est-il pas?"}
+    },
+    {
+      "id": "d2_boss1_c2",
+      "family": "d2_boss1",
+      "tiers": ["E2"],
+      "element": "2b",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Recognize messages or requests seeking personal information and explain what to do in such cases.", "fr": "Reconnaître des messages ou des demandes qui visent à obtenir des informations personnelles et dire quoi faire dans ce cas."},
+      "prompt": {"en": "The Mask Merchant puts on a smiling mask: \"I'm your teacher's friend! Tell me your full name and address.\"", "fr": "Le marchand de masques met un masque souriant : « Je suis un ami de ton prof! Dis-moi ton nom complet et ton adresse. »"},
+      "options": [
+        {
+          "text": {"en": "I won't tell you. I'll ask my teacher first.", "fr": "Je ne te le dirai pas. Je vais demander à mon prof."},
+          "correct": true
+        },
+        {
+          "text": {"en": "OK! You know my teacher, so it's fine.", "fr": "D’accord! Tu connais mon prof, alors c’est correct."},
+          "hint": {"en": "Anyone can say they know your teacher. How could you check?", "fr": "N’importe qui peut dire qu’il connaît ton prof. Comment vérifier?"}
+        },
+        {
+          "text": {"en": "I'll only tell you my street name.", "fr": "Je vais te dire seulement le nom de ma rue."},
+          "hint": {"en": "Your street is part of your address. It's still personal.", "fr": "Ta rue fait partie de ton adresse. C’est encore personnel."}
+        }
+      ],
+      "success": {"en": "The smiling mask cracks! You kept your personal information safe.", "fr": "Le masque souriant se fissure! Tu as protégé tes renseignements personnels."},
+      "flag": "d2_boss1_done"
+    },
+    {
+      "id": "d2_boss1_c3",
+      "family": "d2_boss1",
+      "tiers": ["E3"],
+      "element": "2b",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Explain what can happen to a person or a group if personal information is shared without permission.", "fr": "Expliquer ce qui peut arriver à une personne ou à un groupe si des informations personnelles sont partagées sans permission."},
+      "prompt": {"en": "The Mask Merchant puts on a friendly mask: \"Give me your friend's phone number and address. They won't mind!\"", "fr": "Le marchand de masques met un masque amical : « Donne-moi le numéro de téléphone et l’adresse de ton ami. Ça ne le dérangera pas! »"},
+      "options": [
+        {
+          "text": {"en": "No. It's my friend's information, not mine to share.", "fr": "Non. Ce sont les informations de mon ami, pas les miennes."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Sure, my friend shares everything with me.", "fr": "Bien sûr, mon ami me dit tout."},
+          "hint": {"en": "Your friend told you, not the Merchant. Did your friend say yes to sharing?", "fr": "Ton ami te l’a dit à toi, pas au marchand. A-t-il dit oui pour le partager?"}
+        },
+        {
+          "text": {"en": "I'll give just the phone number. That's safer.", "fr": "Je vais donner juste le numéro. C’est plus prudent."},
+          "hint": {"en": "A phone number lets a stranger contact your friend. What could happen?", "fr": "Un numéro permet à un inconnu de joindre ton ami. Qu’est-ce qui pourrait arriver?"}
+        },
+        {
+          "text": {"en": "I'll share it, then tell my friend afterward.", "fr": "Je vais le partager, puis le dire à mon ami ensuite."},
+          "hint": {"en": "Once it's shared, it can't be taken back. Who should decide first?", "fr": "Une fois partagé, on ne peut pas le reprendre. Qui devrait décider d’abord?"}
+        }
+      ],
+      "success": {"en": "The friendly mask cracks! Sharing someone's information without permission could put them at risk.", "fr": "Le masque amical se fissure! Partager les informations de quelqu’un sans permission pourrait lui causer des ennuis."},
+      "flag": "d2_boss1_done"
+    },
+    {
+      "id": "d2_boss2_c2",
+      "family": "d2_boss2",
+      "tiers": ["E2"],
+      "element": "2a",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Explain what can happen after they post something, even if they delete it later.", "fr": "Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite."},
+      "prompt": {"en": "The Mask Merchant puts on a silly mask: \"Post this funny photo of your friend. You can delete it later!\"", "fr": "Le marchand de masques met un masque rigolo : « Publie cette photo drôle de ton ami. Tu pourras l’effacer plus tard! »"},
+      "options": [
+        {
+          "text": {"en": "No. It can stay online, even if I delete it.", "fr": "Non. Elle peut rester en ligne, même si je l’efface."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Sure, I'll delete it right after.", "fr": "Bien sûr, je vais l’effacer tout de suite après."},
+          "hint": {"en": "Remember Juno's post. Did deleting make it disappear?", "fr": "Souviens-toi de la publication de Juno. L’effacer l’a-t-il fait disparaître?"}
+        },
+        {
+          "text": {"en": "Yes, if the photo is really funny.", "fr": "Oui, si la photo est vraiment drôle."},
+          "hint": {"en": "Funny for who? It could stay online and upset your friend.", "fr": "Drôle pour qui? Elle pourrait rester en ligne et faire de la peine à ton ami."}
+        }
+      ],
+      "success": {"en": "The silly mask cracks! A post can stay, even after you delete it.", "fr": "Le masque rigolo se fissure! Une publication peut rester, même quand on l’efface."},
+      "flag": "d2_boss2_done"
+    },
+    {
+      "id": "d2_boss2_c3",
+      "family": "d2_boss2",
+      "tiers": ["E3"],
+      "element": "2a",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Explain what can happen after they post something, even if they delete it later.", "fr": "Expliquer ce qui peut arriver après avoir publié quelque chose, même si on l’efface ensuite."},
+      "prompt": {"en": "The Mask Merchant puts on a laughing mask: \"Post that embarrassing video of your classmate. It's a joke, and you can always delete it!\"", "fr": "Le marchand de masques met un masque rieur : « Publie cette vidéo gênante de ton camarade. C’est une blague, et tu pourras toujours l’effacer! »"},
+      "options": [
+        {
+          "text": {"en": "No. Copies can stay, and it could hurt my classmate.", "fr": "Non. Des copies peuvent rester, et ça pourrait blesser mon camarade."},
+          "correct": true
+        },
+        {
+          "text": {"en": "OK, but only for a few minutes.", "fr": "D’accord, mais seulement quelques minutes."},
+          "hint": {"en": "Remember the group chat: a few minutes was enough for screenshots.", "fr": "Souviens-toi de la conversation de groupe : quelques minutes ont suffi pour des captures d’écran."}
+        },
+        {
+          "text": {"en": "Sure, if I post it on a private account.", "fr": "Bien sûr, si je la publie sur un compte privé."},
+          "hint": {"en": "Digital spaces are never fully private. Anyone who sees it can copy it.", "fr": "Les espaces numériques ne sont jamais entièrement privés. Tous ceux qui la voient peuvent la copier."}
+        },
+        {
+          "text": {"en": "Yes, because everyone else is posting jokes too.", "fr": "Oui, parce que tout le monde publie des blagues."},
+          "hint": {"en": "What others do doesn't change what could happen to your classmate.", "fr": "Ce que font les autres ne change pas ce qui pourrait arriver à ton camarade."}
+        }
+      ],
+      "success": {"en": "The laughing mask cracks! Posts can stay online over time and shape how people see us and others.", "fr": "Le masque rieur se fissure! Les publications peuvent rester en ligne longtemps et influencer ce qu’on pense de nous et des autres."},
+      "flag": "d2_boss2_done"
+    },
+    {
+      "id": "d2_boss3_c2",
+      "family": "d2_boss3",
+      "tiers": ["E2"],
+      "element": "2c",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Recognize access requests (e.g. camera, microphone, location) and determine whether access should be granted or whether to ask for help.", "fr": "Reconnaître des demandes d’accès (ex. : caméra, micro, localisation) et dire si elles devraient être acceptées ou s’il faudrait demander de l’aide."},
+      "prompt": {"en": "The Mask Merchant shows a tablet: \"My magic mask app needs your camera, microphone and location. Tap Allow!\"", "fr": "Le marchand de masques montre une tablette : « Mon application de masques magiques a besoin de ta caméra, de ton micro et de ta localisation. Touche Accepter! »"},
+      "options": [
+        {
+          "text": {"en": "I'll ask an adult before I allow anything.", "fr": "Je vais demander à un adulte avant d’accepter."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Allow all of it. It's magic!", "fr": "Tout accepter. C’est magique!"},
+          "hint": {"en": "Does a mask app need to know where you are? Who could help you decide?", "fr": "Une application de masques a-t-elle besoin de savoir où tu es? Qui pourrait t’aider?"}
+        },
+        {
+          "text": {"en": "Allow just the location.", "fr": "Accepter juste la localisation."},
+          "hint": {"en": "Your location shows where you are. Does a mask app need that?", "fr": "Ta localisation montre où tu es. Une application de masques en a-t-elle besoin?"}
+        }
+      ],
+      "success": {"en": "The last mask cracks! When an app asks for too much, ask an adult for help.", "fr": "Le dernier masque se fissure! Quand une application en demande trop, demande de l’aide à un adulte."},
+      "flag": "d2_boss3_done"
+    },
+    {
+      "id": "d2_boss3_c3",
+      "family": "d2_boss3",
+      "tiers": ["E3"],
+      "element": "2c",
+      "type": "choice",
+      "finale": true,
+      "application": {"en": "Determine, in a given situation, whether it is better to share or keep private information such as a photo of one’s home showing the address, a person’s full name or a favourite pet.", "fr": "Dire, dans une situation donnée, s’il est préférable de partager ou de garder privée une information telle qu’une photo de la maison avec adresse, un nom complet ou un animal préféré."},
+      "prompt": {"en": "The Mask Merchant whispers: \"Send me a photo of your house with the number showing, and your full name. I'll make you a custom mask!\"", "fr": "Le marchand de masques chuchote : « Envoie-moi une photo de ta maison avec le numéro, et ton nom complet. Je vais te faire un masque sur mesure! »"},
+      "options": [
+        {
+          "text": {"en": "No. My house photo and full name stay private.", "fr": "Non. La photo de ma maison et mon nom complet restent privés."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Sure, but I'll only send the house photo.", "fr": "D’accord, mais j’envoie seulement la photo de la maison."},
+          "hint": {"en": "The house number shows where you live. Is that private?", "fr": "Le numéro de la maison montre où tu habites. Est-ce privé?"}
+        },
+        {
+          "text": {"en": "I'll send it, then delete it from my phone.", "fr": "Je l’envoie, puis je l’efface de mon téléphone."},
+          "hint": {"en": "Deleting your copy doesn't delete his. What does he keep?", "fr": "Effacer ta copie n’efface pas la sienne. Qu’est-ce qu’il garde?"}
+        },
+        {
+          "text": {"en": "OK. It's just for a mask, so it's harmless.", "fr": "D’accord. C’est juste pour un masque, alors c’est sans danger."},
+          "hint": {"en": "A free gift is a common trick. What does he really get?", "fr": "Un cadeau gratuit est une ruse courante. Qu’est-ce qu’il obtient vraiment?"}
+        }
+      ],
+      "success": {"en": "The last mask cracks! A photo of your home with the address, or your full name, should stay private.", "fr": "Le dernier masque se fissure! Une photo de ta maison avec l’adresse, ou ton nom complet, devrait rester privée."},
+      "flag": "d2_boss3_done"
+    }
+  ],
+  "items": {
+    "lantern": {
+      "kind": "item",
+      "fx": 6,
+      "achievement": "lantern_lit",
+      "name": {"en": "Lantern of Traces", "fr": "Lanterne des traces"},
+      "desc": {"en": "Its light shows traces that are hard to see.", "fr": "Sa lumière montre les traces difficiles à voir."}
+    },
+    "piece_traces": {
+      "kind": "piece",
+      "fx": 7,
+      "achievement": "wing_traces",
+      "wing": ["d2_traces", "d2_vanishing", "d2_profile"],
+      "name": {"en": "Piece of Traces", "fr": "Morceau des traces"},
+      "desc": {"en": "A pink piece of the Digital Identity Badge.", "fr": "Un morceau rose de l’insigne de l’identité numérique."}
+    },
+    "piece_keys": {
+      "kind": "piece",
+      "fx": 8,
+      "achievement": "wing_keys",
+      "wing": ["d2_personal", "d2_request", "d2_password"],
+      "name": {"en": "Piece of Keys", "fr": "Morceau des clés"},
+      "desc": {"en": "A blue piece of the Digital Identity Badge.", "fr": "Un morceau bleu de l’insigne de l’identité numérique."}
+    },
+    "piece_gallery": {
+      "kind": "piece",
+      "fx": 9,
+      "achievement": "wing_gallery",
+      "wing": ["d2_photo", "d2_access", "d2_camera"],
+      "name": {"en": "Piece of Windows", "fr": "Morceau des fenêtres"},
+      "desc": {"en": "A gold piece of the Digital Identity Badge.", "fr": "Un morceau doré de l’insigne de l’identité numérique."}
+    },
+    "badge_2": {
+      "kind": "badge",
+      "fx": 10,
+      "achievement": "area2_badge",
+      "name": {"en": "Digital Identity Badge", "fr": "Insigne de l’identité numérique"},
+      "desc": {"en": "You kept your traces, your information and your privacy safe.", "fr": "Tu as protégé tes traces, tes informations et ta vie privée."}
+    }
+  },
+  "teacher": {
+    "before": [
+      {"en": "What is something you've seen people share online?", "fr": "Qu’avez-vous déjà vu des gens partager en ligne?"},
+      {"en": "What does the word \"private\" mean to you?", "fr": "Que veut dire le mot « privé » pour vous?"}
+    ],
+    "after": [
+      {"en": "What is one thing you would never share online? Why?", "fr": "Quelle est une chose que vous ne partageriez jamais en ligne? Pourquoi?"},
+      {"en": "What traces did you leave online this week?", "fr": "Quelles traces avez-vous laissées en ligne cette semaine?"},
+      {"en": "When would you ask an adult for help before you share something?", "fr": "Quand demanderiez-vous de l’aide à un adulte avant de partager quelque chose?"}
+    ],
+    "lookFors": {
+      "2a": [
+        {"en": "Explains that a deleted post may still exist somewhere.", "fr": "Explique qu’une publication effacée peut encore exister quelque part."},
+        {"en": "Connects an online action (post, like, comment) to what it might reveal about a person.", "fr": "Relie une action en ligne (publication, « j’aime », commentaire) à ce qu’elle peut montrer d’une personne."}
+      ],
+      "2b": [
+        {"en": "Says they would ask an adult before answering a request for personal information.", "fr": "Dit qu’il ou elle demanderait à un adulte avant de répondre à une demande de renseignements personnels."},
+        {"en": "Tells apart an easy-to-guess password and a harder-to-guess one, and says why.", "fr": "Distingue un mot de passe facile à deviner d’un mot de passe plus difficile à deviner, et dit pourquoi."}
+      ],
+      "2c": [
+        {"en": "Points out details in a photo that could show where someone lives.", "fr": "Repère dans une photo des détails qui pourraient montrer où quelqu’un habite."},
+        {"en": "Notices when a camera or microphone is on and decides whether to turn it off.", "fr": "Remarque quand une caméra ou un micro est ouvert et décide s’il faut le fermer."}
+      ]
+    }
+  }
+}
