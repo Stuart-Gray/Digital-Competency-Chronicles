@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="A top-down adventure game about digital competency for Quebec elementary students.">
+  <meta name="theme-color" content="#14121c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Digital Competency Chronicles</title>
+  <link rel="stylesheet" href="./src/ui/style.css">
+</head>
+<body>
+  <!--
+    The game world is drawn by Phaser into #game (a canvas).
+    Every word the player reads is real HTML in #ui, on top of the canvas,
+    so Read&Write, screen readers and browser zoom can work with it.
+  -->
+  <div id="stage">
+    <div id="game"></div>
+    <div id="ui">
+      <div id="hud" hidden></div>
+      <div id="marker" aria-hidden="true" hidden></div>
+      <div id="screen" hidden></div>
+      <div id="panel" role="dialog" aria-modal="true" hidden></div>
+      <div id="dialogue" role="dialog" aria-label="" hidden></div>
+      <div id="toasts" aria-live="polite"></div>
+      <div id="touch" hidden></div>
+      <div id="sr-live" class="sr-only" aria-live="polite"></div>
+    </div>
+  </div>
+  <noscript>This game needs JavaScript. / Ce jeu a besoin de JavaScript.</noscript>
+  <div id="load-error" hidden>
+    <p lang="en">The game could not load. Check the Internet connection and try again.</p>
+    <p lang="fr">Le jeu n’a pas pu se charger. Vérifie la connexion Internet et réessaie.</p>
+  </div>
+
+  <!-- Phaser 3, pinned to an exact version. The only thing loaded from outside this site. -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
