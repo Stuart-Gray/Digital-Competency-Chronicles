@@ -10,3 +10,4 @@ desktop.ini
 # Developer tools (smoke test dependencies, screenshots)
 node_modules
 test-results/
+dist/

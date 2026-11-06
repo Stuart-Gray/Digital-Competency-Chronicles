@@ -13,11 +13,17 @@ export default class Preload extends Phaser.Scene {
     this.load.on('progress', (v) => { bar.width = 160 * v; });
     this.load.on('complete', () => { box.destroy(); bar.destroy(); });
 
-    for (const name of content.CONTENT_FILES) this.load.json('content-' + name, `content/${name}.json`);
-    this.load.tilemapTiledJSON('hub', 'maps/hub.tmj');
-    this.load.image('tiles', 'assets/tiles/village.png');
-    this.load.spritesheet('hero', 'assets/sprites/hero.png', { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet('npcs', 'assets/sprites/npcs.png', { frameWidth: 16, frameHeight: 16 });
+    // A single-file build (tools/build-artifact.mjs) puts everything in window.DCC_INLINE.
+    const inline = window.DCC_INLINE;
+    const file = (path) => (inline && inline.files[path]) || path;
+    for (const name of content.CONTENT_FILES) {
+      if (inline) this.cache.json.add('content-' + name, inline.files[`content/${name}.json`]);
+      else this.load.json('content-' + name, `content/${name}.json`);
+    }
+    this.load.tilemapTiledJSON('hub', file('maps/hub.tmj'));
+    this.load.image('tiles', file('assets/tiles/village.png'));
+    this.load.spritesheet('hero', file('assets/sprites/hero.png'), { frameWidth: 16, frameHeight: 16 });
+    this.load.spritesheet('npcs', file('assets/sprites/npcs.png'), { frameWidth: 16, frameHeight: 16 });
   }
 
   create() {

@@ -21,6 +21,7 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 - Words, dialogue and puzzles live in [`content/`](content/). The format is explained in [docs/content-schema.md](docs/content-schema.md).
 - Check content: `node tools/validate.mjs` (also runs on every push before GitHub Pages publishes) or open `tools/validate.html`.
 - Smoke test: `npm install --no-save playwright` once, then `node tests/smoke.mjs`.
+- Single-file preview build (used for the Claude Artifact copy): `node tools/build-artifact.mjs`.
 - Placeholder art is drawn by `tools/art/make_placeholder_art.py`; the village map is in `maps/hub.tmj` (Tiled). Asset sources: [assets/CREDITS.md](assets/CREDITS.md).
 - Licences: code under MIT ([LICENSE](LICENSE)); content and docs under CC BY 4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)).
 
