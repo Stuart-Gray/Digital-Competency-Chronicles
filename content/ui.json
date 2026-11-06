@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "about": "Menus, buttons, settings, area names and achievements. Every text needs both en and fr. See docs/content-schema.md.",
+  "strings": {
+    "common": {
+      "back": { "en": "Back", "fr": "Retour" },
+      "next": { "en": "Next", "fr": "Suivant" },
+      "on": { "en": "On", "fr": "Activé" },
+      "off": { "en": "Off", "fr": "Désactivé" }
+    },
+    "title": {
+      "name": { "en": "The Digital Competency Chronicles", "fr": "Les chroniques de la compétence numérique" },
+      "tagline": { "en": "An adventure in the digital village", "fr": "Une aventure au village numérique" },
+      "play": { "en": "Play", "fr": "Jouer" },
+      "settings": { "en": "Settings", "fr": "Réglages" },
+      "teacher": { "en": "Teacher corner", "fr": "Coin enseignant" },
+      "teacherHold": { "en": "Press and hold to open", "fr": "Garde le doigt appuyé pour ouvrir" },
+      "noSave": { "en": "This browser can't save your progress. You can still play!", "fr": "Ce navigateur ne peut pas sauvegarder ta progression. Tu peux quand même jouer!" }
+    },
+    "slots": {
+      "title": { "en": "Who is playing?", "fr": "Qui joue?" },
+      "new": { "en": "New adventure", "fr": "Nouvelle aventure" },
+      "defaultName": { "en": "Mystery", "fr": "Mystère" },
+      "lastPlayed": { "en": "Played {date}", "fr": "Joué le {date}" },
+      "changeCycle": { "en": "Change cycle", "fr": "Changer de cycle" }
+    },
+    "newSlot": {
+      "avatar": { "en": "Choose your hero", "fr": "Choisis ton personnage" },
+      "avatarN": { "en": "Hero {n}", "fr": "Personnage {n}" },
+      "name": { "en": "What's your first name?", "fr": "Quel est ton prénom?" },
+      "nameHelp": { "en": "Only your first name. You can skip this.", "fr": "Seulement ton prénom. Tu peux passer cette étape." },
+      "skip": { "en": "Skip", "fr": "Passer" }
+    },
+    "cycle": {
+      "question": { "en": "Which cycle are you in?", "fr": "En quel cycle es-tu?" },
+      "c2": { "en": "Cycle 2", "fr": "2e cycle" },
+      "c3": { "en": "Cycle 3", "fr": "3e cycle" },
+      "c2grades": { "en": "Grades 3 and 4", "fr": "3e et 4e année" },
+      "c3grades": { "en": "Grades 5 and 6", "fr": "5e et 6e année" },
+      "help": { "en": "Not sure? Ask your teacher.", "fr": "Tu hésites? Demande à ton enseignant ou à ton enseignante." }
+    },
+    "settings": {
+      "title": { "en": "Settings", "fr": "Réglages" },
+      "language": { "en": "Language", "fr": "Langue" },
+      "readAloud": { "en": "Read aloud", "fr": "Lecture à voix haute" },
+      "textSpeed": { "en": "Text speed", "fr": "Vitesse du texte" },
+      "slow": { "en": "Slow", "fr": "Lente" },
+      "normal": { "en": "Normal", "fr": "Normale" },
+      "fast": { "en": "Fast", "fr": "Rapide" },
+      "largeText": { "en": "Large text", "fr": "Gros texte" },
+      "highContrast": { "en": "High contrast", "fr": "Contraste élevé" }
+    },
+    "teacher": {
+      "title": { "en": "Teacher corner", "fr": "Coin enseignant" },
+      "intro": { "en": "Saves on this device. Progress codes, reflection prompts and look-fors are coming in a later version.", "fr": "Parties sauvegardées sur cet appareil. Les codes de progression, les questions de réflexion et les indices d’observation viendront dans une prochaine version." },
+      "noSlots": { "en": "No saves on this device yet.", "fr": "Aucune partie sauvegardée sur cet appareil." },
+      "clear": { "en": "Clear", "fr": "Effacer" },
+      "clearAll": { "en": "Clear all saves", "fr": "Effacer toutes les parties" },
+      "confirm": { "en": "Tap again to confirm", "fr": "Touche encore pour confirmer" }
+    },
+    "hub": {
+      "place": { "en": "Digital Village", "fr": "Village numérique" }
+    },
+    "pause": {
+      "menu": { "en": "Menu", "fr": "Menu" },
+      "open": { "en": "Open the menu", "fr": "Ouvrir le menu" },
+      "resume": { "en": "Keep playing", "fr": "Continuer à jouer" },
+      "quit": { "en": "Save and go to the title screen", "fr": "Sauvegarder et revenir à l’écran titre" }
+    },
+    "journal": {
+      "title": { "en": "Journal", "fr": "Journal" },
+      "achievements": { "en": "Achievements", "fr": "Exploits" },
+      "empty": { "en": "Your adventure is just beginning!", "fr": "Ton aventure ne fait que commencer!" },
+      "unlocked": { "en": "Achievement!", "fr": "Exploit!" }
+    },
+    "puzzle": {
+      "continue": { "en": "Continue", "fr": "Continuer" },
+      "later": { "en": "Leave for now", "fr": "Revenir plus tard" },
+      "tryAgain": { "en": "Not quite. Try again!", "fr": "Pas tout à fait. Essaie encore!" },
+      "elementTag": { "en": "Element from the Ministry content sheet", "fr": "Élément de la fiche de contenu du Ministère" },
+      "sequence": {
+        "cards": { "en": "Steps", "fr": "Étapes" },
+        "order": { "en": "Your order", "fr": "Ton ordre" },
+        "check": { "en": "Check my order", "fr": "Vérifier mon ordre" }
+      }
+    },
+    "touch": {
+      "up": { "en": "Walk up", "fr": "Marcher vers le haut" },
+      "down": { "en": "Walk down", "fr": "Marcher vers le bas" },
+      "left": { "en": "Walk left", "fr": "Marcher vers la gauche" },
+      "right": { "en": "Walk right", "fr": "Marcher vers la droite" },
+      "action": { "en": "Talk or look", "fr": "Parler ou regarder" }
+    }
+  },
+  "areas": {
+    "1": { "title": { "en": "Understanding the effects of using technology", "fr": "Comprendre des effets de l’usage du numérique" }, "dcf": ["D1", "D11"] },
+    "2": { "title": { "en": "Understanding digital identity", "fr": "Comprendre l’identité numérique" }, "dcf": ["D1", "D11"] },
+    "3": { "title": { "en": "Understanding one’s digital environment", "fr": "Comprendre son environnement numérique" }, "dcf": ["D2", "D3", "D8"] },
+    "4": { "title": { "en": "Getting organized with digital technology", "fr": "S’organiser à l’aide du numérique" }, "dcf": ["D2", "D9"] },
+    "5": { "title": { "en": "Learning to collaborate using digital technology", "fr": "S’initier à la collaboration à l’aide du numérique" }, "dcf": ["D5"] },
+    "6": { "title": { "en": "Communicating using digital technology", "fr": "Communiquer à l’aide du numérique" }, "dcf": ["D6"] },
+    "7": { "title": { "en": "Using available digital resources", "fr": "Utiliser des ressources numériques proposées" }, "dcf": ["D7", "D10", "D12"] }
+  },
+  "achievements": {
+    "first_steps": {
+      "name": { "en": "Welcome to the village", "fr": "Bienvenue au village" },
+      "desc": { "en": "You arrived in the Digital Village.", "fr": "Te voici au village numérique!" }
+    },
+    "first_fix": {
+      "name": { "en": "Fix-it helper", "fr": "As du dépannage" },
+      "desc": { "en": "You helped Théo fix a frozen app.", "fr": "Tu as aidé Théo à réparer une application gelée." }
+    },
+    "meet_everyone": {
+      "name": { "en": "Good neighbour", "fr": "Esprit de voisinage" },
+      "desc": { "en": "You talked to everyone in the village.", "fr": "Tu as parlé à tout le monde au village." }
+    }
+  }
+}
