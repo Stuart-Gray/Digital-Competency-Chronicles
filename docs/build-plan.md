@@ -1,6 +1,6 @@
 # Build plan: The Digital Competency Chronicles
 
-Status: **draft v2, for discussion** (6 November 2026). Nothing is built yet. Items marked **DECIDE** need Stuart's call before the related work starts. v2 folds in Stuart's feedback of 6 November (cycle selection, save slots, Area 5, achievements, Read&Write, variety, teacher dashboard) and the full set of Ministry PDFs.
+Status: **v3, agreed** (6 November 2026). Nothing is built yet. v2 folded in Stuart's feedback of 6 November (cycle selection, save slots, Area 5, achievements, Read&Write, variety, teacher dashboard) and the full set of Ministry PDFs. v3 records Stuart's decisions on the open items (section 11) and the language rules (section 1).
 
 ---
 
@@ -26,6 +26,14 @@ The official Ministry PDFs (English and French) live in `C:\dev\Digital Competen
 **Confirmed from the sheets, area to dimension mapping:** 1 → D1, D11 · 2 → D1, D11 · 3 → D2, D3, D8 · 4 → D2, D9 · 5 → D5 · 6 → D6 · 7 → D7, D10, D12. D4 (information literacy) is not targeted by any elementary sheet. The game will therefore not claim to cover D4; the hub can give it a light nod (keyword search in 7a) without presenting it as covered.
 
 **Element codes.** The sheets name elements but do not number them. We use `1a 1b 1c 2a 2b 2c 3a 3b 4a 4b 5a 6a 6b 7a 7b` in sheet order. `docs/content-mapping.md` records the exact Ministry title for each code.
+
+**Language rules (decided 6 Nov 2026).**
+
+- The game ships in **English and French from the start**, including the Dungeon 2 slice. No English-only release.
+- **English content** is developed from the PDFs in the `English` folder. **French content** is developed from the PDFs in the `French` folder, using their vocabulary (for example *identité numérique*, *traces numériques*, *renseignements personnels*, *dépannage*), not translated from the English game text.
+- English uses **Canadian spelling** (colour, behaviour, organize, centre, licence as the noun). French uses **Quebec French** vocabulary and usage (courriel, clavardage, téléverser, fureteur/navigateur, mot de passe, numérique rather than digital), with the register adapted to each cycle.
+- Both languages are adapted to the cycle: Cycle 2 and Cycle 3 versions are written side by side, each tied to the same sheet application.
+- The validator flags any missing `fr` or `en` text, and the smoke test runs once per language.
 
 **Copyright note.** The PDFs are Gouvernement du Québec documents. They stay in the local folder and out of the public GitHub repo (`.gitignore` excludes `Digital Competency documents/`). The repo links to the official URLs instead. Puzzles paraphrase the sheets in kid language and cite the element; they do not reproduce the sheets.
 
@@ -150,7 +158,7 @@ The full field-by-field guide goes in `docs/content-schema.md` (milestone 1). Th
 "tiers": ["E2", "E3"]
 ```
 
-Empty `fr` falls back to English and is listed by the validator. (**DECIDE**: French at launch, or English first with the structure ready.)
+Both languages are required for every string. An empty `fr` or `en` is a validator error, not a warning.
 
 ### 5.2 `areaN.json` top level
 
@@ -309,10 +317,11 @@ Goal: teachers can see progress and areas of strength and growth for their class
 
 1. **In the game**, the teacher corner on any device shows every save slot on that device: name, avatar, tier, areas visited, wings and badges done, hints used per element, last played. It can print this page.
 2. **Export.** From the Journal, a student (or teacher) taps *Share with my teacher*. The game builds a short **progress code** (a compact string that encodes the slot's progress, about 40 to 60 characters) and shows it big on screen with a QR code. It can also be copied or downloaded as a small text file. The code contains the first name and progress only.
-3. **`teacher.html`** on the same GitHub Pages site is the dashboard. The teacher pastes codes, scans QR codes with the device camera, or opens the text files. The page builds a **class view**: one row per student, one column per element, with cells showing *not yet · explored · completed · completed without hints*. Clicking an element shows the look-fors and reflection prompts for it. The page can **print** or **export CSV**. The data lives only in that browser tab (optionally saved in the teacher's own `localStorage`, cleared with one button).
-4. **Framing.** The dashboard uses the Ministry's own feedback language. Columns are elements, not scores. "Areas to talk about" lists elements where hints were used a lot, paired with the matching look-fors and a prompt for a brief discussion. No totals, no percentages, no ranking.
+3. **`teacher.html`** on the same GitHub Pages site is the dashboard. The teacher pastes codes, scans QR codes with the device camera, or opens the text files, **as many as needed, over time**. Each import is dated and added to the class picture; importing a newer code for the same student updates that student and keeps the earlier snapshot, so progress over time is visible. On import the teacher can **add a last initial** (for example "Sam B.") to tell apart students with the same first name; the initial is typed by the teacher and never lives in the game.
+4. **Views:** a **class grid** (one row per student, one column per element, cells showing *not yet · explored · completed · completed without hints*); a **by-sheet view** and a **by-dimension view** (which areas and DCF dimensions the class has explored, where strengths are, where hints are used a lot); and a **progress over time** view (how the class picture has changed between imports). Clicking an element shows its look-fors and reflection prompts. The page can **print** or **export CSV**. The class data is saved in the teacher's own browser `localStorage` (one class or several, named by the teacher), with a clear button and a file export/import so a teacher can move it between devices.
+5. **Framing.** The dashboard uses the Ministry's own feedback language. Columns are elements, not scores. "Areas to talk about" lists elements where hints were used a lot, paired with the matching look-fors and a prompt for a brief discussion. No totals, no percentages, no ranking.
 
-This keeps the privacy rule intact (nothing leaves the device without the student or teacher doing it, and even then it is a code the teacher types into a static page). **DECIDE**: is first name + per-element progress + hints the right amount of detail, and is the code/QR approach acceptable to the boards?
+This keeps the privacy rule intact: nothing leaves the device without the student or teacher doing it, and even then it is a code the teacher types into a static page. **Decided (6 Nov 2026):** first name + per-element progress + hints used is the agreed level of detail, and the code/QR approach is acceptable.
 
 ---
 
@@ -334,11 +343,11 @@ The focus is one high-quality slice, then teacher review, then the rest.
 |---|---|---|---|
 | M0 | Foundations | This plan, licences, `.gitignore`, docs skeleton, `main` branch, GitHub Pages on, local folder in sync | Mid-Nov 2026 |
 | M1 | Engine skeleton | Boot/Title/Hub with placeholder art, cycle select, 5 save slots with names, keyboard + touch, HTML text layer with read-aloud, en/fr loader with tier filter, content validator, smoke test, first Artifact build | End of Nov 2026 |
-| M2 | Dungeon 2 slice | Lantern mechanic, three wings, world puzzles, final room, both tiers, pieces and badge, village-grows reward, hub fix-it task, `content-mapping.md` for area 2 | Mid-Jan 2027 |
-| M3 | Teacher layer + polish | Teacher corner, progress codes, `teacher.html` class view with print/CSV, `teacher-guide.md` for area 2, accessibility pass with Read&Write, tests on Chromebook / Windows / iPad Safari | Mid-Feb 2027 |
-| M4 | Teacher review | Network and a few teachers play the slice; gather feedback on layout, style, interface and language; decide title, art direction, French scope; revise | Mar 2027 |
+| M2 | Dungeon 2 slice | Lantern mechanic, three wings, world puzzles, final room, both tiers, both languages, pieces and badge, village-grows reward, hub fix-it task, `content-mapping.md` for area 2 | Mid-Jan 2027 |
+| M3 | Teacher layer + polish | Teacher corner, progress codes, `teacher.html` with class grid, by-sheet, by-dimension and over-time views, print/CSV, `teacher-guide.md` for area 2 in both languages, accessibility pass with Read&Write, tests on Chromebook / Windows / iPad Safari | Mid-Feb 2027 |
+| M4 | Teacher review | Network and a few teachers play the slice; gather feedback on layout, style, interface and language in both languages; decide title and art direction; revise | Mar 2027 |
 | M5 | Remaining dungeons | After revisions, one dungeon every 3 to 4 weeks: 4, 7, 1, 6, 3, 5 | Apr–Sept 2027 |
-| M6 | Pilot release 2027-28 | All seven areas, full teacher guide, French if chosen; secondary tiers slot in when the secondary sheets arrive | Autumn 2027 |
+| M6 | Pilot release 2027-28 | All seven areas, full bilingual teacher guide; secondary tiers slot in when the secondary sheets arrive | Autumn 2027 |
 
 Each milestone ends with: a merged pull request, GitHub Pages updated, the local folder in sync, the Artifact updated.
 
@@ -346,27 +355,22 @@ Each milestone ends with: a merged pull request, GitHub Pages updated, the local
 
 ## 10. Workflow
 
-1. **Branches and pull requests** into `main`, so every change is visible before it goes live. (**DECIDE**: or direct pushes to `main`.)
+1. **Direct pushes to `main`** (decided 6 Nov 2026). Claude manages git throughout the project: small, descriptive commits so the history reads as a changelog, no history rewriting, a short-lived branch only when a change is risky enough to test on Pages separately. The GitHub commit history is the dev history.
 2. **GitHub Pages** from `main`, root folder. Live link: `https://stuart-gray.github.io/Digital-Competency-Chronicles/`. The repo stays public.
-3. **Local backup** to `C:\dev\Digital Competency Chronicles`. Recommended: make the folder a git clone so it can always be checked against GitHub; the Ministry PDF folder is git-ignored and stays local. Until then files are copied across after each push. (**DECIDE**)
+3. **Local clone** at `C:\dev\Digital Competency Chronicles` (decided 6 Nov 2026). After every push to `main`, the local clone is pulled so it matches GitHub. The Ministry PDF folder is git-ignored and exists only there.
 4. **Claude Artifact:** one Artifact, republished (same link, new version) after each meaningful change.
 5. **Before each push:** the content validator passes, and a headless-browser smoke test loads the game, selects a cycle, walks into the hub and opens a puzzle with no console errors.
 
 ---
 
-## 11. Decisions for Stuart
+## 11. Decisions
 
-Before M1 (they shape the code):
+Decided by Stuart on 6 November 2026:
 
-1. **Bilingual scope.** Recommended: `{en, fr}` fields from day one, ship English first, translate the Dungeon 2 slice before the teacher review.
-2. **Placeholder art.** OK to start with CC0 Kenney packs?
-3. **Workflow.** Pull requests into `main` (recommended) or direct pushes?
-4. **Local folder.** OK to turn `C:\dev\Digital Competency Chronicles` into a git clone (PDFs stay local, git-ignored)?
+1. **Bilingual scope:** full English and French build from the start, including the Dungeon 2 slice. English from the English PDFs with Canadian spelling; French from the French PDFs with Quebec French vocabulary. Both adapted by cycle. (Section 1.)
+2. **Placeholder art:** Claude picks the free packs. Starting point: CC0 packs (Kenney), recorded in `assets/CREDITS.md`. (Section 8.)
+3. **Workflow:** direct pushes to `main`, Claude manages git, history preserved. (Section 10.)
+4. **Local folder:** `C:\dev\Digital Competency Chronicles` is a git clone; Ministry PDFs live only there. (Section 10.)
+5. **Teacher dashboard:** first name + per-element progress + hints used; code/QR import, many imports over time, optional last initial added by the teacher, views by sheet, by dimension and over time. (Section 7.)
 
-Before M3:
-
-5. **Teacher dashboard detail and the progress-code approach** (section 7).
-
-At M4:
-
-6. Final title, final art direction, pilot classrooms and how teacher feedback is collected (a short form outside the game).
+Still open, to decide at M4 (teacher review): final title, final art direction, pilot classrooms and how teacher feedback is collected (a short form outside the game).
