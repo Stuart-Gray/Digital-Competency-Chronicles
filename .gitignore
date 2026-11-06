@@ -6,3 +6,7 @@ Digital Competency documents/
 Thumbs.db
 desktop.ini
 *.url
+
+# Developer tools (smoke test dependencies, screenshots)
+node_modules
+test-results/

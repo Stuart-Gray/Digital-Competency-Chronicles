@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Checker</title>
+  <style>
+    :root { --bg: #fdf6e3; --ink: #1d1b26; --err: #8f2e28; --warn: #8a6400; --ok: #2f6b2c; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #1d1b26; --ink: #f2ecdf; --err: #ff9a8f; --warn: #ffd84a; --ok: #9fdc8f; } }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--ink); max-width: 60rem; margin: 2rem auto; padding: 0 16px; line-height: 1.5; }
+    .err { color: var(--err); } .warn { color: var(--warn); } .ok { color: var(--ok); font-weight: 700; }
+    code { font-size: .95em; }
+  </style>
+</head>
+<body>
+  <h1>Content checker</h1>
+  <p>Checks every file in <code>/content</code>: both languages filled in, each puzzle cites its element and sheet application, links between dialogue and puzzles exist, and no two puzzles of the same type come in a row.</p>
+  <div id="out">Checking…</div>
+  <script type="module">
+    import { validateContent } from '../src/systems/validate.js';
+    import { CONTENT_FILES } from '../src/systems/content.js';
+    const out = document.getElementById('out');
+    const files = {};
+    for (const name of CONTENT_FILES) {
+      try { files[name] = await (await fetch(`../content/${name}.json`, { cache: 'no-store' })).json(); }
+      catch (e) { files[name] = null; }
+    }
+    const { errors, warnings } = validateContent(files);
+    const li = (cls, text) => { const l = document.createElement('li'); l.className = cls; l.textContent = text; return l; };
+    out.innerHTML = '';
+    const p = document.createElement('p');
+    p.className = errors.length ? 'err' : 'ok';
+    p.textContent = `${Object.keys(files).join(', ')}: ${errors.length} errors, ${warnings.length} warnings.`;
+    out.appendChild(p);
+    const ul = document.createElement('ul');
+    errors.forEach((e) => ul.appendChild(li('err', 'Error: ' + e)));
+    warnings.forEach((w) => ul.appendChild(li('warn', 'Warning: ' + w)));
+    out.appendChild(ul);
+  </script>
+</body>
+</html>
