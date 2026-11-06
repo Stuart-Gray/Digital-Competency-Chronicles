@@ -284,6 +284,7 @@ export default class World extends Phaser.Scene {
     const p = this.player;
     if (!p || !p.body) return;
     this.updateLight();
+    this.updateBubble();
     if (layer.isBusy() || this.travelling) {
       p.setVelocity(0, 0);
       p.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
@@ -312,6 +313,28 @@ export default class World extends Phaser.Scene {
     } else {
       layer.placeMarker(null);
     }
+  }
+
+  /** A speech bubble over whoever is talking, so players can see which character it is. */
+  updateBubble() {
+    const who = layer.currentSpeaker();
+    const s = who && this.speakerSprite(who);
+    if (!s) { layer.placeBubble(null); return; }
+    const cam = this.cameras.main;
+    const x = s.x - cam.worldView.x, y = s.y - 10 - cam.worldView.y;
+    if (x < 0 || x > cam.width || y < 0 || y > cam.height) { layer.placeBubble(null); return; }
+    layer.placeBubble(x, y);
+  }
+
+  /** The sprite of an npc in this place (the nearest one, if the map has them twice). */
+  speakerSprite(npcId) {
+    let best = null, bestD = Infinity;
+    for (const o of this.objects) {
+      if (o.type !== 'npc' || o.props.npc !== npcId || !o.sprite || !o.sprite.visible || !this.present(o)) continue;
+      const d = Phaser.Math.Distance.Between(o.x, o.y, this.player.x, this.player.y);
+      if (d < bestD) { best = o.sprite; bestD = d; }
+    }
+    return best;
   }
 
   /** Key stones and exits react to where the player's feet are. */

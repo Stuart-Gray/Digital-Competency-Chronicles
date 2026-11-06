@@ -1,7 +1,8 @@
 // Plays dialogue nodes from a content file through the HTML dialogue box.
 //
 // A node is a list of lines. A line can have:
-//   speaker   npc id from the file's "npcs" (shown as a name tag)
+//   speaker   npc id from the file's "npcs" (shown as a name tag, and a speech bubble
+//             over that character when they are in the scene)
 //   text      { en, fr }, may use {name} and other placeholders
 //   tiers     only shown for these cycles
 //   if/ifNot  only shown when a story flag is (not) set
@@ -37,6 +38,7 @@ export async function run(file, nodeId, ctx) {
         const choices = (line.choices || []).filter((c) => forTier(c));
         const picked = await layer.say({
           speaker,
+          speakerId: speaker ? line.speaker : null,
           text: t(line.text, ctx.vars),
           choices: choices.map((c) => t(c.text, ctx.vars)),
         });

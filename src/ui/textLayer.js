@@ -12,6 +12,8 @@ const panelEl = $('panel');
 const dialogueEl = $('dialogue');
 const hudEl = $('hud');
 const markerEl = $('marker');
+const bubbleEl = $('bubble');
+let speakerId = null; // npc id of whoever is talking now, for the speech bubble
 const toastsEl = $('toasts');
 const touchEl = $('touch');
 const liveEl = $('sr-live');
@@ -69,6 +71,17 @@ export function placeMarker(screenX, screenY) {
   markerEl.hidden = false;
   markerEl.style.left = (screenX / GAME_W) * 100 + '%';
   markerEl.style.top = (screenY / GAME_H) * 100 + '%';
+}
+
+/** The npc id of the character speaking the current line, or null (signs, the narrator). */
+export function currentSpeaker() { return dialogueEl.hidden ? null : speakerId; }
+
+/** Puts the speech bubble above a character (game pixels on screen), or hides it with null. */
+export function placeBubble(screenX, screenY) {
+  if (screenX == null) { bubbleEl.hidden = true; return; }
+  bubbleEl.hidden = false;
+  bubbleEl.style.left = (screenX / GAME_W) * 100 + '%';
+  bubbleEl.style.top = (screenY / GAME_H) * 100 + '%';
 }
 
 /** Screen-reader announcement (does not move focus). */
@@ -132,8 +145,9 @@ screenEl.addEventListener('keydown', (e) => arrowNav(e, screenEl));
  * Shows one line of dialogue. Resolves with the chosen choice index,
  * or null when there are no choices.
  */
-export function say({ speaker, text, choices }) {
+export function say({ speaker, speakerId: who, text, choices }) {
   return new Promise((resolve) => {
+    speakerId = who || null;
     dialogueEl.innerHTML = '';
     dialogueEl.hidden = false;
     touchEl.classList.add('dialogue-open');
@@ -203,6 +217,8 @@ export function say({ speaker, text, choices }) {
 }
 
 export function closeDialogue() {
+  speakerId = null;
+  bubbleEl.hidden = true;
   dialogueEl.hidden = true;
   dialogueEl.innerHTML = '';
   touchEl.classList.remove('dialogue-open');

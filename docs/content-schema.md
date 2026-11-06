@@ -95,7 +95,7 @@ A line can have:
 
 | Field | Meaning |
 |---|---|
-| `speaker` | Who is talking (an id from `npcs`). Leave out for signs. |
+| `speaker` | Who is talking (an id from `npcs`). Shows their name on the box and a speech bubble over them when they are in the scene. Leave out for signs. |
 | `text` | What they say. |
 | `tiers` | Only for these cycles. |
 | `if` / `ifNot` | Only when a story flag is (not) set. |
