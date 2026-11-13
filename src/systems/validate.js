@@ -9,6 +9,7 @@ export const KNOWN_TIERS = ['E2', 'E3', 'S1', 'S2', 'S3'];
 import { parseLine } from './music.js';
 
 export const ELEMENTS = ['1a', '1b', '1c', '2a', '2b', '2c', '3a', '3b', '4a', '4b', '5a', '6a', '6b', '7a', '7b'];
+export const DIMENSIONS = Array.from({ length: 12 }, (_, i) => 'D' + (i + 1));
 const LANGS = ['en', 'fr'];
 
 function isText(v) {
@@ -45,6 +46,8 @@ function checkPuzzle(p, where, errors) {
   if (!isText(p.prompt)) errors.push(`${where}: "prompt" is required`);
   if (!isText(p.success)) errors.push(`${where}: "success" text is required`);
   checkTiers(p, where, errors);
+  // Optional: the Framework dimensions a puzzle counts toward, when it is not just the sheet's own
+  if (p.dcf !== undefined && (!Array.isArray(p.dcf) || p.dcf.some((d) => !DIMENSIONS.includes(d)))) errors.push(`${where}: "dcf" must be a list like ["D1"] (D1 to D12)`);
 
   if (p.type === 'sequence') {
     if (!Array.isArray(p.steps) || p.steps.length < 2) errors.push(`${where}: a sequence needs at least 2 "steps"`);
@@ -194,9 +197,9 @@ export function validateContent(files) {
         checkTiers(line, where, errors);
         for (const c of line.choices || []) {
           if (c.next && !dialogue[c.next]) errors.push(`${where}: choice goes to missing node "${c.next}"`);
-          if (c.action) checkAction(c.action, where, puzzleRefs, dialogue, errors);
+          if (c.action) checkAction(c.action, where, puzzleRefs, dialogue, errors, data.quests);
         }
-        if (line.action) checkAction(line.action, where, puzzleRefs, dialogue, errors);
+        if (line.action) checkAction(line.action, where, puzzleRefs, dialogue, errors, data.quests);
         for (const a of [line.action, ...(line.choices || []).map((c) => c.action)]) if (a) refs.push({ a, where });
       });
     }
@@ -205,6 +208,21 @@ export function validateContent(files) {
         if (!dialogue[d.node]) errors.push(`${name}.npcs.${npcId}: dialogue node "${d.node}" does not exist`);
       }
     }
+    // Side quests: a villager, the puzzles that make it up, and what it helps develop.
+    for (const [qid, q] of Object.entries(data.quests || {})) {
+      const where = `${name}.quests.${qid}`;
+      if (!isText(q.title)) errors.push(`${where}: needs a "title"`);
+      if (!q.flag) errors.push(`${where}: needs a "flag" (set when the quest is done)`);
+      if (!data.npcs || !data.npcs[q.giver]) errors.push(`${where}: "giver" must be a person from "npcs" (got "${q.giver}")`);
+      if (!DIMENSIONS.includes(q.dcf)) errors.push(`${where}: "dcf" must be a Framework dimension like "D1" or "D2"`);
+      if (!Array.isArray(q.elements) || !q.elements.length || q.elements.some((e) => !ELEMENTS.includes(e))) errors.push(`${where}: "elements" must list element codes like ["3a"]`);
+      if (!Array.isArray(q.families) || !q.families.length) errors.push(`${where}: "families" must list its puzzles`);
+      else for (const f of q.families) if (!puzzleRefs.has(f)) errors.push(`${where}: puzzle "${f}" does not exist`);
+    }
+    // Scenes played when the player comes home after the village has grown
+    (data.arrivals || []).forEach((a, i) => {
+      if (!a.if || !a.seen || !dialogue[a.node]) errors.push(`${name}.arrivals[${i}]: needs "if", "seen" and a "node" that exists`);
+    });
   }
   // Items and achievements named in dialogue must exist somewhere.
   const items = new Set(Object.values(files).flatMap((d) => Object.keys((d && d.items) || {})));
@@ -222,9 +240,10 @@ export function validateContent(files) {
   return { errors, warnings };
 }
 
-function checkAction(action, where, puzzleIds, dialogue, errors) {
+function checkAction(action, where, puzzleIds, dialogue, errors, quests) {
   const [kind, arg] = String(action).split(':');
   if (kind === 'puzzle' && !puzzleIds.has(arg)) errors.push(`${where}: action starts missing puzzle "${arg}"`);
   else if (kind === 'goto' && !dialogue[arg]) errors.push(`${where}: action goes to missing node "${arg}"`);
-  else if (!['puzzle', 'goto', 'set', 'unset', 'give', 'achieve', 'travel'].includes(kind)) errors.push(`${where}: unknown action "${action}"`);
+  else if (kind === 'quest' && !(quests || {})[arg]) errors.push(`${where}: action finishes missing quest "${arg}"`);
+  else if (!['puzzle', 'goto', 'set', 'unset', 'give', 'achieve', 'travel', 'quest'].includes(kind)) errors.push(`${where}: unknown action "${action}"`);
 }

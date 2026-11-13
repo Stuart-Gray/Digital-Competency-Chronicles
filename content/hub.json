@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "about": "The digital village (hub): people, signs, gates and the Fix-it shop task. Every text needs both en and fr. People say different things as the player's adventure moves on (see the \"if\" flags). See docs/content-schema.md.",
+  "about": "The digital village (hub): people, signs, gates, and the villagers' side quests (Framework dimensions 1 and 2). Every text needs both en and fr. People say different things as the player's adventure moves on (see the \"if\" flags). See docs/content-schema.md.",
   "npcs": {
     "guide": {
       "name": {"en": "Ada", "fr": "Ada"},
@@ -23,14 +23,68 @@
       "dialogue": [
         {"if": "area2_done", "node": "kid_badge"},
         {"if": "got_lantern", "node": "kid_lantern"},
+        {"if": "q_kind_done", "node": "kid_drawing"},
         {"node": "kid_gates"}
       ]
     },
     "elder": {
       "name": {"en": "Rosa", "fr": "Rosa"},
       "dialogue": [
+        {"if": "q_voice_done", "node": "rosa_voice_thanks"},
+        {"if": "area2_done", "node": "rosa_voice_intro"},
         {"if": "d2_photo_done", "node": "elder_photo"},
         {"node": "elder_pond"}
+      ]
+    },
+    "gus": {
+      "name": {"en": "Gus", "fr": "Gus"},
+      "dialogue": [
+        {"if": "q_sound_done", "node": "gus_thanks"},
+        {"if": "gus_parts_ok", "node": "gus_mid"},
+        {"node": "gus_intro"}
+      ]
+    },
+    "noor": {
+      "name": {"en": "Noor", "fr": "Noor"},
+      "dialogue": [
+        {"if": "q_kind_done", "node": "noor_thanks"},
+        {"node": "noor_intro"}
+      ]
+    },
+    "zoe": {
+      "name": {"en": "Zoé", "fr": "Zoé"},
+      "dialogue": [
+        {"if": "q_files_done", "node": "zoe_thanks"},
+        {"node": "zoe_intro"}
+      ]
+    },
+    "fern": {
+      "name": {"en": "Fern", "fr": "Fern"},
+      "dialogue": [
+        {"if": "q_green_done", "node": "fern_thanks"},
+        {"node": "fern_intro"}
+      ]
+    },
+    "sami": {
+      "name": {"en": "Sami", "fr": "Sami"},
+      "dialogue": [
+        {"if": "q_real_done", "node": "sami_thanks"},
+        {"if": "sami_image_ok", "node": "sami_mid"},
+        {"node": "sami_intro"}
+      ]
+    },
+    "pip": {
+      "name": {"en": "Pip", "fr": "Pip"},
+      "dialogue": [
+        {"if": "q_wifi_done", "node": "pip_thanks"},
+        {"node": "pip_intro"}
+      ]
+    },
+    "bruno": {
+      "name": {"en": "Bruno", "fr": "Bruno"},
+      "dialogue": [
+        {"if": "q_ding_done", "node": "bruno_thanks"},
+        {"node": "bruno_intro"}
       ]
     }
   },
@@ -99,6 +153,11 @@
         "speaker": "guide",
         "if": "area2_done",
         "text": {"en": "The garden bloomed when you brought the badge home. The village is growing, thanks to you!", "fr": "Le jardin a fleuri quand tu as rapporté l’insigne. Le village grandit grâce à toi!"}
+      },
+      {
+        "speaker": "guide",
+        "if": "quests_open",
+        "text": {"en": "Some neighbours could use a hand. Their notes are on the village board, at the top of the plaza.", "fr": "Des gens du village ont besoin d’un coup de main. Leurs notes sont sur le babillard, en haut de la place."}
       }
     ],
     "fixer_intro": [
@@ -142,7 +201,7 @@
       {
         "speaker": "fixer",
         "text": {"en": "It works again! Thank you, {name}.", "fr": "Ça fonctionne de nouveau! Merci, {name}."},
-        "action": "set:fixer_done"
+        "action": "quest:q_fixit"
       },
       {
         "speaker": "fixer",
@@ -203,7 +262,7 @@
     ],
     "hub_welcome_sign": [
       {
-        "text": {"en": "DIGITAL VILLAGE. Gates: north. Fix-it shop: east. Home: west.", "fr": "VILLAGE NUMÉRIQUE. Portes : au nord. Boutique de réparation : à l’est. Maison : à l’ouest."}
+        "text": {"en": "DIGITAL VILLAGE. Gates: north. Fix-it shop: east. Home: west. Pond: south-west.", "fr": "VILLAGE NUMÉRIQUE. Portes : au nord. Boutique de réparation : à l’est. Maison : à l’ouest. Étang : au sud-ouest."}
       }
     ],
     "hub_home": [
@@ -301,6 +360,9 @@
         "text": {"en": "As you walk back into the village, flowers bloom all around the plaza!", "fr": "Quand tu reviens au village, des fleurs éclosent tout autour de la place!"}
       },
       {
+        "text": {"en": "And what is that smell? Fresh bread! A bakery has opened on the south road.", "fr": "Et quelle est cette odeur? Du pain frais! Une boulangerie a ouvert sur le chemin du sud."}
+      },
+      {
         "text": {"en": "From the east, you hear Théo: \"My shop is open! Come and see!\"", "fr": "De l’est, tu entends Théo : « Ma boutique est ouverte! Viens voir! »"},
         "action": "set:saw_village_grow"
       }
@@ -308,6 +370,796 @@
     "hub_shop_open": [
       {
         "text": {"en": "THÉO'S FIX-IT SHOP. Open! Come in and say hello.", "fr": "BOUTIQUE DE RÉPARATION DE THÉO. Ouverte! Entre dire bonjour."}
+      }
+    ],
+    "kid_drawing": [
+      {
+        "speaker": "kid",
+        "text": {"en": "Did you see? People left comments on my drawing of the gates!", "fr": "As-tu vu? Des gens ont commenté mon dessin des portes!"}
+      },
+      {
+        "speaker": "kid",
+        "text": {"en": "The kind ones made my whole day. I read them three times.", "fr": "Les commentaires gentils ont fait ma journée. Je les ai lus trois fois."}
+      }
+    ],
+    "gus_intro": [
+      {
+        "speaker": "gus",
+        "text": {"en": "HELLO? HELLO, COMPUTER? ...Oh! Hello, {name}. I was talking to my laptop.", "fr": "ALLÔ? ALLÔ, L’ORDINATEUR? ... Oh! Bonjour, {name}. Je parlais à mon portable."}
+      },
+      {
+        "speaker": "gus",
+        "text": {"en": "My granddaughter sent me a video. I see her lips move, but I hear nothing at all.", "fr": "Ma petite-fille m’a envoyé une vidéo. Je vois ses lèvres bouger, mais je n’entends rien du tout."}
+      },
+      {
+        "speaker": "gus",
+        "tiers": ["E2"],
+        "text": {"en": "I even held the mouse up to my ear. Nothing! Do you know which part does what?", "fr": "J’ai même collé la souris sur mon oreille. Rien! Sais-tu à quoi sert chaque partie?"},
+        "choices": [
+          {
+            "text": {"en": "Sure, Gus!", "fr": "Bien sûr, Gus!"},
+            "action": "puzzle:gus_parts",
+            "next": "gus_mid"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "gus",
+        "tiers": ["E3"],
+        "text": {"en": "I even held the mouse up to my ear. Nothing! Could you show me what each part of this machine is for?", "fr": "J’ai même collé la souris sur mon oreille. Rien! Peux-tu me montrer à quoi sert chaque composante de cet appareil?"},
+        "choices": [
+          {
+            "text": {"en": "Sure, Gus!", "fr": "Bien sûr, Gus!"},
+            "action": "puzzle:gus_parts",
+            "next": "gus_mid"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "gus_mid": [
+      {
+        "speaker": "gus",
+        "text": {"en": "So the sound comes out of the speaker, not the mouse. That explains a lot.", "fr": "Donc, le son sort du haut-parleur, pas de la souris. Ça explique bien des choses."}
+      },
+      {
+        "speaker": "gus",
+        "text": {"en": "But the speaker is still silent. My cat Pixel took a walk on the keyboard this morning...", "fr": "Mais le haut-parleur est encore muet. Mon chat Pixel s’est promené sur le clavier ce matin..."},
+        "action": "puzzle:gus_volume"
+      },
+      {
+        "speaker": "gus",
+        "text": {"en": "I can hear her! She says: \"Grandpa, stop shouting at the computer.\" Ha!", "fr": "Je l’entends! Elle dit : « Grand-papa, arrête de crier après l’ordinateur. » Ha!"}
+      },
+      {
+        "speaker": "gus",
+        "text": {"en": "Thank you, {name}. From now on, I will check the sound icon first.", "fr": "Merci, {name}. À l’avenir, je vais d’abord regarder l’icône du son."},
+        "action": "quest:q_sound"
+      }
+    ],
+    "gus_thanks": [
+      {
+        "speaker": "gus",
+        "text": {"en": "I watched the video four times. With sound!", "fr": "J’ai regardé la vidéo quatre fois. Avec le son!"}
+      },
+      {
+        "speaker": "gus",
+        "text": {"en": "Pixel is not allowed on the keyboard anymore. Pixel does not agree.", "fr": "Pixel n’a plus le droit de marcher sur le clavier. Pixel n’est pas d’accord."}
+      }
+    ],
+    "noor_intro": [
+      {
+        "speaker": "noor",
+        "text": {"en": "Hi, {name}! I'm Noor. I look after the village board. The paper one here, and the online one too.", "fr": "Bonjour, {name}! Je m’appelle Noor. Je m’occupe du babillard du village. Celui en papier, ici, et celui en ligne aussi."}
+      },
+      {
+        "speaker": "noor",
+        "text": {"en": "Mika posted her drawing of the seven gates online. Now the comments are pouring in.", "fr": "Mika a publié son dessin des sept portes en ligne. Maintenant, les commentaires arrivent de partout."}
+      },
+      {
+        "speaker": "noor",
+        "tiers": ["E2"],
+        "text": {"en": "Some comments are kind. Some could hurt. Can you help me sort them?", "fr": "Certains commentaires sont gentils. D’autres pourraient blesser. Peux-tu m’aider à les trier?"},
+        "choices": [
+          {
+            "text": {"en": "Let's sort them!", "fr": "Trions-les!"},
+            "action": "puzzle:noor_board",
+            "next": "noor_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "noor",
+        "tiers": ["E3"],
+        "text": {"en": "Words online have real effects on people. Can you help me sort the comments by the effect they have?", "fr": "Les mots en ligne ont de vrais effets sur les gens. Peux-tu m’aider à trier les commentaires selon leur effet?"},
+        "choices": [
+          {
+            "text": {"en": "Let's sort them!", "fr": "Trions-les!"},
+            "action": "puzzle:noor_board",
+            "next": "noor_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "noor_after": [
+      {
+        "speaker": "noor",
+        "text": {"en": "Thank you! The kind comments stay up. I will talk to the others about their words.", "fr": "Merci! Les commentaires gentils restent affichés. Je vais parler aux autres de leurs mots."}
+      },
+      {
+        "speaker": "noor",
+        "tiers": ["E2"],
+        "text": {"en": "The same rules of respect apply online and in the village.", "fr": "Les mêmes règles de respect s’appliquent en ligne et au village."},
+        "action": "quest:q_kind"
+      },
+      {
+        "speaker": "noor",
+        "tiers": ["E3"],
+        "text": {"en": "Rules of respect apply online too. A screen does not change how words feel.", "fr": "Les règles de respect s’appliquent aussi en ligne. Un écran ne change pas l’effet des mots."},
+        "action": "quest:q_kind"
+      }
+    ],
+    "noor_thanks": [
+      {
+        "speaker": "noor",
+        "text": {"en": "Mika read the kind comments. She is already drawing gate number eight. There is no gate number eight.", "fr": "Mika a lu les gentils commentaires. Elle dessine déjà la huitième porte. Il n’y a pas de huitième porte."}
+      },
+      {
+        "speaker": "noor",
+        "text": {"en": "When someone needs a hand, they pin a note on this board. Take a look anytime.", "fr": "Quand quelqu’un a besoin d’un coup de main, il épingle une note sur ce babillard. Viens y jeter un coup d’œil quand tu veux."}
+      }
+    ],
+    "zoe_intro": [
+      {
+        "speaker": "zoe",
+        "text": {"en": "Hi! I'm Zoé. I just moved in. I heard the purple gate opened, so I came to see!", "fr": "Salut! Moi, c’est Zoé. Je viens d’emménager. J’ai su que la porte mauve s’était ouverte, alors je suis venue voir!"}
+      },
+      {
+        "speaker": "zoe",
+        "text": {"en": "I made a poster for the village fair. But I can't find the file anywhere on my tablet.", "fr": "J’ai fait une affiche pour la fête du village. Mais je ne trouve plus le fichier dans ma tablette."}
+      },
+      {
+        "speaker": "zoe",
+        "text": {"en": "My files are called \"aaaa\", \"untitled 12\" and \"final_final_REAL_2\". Oops.", "fr": "Mes fichiers s’appellent « aaaa », « sans titre 12 » et « final_final_VRAI_2 ». Oups."}
+      },
+      {
+        "speaker": "zoe",
+        "tiers": ["E2"],
+        "text": {"en": "Ah, here it is, under \"aaaa\"! Help me pick a good name, so I never lose it again?", "fr": "Ah, la voici, sous « aaaa »! M’aides-tu à lui choisir un bon nom, pour ne plus jamais la perdre?"},
+        "choices": [
+          {
+            "text": {"en": "Let's tidy up!", "fr": "On range tout ça!"},
+            "action": "puzzle:zoe_files",
+            "next": "zoe_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "zoe",
+        "tiers": ["E3"],
+        "text": {"en": "Ah, here it is, under \"aaaa\". Help me do it properly this time, step by step?", "fr": "Ah, la voici, sous « aaaa ». M’aides-tu à bien faire les choses cette fois, étape par étape?"},
+        "choices": [
+          {
+            "text": {"en": "Let's tidy up!", "fr": "On range tout ça!"},
+            "action": "puzzle:zoe_files",
+            "next": "zoe_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "zoe_after": [
+      {
+        "speaker": "zoe",
+        "tiers": ["E2"],
+        "text": {"en": "\"Village fair poster\". Perfect. Now anyone can find it, even me!", "fr": "« Affiche de la fête du village ». Parfait. Maintenant, tout le monde peut la trouver, même moi!"}
+      },
+      {
+        "speaker": "zoe",
+        "tiers": ["E3"],
+        "text": {"en": "Created, named, filed, then found by someone else. I feel so organized!", "fr": "Créée, nommée, classée, puis retrouvée par quelqu’un d’autre. Je me sens tellement organisée!"}
+      },
+      {
+        "speaker": "zoe",
+        "text": {"en": "Thanks, {name}! I'm renaming \"aaaa\" right now. And \"aaaa2\". And \"aaaa3\"...", "fr": "Merci, {name}! Je renomme « aaaa » tout de suite. Et « aaaa2 ». Et « aaaa3 »..."},
+        "action": "quest:q_files"
+      }
+    ],
+    "zoe_thanks": [
+      {
+        "speaker": "zoe",
+        "text": {"en": "Look! One folder for posters, one for photos, one for homework.", "fr": "Regarde! Un dossier pour les affiches, un pour les photos, un pour les devoirs."}
+      },
+      {
+        "speaker": "zoe",
+        "text": {"en": "My cart is still a mess, though. One thing at a time.", "fr": "Ma charrette, par contre, est encore en désordre. Une chose à la fois."}
+      }
+    ],
+    "fern_intro": [
+      {
+        "speaker": "fern",
+        "text": {"en": "Hello there! I'm Fern. The village is growing, so I started a community garden.", "fr": "Bonjour! Je m’appelle Fern. Le village grandit, alors j’ai commencé un jardin communautaire."}
+      },
+      {
+        "speaker": "fern",
+        "text": {"en": "Guess what I dug up this morning? An old tablet! Someone planted it.", "fr": "Devine ce que j’ai déterré ce matin? Une vieille tablette! Quelqu’un l’avait plantée."}
+      },
+      {
+        "speaker": "fern",
+        "text": {"en": "Tablets do not grow. I checked. I watered it and everything.", "fr": "Les tablettes ne poussent pas. J’ai vérifié. Je l’ai même arrosée."}
+      },
+      {
+        "speaker": "fern",
+        "tiers": ["E2"],
+        "text": {"en": "Devices need energy and materials from the Earth. I want a sign with good habits for the planet. Help me sort them?", "fr": "Les appareils ont besoin d’énergie et de matériaux qui viennent de la Terre. Je veux une affiche avec de bons gestes pour la planète. M’aides-tu à les trier?"},
+        "choices": [
+          {
+            "text": {"en": "Yes, let's do it!", "fr": "Oui, allons-y!"},
+            "action": "puzzle:fern_energy",
+            "next": "fern_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "fern",
+        "tiers": ["E3"],
+        "text": {"en": "It made me think about the whole life of a device. I want a garden sign that explains each stage. Will you help?", "fr": "Ça m’a fait réfléchir à toute la vie d’un appareil. Je veux une affiche de jardin qui explique chaque étape. Veux-tu m’aider?"},
+        "choices": [
+          {
+            "text": {"en": "Yes, let's do it!", "fr": "Oui, allons-y!"},
+            "action": "puzzle:fern_energy",
+            "next": "fern_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "fern_after": [
+      {
+        "speaker": "fern",
+        "tiers": ["E2"],
+        "text": {"en": "Great sign! Small habits add up, like seeds in a garden.", "fr": "Belle affiche! Les petits gestes s’additionnent, comme les graines dans un jardin."}
+      },
+      {
+        "speaker": "fern",
+        "tiers": ["E3"],
+        "text": {"en": "Now I see it. A device affects the environment at every stage, not only when it is thrown away.", "fr": "Je comprends maintenant. Un appareil a des effets sur l’environnement à chaque étape, pas seulement quand on le jette."}
+      },
+      {
+        "speaker": "fern",
+        "text": {"en": "I will bring the old tablet to the recycling depot. No more planting electronics!", "fr": "Je vais apporter la vieille tablette à l’écocentre. Fini, les appareils plantés au jardin!"},
+        "action": "quest:q_green"
+      }
+    ],
+    "fern_thanks": [
+      {
+        "speaker": "fern",
+        "ifNot": "area2_done",
+        "text": {"en": "The sprouts are coming up. Carrots, lettuce, and zero tablets.", "fr": "Les pousses sortent de terre. Des carottes, de la laitue et zéro tablette."}
+      },
+      {
+        "speaker": "fern",
+        "if": "area2_done",
+        "text": {"en": "Look at the garden now! Carrots, lettuce, pumpkins, and still zero tablets.", "fr": "Regarde le jardin maintenant! Des carottes, de la laitue, des citrouilles et toujours zéro tablette."}
+      },
+      {
+        "speaker": "fern",
+        "text": {"en": "I turn my screen off while I garden. The planet and my battery both say thanks.", "fr": "J’éteins mon écran pendant que je jardine. La planète et ma pile me disent merci."}
+      }
+    ],
+    "sami_intro": [
+      {
+        "speaker": "sami",
+        "text": {"en": "{name}! Come quick! Look at this picture of our pond!", "fr": "{name}! Viens vite! Regarde cette image de notre étang!"}
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "A GIANT DUCK. Taller than a house! Right here in the village!", "fr": "UN CANARD GÉANT. Plus grand qu’une maison! Ici, au village!"}
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "My teacher gave our class this picture. She asked: \"Is this real?\" I say YES. Obviously.", "fr": "Mon enseignante a donné cette image à la classe. Elle a demandé : « Est-ce réel? » Moi, je dis OUI. C’est évident."}
+      },
+      {
+        "speaker": "sami",
+        "tiers": ["E2"],
+        "text": {"en": "...Why are you looking at me like that? OK. Look at it with me.", "fr": "... Pourquoi me regardes-tu comme ça? D’accord. Regarde-la avec moi."},
+        "choices": [
+          {
+            "text": {"en": "Let's look closely.", "fr": "Regardons de près."},
+            "action": "puzzle:sami_image",
+            "next": "sami_mid"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "sami",
+        "tiers": ["E3"],
+        "text": {"en": "...You look unsure. Fine. Let's examine it together, like detectives.", "fr": "... Tu as l’air d’en douter. Bon. Examinons-la ensemble, comme des détectives."},
+        "choices": [
+          {
+            "text": {"en": "Let's look closely.", "fr": "Regardons de près."},
+            "action": "puzzle:sami_image",
+            "next": "sami_mid"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "sami_mid": [
+      {
+        "speaker": "sami",
+        "text": {"en": "Three legs. Two suns. OK... so maybe it is not a photo.", "fr": "Trois pattes. Deux soleils. Bon... ce n’est peut-être pas une photo."}
+      },
+      {
+        "speaker": "sami",
+        "tiers": ["E2"],
+        "text": {"en": "My teacher said a computer program made it. It is called generative AI.", "fr": "Mon enseignante a dit qu’un programme d’ordinateur l’a créée. Ça s’appelle l’intelligence artificielle générative."}
+      },
+      {
+        "speaker": "sami",
+        "tiers": ["E3"],
+        "text": {"en": "My teacher said it was made by generative AI: a program that creates images from a description.", "fr": "Mon enseignante a dit qu’elle a été créée par l’intelligence artificielle générative : un programme qui produit des images à partir d’une description."}
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "But it looks SO cool. I was about to send it to the whole village...", "fr": "Mais elle est TELLEMENT cool. J’allais l’envoyer à tout le village..."},
+        "action": "puzzle:sami_share"
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "Good call. I will tell people it was made by AI. Nobody needs to hide from a duck.", "fr": "Bonne idée. Je vais dire aux gens qu’elle a été créée par l’IA. Personne n’a besoin de se cacher d’un canard."}
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "Thanks, {name}. Now I ask two questions: Is this real? How might it influence other people?", "fr": "Merci, {name}. Maintenant, je me pose deux questions : est-ce réel? Comment cette image peut-elle influencer les autres?"},
+        "action": "quest:q_real"
+      }
+    ],
+    "sami_thanks": [
+      {
+        "speaker": "sami",
+        "text": {"en": "I showed the picture to the real ducks. They were not impressed.", "fr": "J’ai montré l’image aux vrais canards. Ils n’ont pas été impressionnés."}
+      },
+      {
+        "speaker": "sami",
+        "text": {"en": "My kite is still stuck in that tree, by the way. That part is real.", "fr": "Mon cerf-volant est encore pris dans cet arbre, en passant. Ça, c’est bien réel."}
+      }
+    ],
+    "pip_intro": [
+      {
+        "speaker": "pip",
+        "text": {"en": "Mail call! I'm Pip. I carry every letter in this village. Rain, snow or angry goose.", "fr": "Courrier! Moi, c’est Pip. Je livre toutes les lettres du village. Pluie, neige ou outarde fâchée."}
+      },
+      {
+        "speaker": "pip",
+        "text": {"en": "But my own email will not go anywhere! I pressed Send an hour ago.", "fr": "Mais mon propre courriel ne part pas! J’ai appuyé sur « Envoyer » il y a une heure."}
+      },
+      {
+        "speaker": "pip",
+        "text": {"en": "I may have to send it by pigeon. The pigeon is ready. I am not.", "fr": "Je vais peut-être devoir l’envoyer par pigeon. Le pigeon est prêt. Moi, non."}
+      },
+      {
+        "speaker": "pip",
+        "tiers": ["E2"],
+        "text": {"en": "Can you look at my tablet and find what is wrong?", "fr": "Peux-tu regarder ma tablette et trouver ce qui ne va pas?"},
+        "choices": [
+          {
+            "text": {"en": "Show me the tablet.", "fr": "Montre-moi la tablette."},
+            "action": "puzzle:pip_network",
+            "next": "pip_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "pip",
+        "tiers": ["E3"],
+        "text": {"en": "Could you check my tablet? There must be a clue on the screen.", "fr": "Peux-tu examiner ma tablette? Il doit y avoir un indice à l’écran."},
+        "choices": [
+          {
+            "text": {"en": "Show me the tablet.", "fr": "Montre-moi la tablette."},
+            "action": "puzzle:pip_network",
+            "next": "pip_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "pip_after": [
+      {
+        "speaker": "pip",
+        "tiers": ["E2"],
+        "text": {"en": "The Wi-Fi was off! No network, no email. There, I turned it back on.", "fr": "Le Wi-Fi était désactivé! Pas de réseau, pas de courriel. Voilà, je l’ai réactivé."}
+      },
+      {
+        "speaker": "pip",
+        "tiers": ["E3"],
+        "text": {"en": "Airplane mode! It turns off every connection. I must have tapped it by mistake.", "fr": "Le mode avion! Il coupe toutes les connexions. J’ai dû y toucher par erreur."}
+      },
+      {
+        "speaker": "pip",
+        "text": {"en": "Whoosh! It's gone. Thank you, {name}. The pigeon can take the day off.", "fr": "Zoum! Il est parti. Merci, {name}. Le pigeon peut prendre congé."},
+        "action": "quest:q_wifi"
+      }
+    ],
+    "pip_thanks": [
+      {
+        "speaker": "pip",
+        "text": {"en": "Now, before I ask for help, I check the little icons at the top of the screen.", "fr": "Maintenant, avant de demander de l’aide, je regarde les petites icônes en haut de l’écran."}
+      },
+      {
+        "speaker": "pip",
+        "text": {"en": "Paper mail still needs my legs, though. There is no icon for that.", "fr": "Le courrier en papier, lui, a encore besoin de mes jambes. Il n’y a pas d’icône pour ça."}
+      }
+    ],
+    "bruno_intro": [
+      {
+        "speaker": "bruno",
+        "text": {"en": "Welcome to my new bakery, {name}! The village grew, so I moved in. Fresh bread every... DING!", "fr": "Bienvenue à ma nouvelle boulangerie, {name}! Le village a grandi, alors je m’y suis installé. Du pain frais tous les... DING!"}
+      },
+      {
+        "speaker": "bruno",
+        "text": {"en": "Sorry. That's my tablet. A game called Bread Blast. DING! It says my streak is in danger.", "fr": "Désolé. C’est ma tablette. Un jeu qui s’appelle Pain Party. DING! Il dit que ma série est en danger."}
+      },
+      {
+        "speaker": "bruno",
+        "text": {"en": "Every time it dings, I look. Every time I look, I play. I have burned three trays of buns today.", "fr": "Chaque fois que ça sonne, je regarde. Chaque fois que je regarde, je joue. J’ai brûlé trois plaques de petits pains aujourd’hui."}
+      },
+      {
+        "speaker": "bruno",
+        "tiers": ["E2"],
+        "text": {"en": "What can I do so the game stops pulling me away from my oven?", "fr": "Que puis-je faire pour que le jeu arrête de m’éloigner de mon four?"},
+        "choices": [
+          {
+            "text": {"en": "Let's find out.", "fr": "Voyons ça."},
+            "action": "puzzle:bruno_notify",
+            "next": "bruno_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "bruno",
+        "tiers": ["E3"],
+        "text": {"en": "Why is this game so good at pulling me back? Help me see how it works.", "fr": "Pourquoi ce jeu réussit-il si bien à me ramener? Aide-moi à comprendre comment il s’y prend."},
+        "choices": [
+          {
+            "text": {"en": "Let's find out.", "fr": "Voyons ça."},
+            "action": "puzzle:bruno_notify",
+            "next": "bruno_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "bruno_after": [
+      {
+        "speaker": "bruno",
+        "tiers": ["E2"],
+        "text": {"en": "Sound notifications: OFF. Listen... nothing! Just the oven timer. I set that one myself.", "fr": "Notifications sonores : DÉSACTIVÉES. Écoute... plus rien! Juste la minuterie du four. Celle-là, c’est moi qui l’ai réglée."}
+      },
+      {
+        "speaker": "bruno",
+        "tiers": ["E3"],
+        "text": {"en": "So the dings, the streak and the \"next video\" are made to bring me back. Now I can decide for myself.", "fr": "Donc, les sons, la série et la « vidéo suivante » sont conçus pour me ramener. Maintenant, c’est moi qui décide."}
+      },
+      {
+        "speaker": "bruno",
+        "text": {"en": "I will play Bread Blast after closing time. For now, real bread!", "fr": "Je jouerai à Pain Party après la fermeture. Pour l’instant, du vrai pain!"}
+      },
+      {
+        "speaker": "bruno",
+        "text": {"en": "Here, smell this. Not burned! Thank you, {name}.", "fr": "Tiens, sens-moi ça. Pas brûlé! Merci, {name}."},
+        "action": "quest:q_ding"
+      }
+    ],
+    "bruno_thanks": [
+      {
+        "speaker": "bruno",
+        "text": {"en": "No burned buns today. A village record!", "fr": "Aucun petit pain brûlé aujourd’hui. Un record au village!"}
+      },
+      {
+        "speaker": "bruno",
+        "text": {"en": "I swapped one game break for a walk to the pond. The ducks are good company.", "fr": "J’ai remplacé une pause de jeu par une marche jusqu’à l’étang. Les canards sont de bonne compagnie."}
+      }
+    ],
+    "rosa_voice_intro": [
+      {
+        "speaker": "elder",
+        "text": {"en": "{name}! I cropped my duck photo. Now I want to send it to my grandson's class with a message.", "fr": "{name}! J’ai rogné ma photo de canards. Je veux maintenant l’envoyer à la classe de mon petit-fils avec un message."}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "But the letters on this tablet are so small. And his teacher wrote back a long, long message.", "fr": "Mais les lettres de cette tablette sont si petites. Et son enseignante m’a répondu un long, long message."}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "I held the tablet so close that my nose opened an app.", "fr": "J’ai tenu la tablette si près que mon nez a ouvert une application."}
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E2"],
+        "text": {"en": "Théo says the tablet has helpers built in. Can you help me pick the right ones?", "fr": "Théo dit que la tablette a des fonctions d’aide. Peux-tu m’aider à choisir les bonnes?"},
+        "choices": [
+          {
+            "text": {"en": "Happy to help!", "fr": "Avec plaisir!"},
+            "action": "puzzle:rosa_voice",
+            "next": "rosa_voice_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      },
+      {
+        "speaker": "elder",
+        "tiers": ["E3"],
+        "text": {"en": "Théo says tablets have assistive features. Could you help me match each need with the right one?", "fr": "Théo dit que les tablettes ont des fonctions d’aide. Peux-tu m’aider à associer chaque besoin à la bonne fonction?"},
+        "choices": [
+          {
+            "text": {"en": "Happy to help!", "fr": "Avec plaisir!"},
+            "action": "puzzle:rosa_voice",
+            "next": "rosa_voice_after"
+          },
+          {"text": {"en": "Maybe later.", "fr": "Peut-être plus tard."}, "next": null}
+        ]
+      }
+    ],
+    "rosa_voice_after": [
+      {
+        "speaker": "elder",
+        "text": {"en": "Listen! The tablet is reading the message to me. And I can answer just by talking.", "fr": "Écoute! La tablette me lit le message. Et je peux répondre simplement en parlant."}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "These helpers are for everyone, you know. Not just for grandmothers!", "fr": "Ces fonctions sont pour tout le monde, tu sais. Pas seulement pour les grands-mamans!"}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "Thank you, {name}. My nose can retire.", "fr": "Merci, {name}. Mon nez peut prendre sa retraite."},
+        "action": "quest:q_voice"
+      }
+    ],
+    "rosa_voice_thanks": [
+      {
+        "speaker": "elder",
+        "text": {"en": "I dictated a whole message about the ducks. The tablet wrote \"trucks\" instead of \"ducks\" once. We laughed.", "fr": "J’ai dicté tout un message sur les canards. La tablette a écrit « canapés » au lieu de « canards ». On a bien ri."}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "So I always read my message over before I send it.", "fr": "Alors, je relis toujours mon message avant de l’envoyer."}
+      },
+      {
+        "speaker": "elder",
+        "text": {"en": "This game can read aloud too. Look for \"Read aloud\" in the Settings.", "fr": "Ce jeu peut lire à voix haute, lui aussi. Cherche « Lecture à voix haute » dans les réglages."}
+      }
+    ],
+    "hub_well_2": [
+      {
+        "text": {"en": "You make a wish. The well says nothing. It is a very good listener.", "fr": "Tu fais un vœu. Le puits ne dit rien. Il sait très bien écouter."}
+      }
+    ],
+    "hub_well_3": [
+      {
+        "text": {"en": "You say \"Hello!\" The well says \"Hello!\" back. The fastest reply in the village.", "fr": "Tu dis « Allô! » Le puits répond « Allô! » La réponse la plus rapide du village."}
+      }
+    ],
+    "hub_well_4": [
+      {
+        "text": {"en": "A note on the well: \"Please do not toss tablets in. They do not grant wishes.\"", "fr": "Une note sur le puits : « S’il vous plaît, ne lancez pas de tablettes. Elles n’exaucent pas les vœux. »"}
+      }
+    ],
+    "hub_board": [
+      {
+        "text": {"en": "VILLAGE BOARD. Notes from neighbours who could use a hand.", "fr": "BABILLARD DU VILLAGE. Des notes de gens du village qui ont besoin d’un coup de main."}
+      },
+      {
+        "ifNot": "quests_open",
+        "text": {"en": "No notes today. Everyone is doing fine!", "fr": "Aucune note aujourd’hui. Tout le monde va bien!"}
+      },
+      {
+        "ifNot": "fixer_done",
+        "text": {"en": "\"My tablet is frozen. Come to the blue shop! - Théo\"", "fr": "« Ma tablette est gelée. Viens à la boutique bleue! - Théo »"}
+      },
+      {
+        "ifNot": "q_sound_done",
+        "text": {"en": "\"MY LAPTOP IS SILENT. I am at the table on the plaza. - Gus\"", "fr": "« MON PORTABLE EST MUET. Je suis à la table sur la place. - Gus »"}
+      },
+      {
+        "ifNot": "q_kind_done",
+        "text": {"en": "\"Help wanted to sort online comments. I am right beside this board. - Noor\"", "fr": "« Aide demandée pour trier des commentaires en ligne. Je suis juste à côté du babillard. - Noor »"}
+      },
+      {
+        "if": "got_lantern",
+        "ifNot": "q_files_done",
+        "text": {"en": "\"Lost: one poster. It is somewhere on my tablet. I am west of the plaza. - Zoé\"", "fr": "« Perdue : une affiche. Elle est quelque part dans ma tablette. Je suis à l’ouest de la place. - Zoé »"}
+      },
+      {
+        "if": "got_piece_traces",
+        "ifNot": "q_green_done",
+        "text": {"en": "\"Found in the garden: one tablet. It is not a vegetable. - Fern\"", "fr": "« Trouvée au jardin : une tablette. Ce n’est pas un légume. - Fern »"}
+      },
+      {
+        "if": "got_piece_keys",
+        "ifNot": "q_real_done",
+        "text": {"en": "\"GIANT DUCK!!! Come to the pond! - Sami\"", "fr": "« CANARD GÉANT!!! Viens à l’étang! - Sami »"}
+      },
+      {
+        "if": "got_piece_gallery",
+        "ifNot": "q_wifi_done",
+        "text": {"en": "\"A mail carrier whose email is stuck! Mail stand, east road. - Pip\"", "fr": "« Un facteur dont le courriel est coincé! Kiosque postal, chemin de l’est. - Pip »"}
+      },
+      {
+        "if": "area2_done",
+        "ifNot": "q_ding_done",
+        "text": {"en": "\"DING! Sorry. Help. DING! The bakery, south road. - Bruno\"", "fr": "« DING! Désolé. À l’aide. DING! La boulangerie, chemin du sud. - Bruno »"}
+      },
+      {
+        "if": "area2_done",
+        "ifNot": "q_voice_done",
+        "text": {"en": "\"The letters on my tablet are too small. I am by the pond. - Rosa\"", "fr": "« Les lettres de ma tablette sont trop petites. Je suis près de l’étang. - Rosa »"}
+      }
+    ],
+    "hub_statue": [
+      {
+        "text": {"en": "A statue of a very old object: the floppy disk. Long ago, people saved their work on it.", "fr": "Une statue d’un objet très ancien : la disquette. Il y a longtemps, on y enregistrait son travail."}
+      },
+      {
+        "text": {"en": "Today it lives on as the Save icon. Remember to save your work!", "fr": "Aujourd’hui, elle survit comme icône « Enregistrer ». N’oublie pas d’enregistrer ton travail!"}
+      }
+    ],
+    "hub_bench": [
+      {
+        "text": {"en": "A bench. Gus says it is the best seat in the village for video calls.", "fr": "Un banc. Gus dit que c’est la meilleure place du village pour les appels vidéo."}
+      }
+    ],
+    "hub_mailbox": [
+      {
+        "ifNot": "q_wifi_done",
+        "text": {"en": "Your mailbox. It is empty. Even the spiders moved out.", "fr": "Ta boîte aux lettres. Elle est vide. Même les araignées ont déménagé."}
+      },
+      {
+        "if": "q_wifi_done",
+        "text": {"en": "A postcard from Pip: \"Thank you! Delivered by me, not by pigeon.\"", "fr": "Une carte postale de Pip : « Merci! Livrée par moi, pas par pigeon. »"}
+      }
+    ],
+    "hub_stump": [
+      {
+        "text": {"en": "A tree stump. Count the rings: this tree was older than the internet.", "fr": "Une souche. Compte les cernes : cet arbre était plus vieux qu’Internet."}
+      }
+    ],
+    "hub_garden_lot": [
+      {
+        "text": {"en": "A sunny patch of tall grass. A good spot for a garden, maybe?", "fr": "Un coin d’herbes hautes au soleil. Un bon endroit pour un jardin, peut-être?"}
+      }
+    ],
+    "hub_garden_sign": [
+      {
+        "text": {"en": "COMMUNITY GARDEN. Everyone is welcome.", "fr": "JARDIN COMMUNAUTAIRE. Bienvenue à tout le monde."}
+      },
+      {
+        "if": "q_green_done",
+        "text": {"en": "Good habits for the planet: turn it off, make it last, recycle it.", "fr": "De bons gestes pour la planète : éteindre, faire durer, recycler."}
+      },
+      {
+        "if": "q_green_done",
+        "text": {"en": "PS: Please do not plant tablets.", "fr": "P.-S. : Merci de ne pas planter de tablettes."}
+      }
+    ],
+    "hub_scarecrow": [
+      {
+        "text": {"en": "A scarecrow in sunglasses. It is outstanding in its field.", "fr": "Un épouvantail à lunettes de soleil. Il a l’air très cool. Même les corneilles sont d’accord."}
+      }
+    ],
+    "hub_scarecrow_2": [
+      {
+        "text": {"en": "The scarecrow has no phone. It never misses a sunset.", "fr": "L’épouvantail n’a pas de téléphone. Il ne manque jamais un coucher de soleil."}
+      }
+    ],
+    "hub_mail_lot": [
+      {
+        "text": {"en": "An empty lot. A note says: \"Saved for someone who delivers.\"", "fr": "Un terrain vide. Une note dit : « Réservé à quelqu’un qui livre. »"}
+      }
+    ],
+    "hub_mail_sign": [
+      {
+        "text": {"en": "PIP'S MAIL STAND. Letters, parcels and postcards. No pigeons were hired.", "fr": "KIOSQUE POSTAL DE PIP. Lettres, colis et cartes postales. Aucun pigeon n’a été engagé."}
+      }
+    ],
+    "hub_kite": [
+      {
+        "text": {"en": "A kite is stuck in the tree. It looks quite happy up there.", "fr": "Un cerf-volant est pris dans l’arbre. Il a l’air bien content là-haut."}
+      }
+    ],
+    "hub_bakery_lot": [
+      {
+        "text": {"en": "An empty lot. A note says: \"Coming one day: something that smells very good.\"", "fr": "Un terrain vide. Une note dit : « Un jour, ici : quelque chose qui sent très bon. »"}
+      }
+    ],
+    "hub_bakery_site": [
+      {
+        "text": {"en": "Someone is building here! The frame is up. It already smells a little like bread.", "fr": "Quelqu’un construit ici! La charpente est montée. Ça sent déjà un peu le pain."}
+      }
+    ],
+    "hub_bakery_sign": [
+      {
+        "text": {"en": "BRUNO'S BAKERY. Fresh bread. Not burned. (Usually.)", "fr": "BOULANGERIE DE BRUNO. Pain frais. Pas brûlé. (D’habitude.)"}
+      }
+    ],
+    "hub_bakery_door": [
+      {
+        "text": {"en": "It smells of warm bread. Bruno is just outside.", "fr": "Ça sent le pain chaud. Bruno est juste devant."}
+      }
+    ],
+    "duck_1": [
+      {"text": {"en": "Quack.", "fr": "Coin."}}
+    ],
+    "duck_2": [
+      {"text": {"en": "Quack quack.", "fr": "Coin coin."}}
+    ],
+    "duck_3": [
+      {
+        "text": {"en": "The duck looks at you. You look at the duck. You are friends now.", "fr": "Le canard te regarde. Tu regardes le canard. Vous êtes maintenant amis."},
+        "action": "achieve:duck_friend"
+      }
+    ],
+    "cat_awake": [
+      {
+        "text": {"en": "Pixel the cat. Pixel is looking for a warm keyboard to sit on.", "fr": "Pixel le chat. Pixel cherche un clavier bien chaud pour s’y coucher."}
+      }
+    ],
+    "cat_asleep": [
+      {
+        "text": {"en": "Pixel is asleep on your doorstep. No keyboards were harmed.", "fr": "Pixel dort sur le pas de ta porte. Aucun clavier n’a été maltraité."},
+        "action": "achieve:cat_nap"
+      }
+    ],
+    "chicken": [
+      {
+        "text": {"en": "Cluck. The chicken pecks at the ground. It is not interested in tablets.", "fr": "Cot cot. La poule picore le sol. Les tablettes ne l’intéressent pas."}
+      }
+    ],
+    "pigeon": [
+      {
+        "text": {"en": "Coo. The pigeon looks ready to deliver a message. Nobody asked.", "fr": "Rou rou. Le pigeon a l’air prêt à livrer un message. Personne ne lui a rien demandé."}
+      }
+    ],
+    "hub_secret": [
+      {
+        "text": {"en": "A chest, hidden in the grove! Inside, on a bed of moss: a golden feather.", "fr": "Un coffre, caché dans le bosquet! À l’intérieur, sur un lit de mousse : une plume dorée."},
+        "action": "give:golden_feather"
+      },
+      {
+        "text": {"en": "A note says: \"For a curious explorer. - The ducks\"", "fr": "Une note dit : « Pour une personne curieuse. - Les canards »"},
+        "action": "achieve:lantern_secret"
+      }
+    ],
+    "grow_1": [
+      {
+        "text": {"en": "Word of your lantern is spreading. Someone new has moved in west of the plaza, with a cart full of folders.", "fr": "La nouvelle de ta lanterne se répand. Quelqu’un vient d’emménager à l’ouest de la place, avec une charrette pleine de dossiers."}
+      },
+      {
+        "text": {"en": "And on the south road, someone has started to build.", "fr": "Et sur le chemin du sud, quelqu’un a commencé à construire."}
+      }
+    ],
+    "grow_2": [
+      {
+        "text": {"en": "The village is growing! Someone has dug a garden beside the south road.", "fr": "Le village grandit! Quelqu’un a creusé un jardin à côté du chemin du sud."}
+      }
+    ],
+    "grow_3": [
+      {
+        "text": {"en": "You hear shouting from the pond: \"GIANT DUCK!\" A new kid is in the village.", "fr": "Tu entends crier près de l’étang : « CANARD GÉANT! » Un nouvel enfant est arrivé au village."}
+      }
+    ],
+    "grow_4": [
+      {
+        "text": {"en": "A mail stand has opened on the east road. A pigeon is watching it closely.", "fr": "Un kiosque postal a ouvert sur le chemin de l’est. Un pigeon le surveille de près."}
       }
     ]
   },
@@ -317,6 +1169,7 @@
       "family": "fixer_steps",
       "tiers": ["E2"],
       "element": "4b",
+      "dcf": ["D2"],
       "type": "sequence",
       "application": {"en": "Establish a troubleshooting procedure for the group.", "fr": "Établir une procédure de dépannage en groupe."},
       "prompt": {"en": "Put the help steps in order. Tap a step to add it.", "fr": "Place les étapes d’aide dans l’ordre. Touche une étape pour l’ajouter."},
@@ -350,6 +1203,7 @@
       "family": "fixer_steps",
       "tiers": ["E3"],
       "element": "4b",
+      "dcf": ["D2"],
       "type": "sequence",
       "application": {"en": "Establish a troubleshooting procedure for the group.", "fr": "Établir une procédure de dépannage en groupe."},
       "prompt": {"en": "Build the class troubleshooting plan. Tap the steps in the order you would use them.", "fr": "Construis la procédure de dépannage de la classe. Touche les étapes dans l’ordre où tu les utiliserais."},
@@ -383,6 +1237,7 @@
       "family": "fixer_first_try",
       "tiers": ["E2"],
       "element": "4b",
+      "dcf": ["D2"],
       "type": "choice",
       "application": {"en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.", "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."},
       "prompt": {"en": "Théo's drawing app is stuck. Nothing happens when he taps. What should he try first?", "fr": "L’application de dessin de Théo est bloquée. Il ne se passe rien quand il touche l’écran. Que devrait-il essayer en premier?"},
@@ -410,6 +1265,7 @@
       "family": "fixer_first_try",
       "tiers": ["E3"],
       "element": "4b",
+      "dcf": ["D2"],
       "type": "choice",
       "application": {"en": "Identify the steps to take to solve a technical problem in a given scenario, such as when an application stops responding.", "fr": "Identifier l’action à entreprendre dans une mise en situation pour résoudre un problème technique, par exemple si l’application ne répond plus."},
       "prompt": {"en": "Théo's slideshow app stopped responding in the middle of his project. What is the best first step?", "fr": "L’application de présentation de Théo ne répond plus au milieu de son projet. Quelle est la meilleure première étape?"},
@@ -435,6 +1291,1288 @@
       "flag": "fixer_fixed",
       "achievement": "first_fix",
       "teacherNote": {"en": "Ask: why is patience important when a tool does not respond right away?", "fr": "Demandez : pourquoi la patience est-elle importante quand un outil ne réagit pas tout de suite?"}
+    },
+    {
+      "id": "gus_parts_c2",
+      "family": "gus_parts",
+      "tiers": ["E2"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "match",
+      "application": {"en": "Identify the external components of a digital device, such as the screen, mouse and keyboard.", "fr": "Identifier les périphériques d’un outil numérique, tels que l’écran, la souris et le clavier."},
+      "prompt": {"en": "Help Gus. Match each part of his laptop with what it does.", "fr": "Aide Gus. Associe chaque partie de son portable à ce qu’elle fait."},
+      "leftTitle": {"en": "Part", "fr": "Partie"},
+      "rightTitle": {"en": "What it does", "fr": "Ce qu’elle fait"},
+      "pairs": [
+        {
+          "id": "screen",
+          "left": {"icon": "screen", "text": {"en": "Screen", "fr": "Écran"}},
+          "right": {"text": {"en": "Shows pictures and words", "fr": "Montre les images et les mots"}},
+          "hint": {"en": "Where do you look to see the video?", "fr": "Où regardes-tu pour voir la vidéo?"}
+        },
+        {
+          "id": "keyboard",
+          "left": {"icon": "keyboard", "text": {"en": "Keyboard", "fr": "Clavier"}},
+          "right": {
+            "text": {"en": "Lets you type letters and numbers", "fr": "Sert à taper des lettres et des chiffres"}
+          },
+          "hint": {"en": "It has a key for every letter.", "fr": "Il a une touche pour chaque lettre."}
+        },
+        {
+          "id": "mouse",
+          "left": {"icon": "mouse", "text": {"en": "Mouse", "fr": "Souris"}},
+          "right": {"text": {"en": "Moves the pointer and clicks", "fr": "Déplace le pointeur et clique"}},
+          "hint": {"en": "You slide it on the table. The little arrow follows.", "fr": "Tu la glisses sur la table. La petite flèche suit."}
+        },
+        {
+          "id": "speaker",
+          "left": {"icon": "speaker", "text": {"en": "Speaker", "fr": "Haut-parleur"}},
+          "right": {"text": {"en": "Lets you hear the sound", "fr": "Fait entendre le son"}},
+          "hint": {"en": "Music and voices come out of this part.", "fr": "La musique et les voix sortent de cette partie."}
+        }
+      ],
+      "success": {"en": "That's it! Each part has its own job. Sound comes out of the speaker.", "fr": "C’est ça! Chaque partie a son rôle. Le son sort du haut-parleur."},
+      "flag": "gus_parts_ok",
+      "teacherNote": {"en": "Ask: which parts of our class devices do you use the most? What is each one for?", "fr": "Demandez : quelles parties des appareils de la classe utilisez-vous le plus? À quoi sert chacune?"}
+    },
+    {
+      "id": "gus_parts_c3",
+      "family": "gus_parts",
+      "tiers": ["E3"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "match",
+      "application": {"en": "Identify the external components of a digital device, such as the screen, mouse and keyboard.", "fr": "Identifier les périphériques d’un outil numérique, tels que l’écran, la souris et le clavier."},
+      "prompt": {"en": "Help Gus. Match each component of his laptop with its role.", "fr": "Aide Gus. Associe chaque composante de son portable à son rôle."},
+      "leftTitle": {"en": "Component", "fr": "Composante"},
+      "rightTitle": {"en": "Role", "fr": "Rôle"},
+      "pairs": [
+        {
+          "id": "screen",
+          "left": {"icon": "screen", "text": {"en": "Screen", "fr": "Écran"}},
+          "right": {
+            "text": {"en": "Displays images, text and video", "fr": "Affiche les images, le texte et la vidéo"}
+          },
+          "hint": {"en": "Which component do you look at?", "fr": "Quelle composante regardes-tu?"}
+        },
+        {
+          "id": "keyboard",
+          "left": {"icon": "keyboard", "text": {"en": "Keyboard", "fr": "Clavier"}},
+          "right": {
+            "text": {"en": "Used to enter text and commands", "fr": "Sert à entrer du texte et des commandes"}
+          },
+          "hint": {"en": "Think of where your fingers go when you write.", "fr": "Pense à l’endroit où vont tes doigts quand tu écris."}
+        },
+        {
+          "id": "mouse",
+          "left": {"icon": "mouse", "text": {"en": "Mouse", "fr": "Souris"}},
+          "right": {
+            "text": {"en": "Slides on the table to move the pointer", "fr": "Glisse sur la table pour déplacer le pointeur"}
+          },
+          "hint": {"en": "This one is not built into the laptop. It moves on the table.", "fr": "Celle-ci n’est pas intégrée au portable. Elle se déplace sur la table."}
+        },
+        {
+          "id": "touchpad",
+          "left": {"icon": "touchpad", "text": {"en": "Touchpad", "fr": "Pavé tactile"}},
+          "right": {
+            "text": {"en": "Moves the pointer when a finger slides on it", "fr": "Déplace le pointeur quand on y glisse un doigt"}
+          },
+          "hint": {"en": "A laptop has one just below the keyboard.", "fr": "Un portable en a un juste sous le clavier."}
+        },
+        {
+          "id": "speaker",
+          "left": {"icon": "speaker", "text": {"en": "Speaker", "fr": "Haut-parleur"}},
+          "right": {
+            "text": {"en": "Plays the sound of a video or a song", "fr": "Diffuse le son d’une vidéo ou d’une chanson"}
+          },
+          "hint": {"en": "Gus sees the video but hears nothing. Which component is for sound?", "fr": "Gus voit la vidéo, mais n’entend rien. Quelle composante sert au son?"}
+        }
+      ],
+      "success": {"en": "Well done! Knowing the role of each component helps you find where a problem comes from.", "fr": "Bravo! Connaître le rôle de chaque composante aide à trouver d’où vient un problème."},
+      "flag": "gus_parts_ok",
+      "teacherNote": {"en": "Ask: how are a tablet and a laptop different? Which components do they share?", "fr": "Demandez : quelles sont les différences entre une tablette et un portable? Quelles composantes ont-ils en commun?"}
+    },
+    {
+      "id": "gus_volume_c2",
+      "family": "gus_volume",
+      "tiers": ["E2"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "choice",
+      "application": {"en": "Adjust simple hardware settings, such as the speaker volume.", "fr": "Ajuster des réglages matériels simples, comme régler le volume du haut-parleur."},
+      "prompt": {"en": "The video plays, but there is no sound. The speaker icon has an X on it. What should Gus try first?", "fr": "La vidéo joue, mais il n’y a pas de son. L’icône du haut-parleur a un X. Que devrait essayer Gus en premier?"},
+      "options": [
+        {
+          "icon": "speaker",
+          "text": {"en": "Turn the sound back on and raise the volume.", "fr": "Remettre le son et monter le volume."},
+          "correct": true
+        },
+        {
+          "icon": "mouse",
+          "text": {"en": "Hold the mouse up to his ear.", "fr": "Coller la souris sur son oreille."},
+          "hint": {"en": "Sound does not come from the mouse! Look at the speaker icon. The X means the sound is off.", "fr": "Le son ne sort pas de la souris! Regarde l’icône du haut-parleur. Le X veut dire que le son est coupé."}
+        },
+        {
+          "icon": "mute",
+          "text": {"en": "Talk louder to the laptop.", "fr": "Parler plus fort au portable."},
+          "hint": {"en": "Shouting won't help. The X means the sound is off. Turn it back on.", "fr": "Crier n’aidera pas. Le X veut dire que le son est coupé. Il faut le remettre."}
+        }
+      ],
+      "success": {"en": "Now Gus can hear! The X meant the sound was off. The volume keys bring it back.", "fr": "Gus entend maintenant! Le X voulait dire que le son était coupé. Les touches de volume le ramènent."},
+      "flag": "gus_volume_ok",
+      "teacherNote": {"en": "Ask: where is the volume on the device you use at school? How can you tell the sound is off?", "fr": "Demandez : où se trouve le volume sur l’appareil que vous utilisez à l’école? Comment voit-on que le son est coupé?"}
+    },
+    {
+      "id": "gus_volume_c3",
+      "family": "gus_volume",
+      "tiers": ["E3"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "choice",
+      "application": {"en": "Adjust simple hardware settings, such as the speaker volume.", "fr": "Ajuster des réglages matériels simples, comme régler le volume du haut-parleur."},
+      "prompt": {"en": "The video plays without sound. What is the best first step?", "fr": "La vidéo joue sans son. Quelle est la meilleure première étape?"},
+      "options": [
+        {
+          "text": {"en": "Check the sound indicator. If it is muted, unmute it and adjust the volume.", "fr": "Vérifier l’indicateur du son. S’il est en sourdine, le réactiver et régler le volume."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Restart the laptop three times in a row.", "fr": "Redémarrer le portable trois fois de suite."},
+          "hint": {"en": "A restart can fix some problems, but observe first. What does the sound indicator show?", "fr": "Un redémarrage règle certains problèmes, mais observe d’abord. Que montre l’indicateur du son?"}
+        },
+        {
+          "text": {"en": "Decide the speaker is broken and ask for a new laptop.", "fr": "Conclure que le haut-parleur est brisé et demander un nouveau portable."},
+          "hint": {"en": "Not so fast! A simple setting is often the cause. Which indicator tells you about sound?", "fr": "Pas si vite! Un simple réglage est souvent la cause. Quel indicateur te renseigne sur le son?"}
+        },
+        {
+          "text": {"en": "Turn up the screen brightness.", "fr": "Augmenter la luminosité de l’écran."},
+          "hint": {"en": "Brightness changes what you see, not what you hear. Which setting controls sound?", "fr": "La luminosité change ce qu’on voit, pas ce qu’on entend. Quel réglage contrôle le son?"}
+        }
+      ],
+      "success": {"en": "Sound is back! Indicators, like the sound or battery icon, tell you how a device is doing.", "fr": "Le son est revenu! Les indicateurs, comme l’icône du son ou de la pile, montrent l’état d’un appareil."},
+      "flag": "gus_volume_ok",
+      "teacherNote": {"en": "Ask: which indicators do you check on a device before asking for help (sound, battery, network)?", "fr": "Demandez : quels indicateurs vérifiez-vous sur un appareil avant de demander de l’aide (son, état de charge, réseau)?"}
+    },
+    {
+      "id": "noor_board_c2",
+      "family": "noor_board",
+      "tiers": ["E2"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "sort",
+      "application": {"en": "Compare examples of digital practices to identify which ones have beneficial effects on themselves and others.", "fr": "Comparer des exemples d’usages numériques pour identifier lesquels ont des effets bénéfiques sur lui et sur ses pairs."},
+      "prompt": {"en": "Mika shared her drawing. Sort each comment: does it help, or could it hurt?", "fr": "Mika a partagé son dessin. Classe chaque commentaire : fait-il du bien ou peut-il blesser?"},
+      "bins": [
+        {"id": "help", "icon": "like", "text": {"en": "Helps", "fr": "Fait du bien"}},
+        {"id": "hurt", "text": {"en": "Could hurt", "fr": "Peut blesser"}}
+      ],
+      "items": [
+        {
+          "id": "nice",
+          "icon": "comment",
+          "text": {"en": "\"I love the colours you picked!\"", "fr": "« J’adore les couleurs que tu as choisies! »"},
+          "bin": "help",
+          "hint": {"en": "How would Mika feel reading this? It is a kind word.", "fr": "Comment Mika se sentirait-elle en lisant ça? C’est un mot gentil."},
+          "why": {"en": "A kind word about someone's work feels good.", "fr": "Un mot gentil sur le travail de quelqu’un fait du bien."}
+        },
+        {
+          "id": "mean",
+          "icon": "comment",
+          "text": {"en": "\"That is the ugliest drawing ever.\"", "fr": "« C’est le dessin le plus laid du monde. »"},
+          "bin": "hurt",
+          "hint": {"en": "Would you say this to Mika in person? These words could hurt her.", "fr": "Dirais-tu cela à Mika en personne? Ces mots pourraient la blesser."}
+        },
+        {
+          "id": "tip",
+          "icon": "comment",
+          "text": {"en": "\"Nice! Maybe add a sun next time?\"", "fr": "« Beau dessin! Tu pourrais ajouter un soleil la prochaine fois? »"},
+          "bin": "help",
+          "hint": {"en": "This comment is polite and gives an idea. That helps.", "fr": "Ce commentaire est poli et donne une idée. Ça aide."},
+          "why": {"en": "A polite idea helps someone get even better.", "fr": "Une idée donnée poliment aide quelqu’un à s’améliorer."}
+        },
+        {
+          "id": "laugh",
+          "icon": "comment",
+          "text": {"en": "\"HAHAHA everyone look how bad this is\"", "fr": "« HAHAHA regardez tous comme c’est mauvais »"},
+          "bin": "hurt",
+          "hint": {"en": "Asking everyone to laugh at someone hurts a lot.", "fr": "Inviter tout le monde à rire de quelqu’un, ça fait très mal."}
+        }
+      ],
+      "success": {"en": "Well sorted! Kind words help. Hurtful words stay with people, even online.", "fr": "Bien trié! Les mots gentils font du bien. Les mots blessants restent dans la tête des gens, même en ligne."},
+      "flag": "noor_board_ok",
+      "teacherNote": {"en": "Ask: how can you tell if a comment will help or hurt before you send it?", "fr": "Demandez : comment savoir si un commentaire fera du bien ou blessera avant de l’envoyer?"}
+    },
+    {
+      "id": "noor_board_c3",
+      "family": "noor_board",
+      "tiers": ["E3"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "sort",
+      "application": {"en": "Compare examples of digital practices to identify which ones have beneficial effects on themselves and others.", "fr": "Comparer des exemples d’usages numériques pour identifier lesquels ont des effets bénéfiques sur lui et sur ses pairs."},
+      "prompt": {"en": "Mika shared her drawing online. Sort each action by the effect it has on others.", "fr": "Mika a partagé son dessin en ligne. Classe chaque geste selon l’effet qu’il a sur les autres."},
+      "bins": [
+        {
+          "id": "good",
+          "icon": "like",
+          "text": {"en": "Good effect on others", "fr": "Bon effet sur les autres"}
+        },
+        {
+          "id": "bad",
+          "text": {"en": "Harmful effect on others", "fr": "Effet nuisible sur les autres"}
+        }
+      ],
+      "items": [
+        {
+          "id": "praise",
+          "icon": "comment",
+          "text": {"en": "\"The purple gate looks great. How did you draw the stars?\"", "fr": "« La porte mauve est très réussie. Comment as-tu fait les étoiles? »"},
+          "bin": "good",
+          "hint": {"en": "It is specific, kind and shows real interest. What effect would it have on Mika?", "fr": "Il est précis, gentil et montre un vrai intérêt. Quel effet aurait-il sur Mika?"}
+        },
+        {
+          "id": "sarcasm",
+          "icon": "comment",
+          "text": {"en": "\"Wow, sooo good... NOT.\"", "fr": "« Wow, teeellement beau... PAS. »"},
+          "bin": "bad",
+          "hint": {"en": "Sarcasm can look like a joke, but how does the person reading it feel?", "fr": "Le sarcasme ressemble à une blague, mais comment se sent la personne qui le lit?"}
+        },
+        {
+          "id": "advice",
+          "icon": "comment",
+          "text": {"en": "\"Gate 3 is hard to see. A darker outline could help.\"", "fr": "« On voit mal la porte 3. Un contour plus foncé aiderait. »"},
+          "bin": "good",
+          "hint": {"en": "It names a problem politely and offers a solution. What effect does that have?", "fr": "Il nomme un problème poliment et propose une solution. Quel effet cela a-t-il?"}
+        },
+        {
+          "id": "mock",
+          "icon": "chat",
+          "text": {"en": "Sharing the drawing in a group chat to make fun of it", "fr": "Partager le dessin dans un groupe de clavardage pour s’en moquer"},
+          "bin": "bad",
+          "hint": {"en": "Mika can't see that chat, but more people now laugh at her work. Is that harmless?", "fr": "Mika ne voit pas ce clavardage, mais plus de gens rient de son travail. Est-ce sans conséquence?"}
+        },
+        {
+          "id": "defend",
+          "icon": "comment",
+          "text": {"en": "\"Stop it. She worked hard on this. I like it.\"", "fr": "« Arrêtez. Elle a beaucoup travaillé. Moi, je l’aime. »"},
+          "bin": "good",
+          "hint": {"en": "Standing up for someone respectfully can change how a whole group acts.", "fr": "Défendre quelqu’un avec respect peut changer le comportement de tout un groupe."}
+        },
+        {
+          "id": "emoji",
+          "icon": "face",
+          "text": {"en": "Adding a laughing emoji under a mean comment", "fr": "Ajouter un émoji qui rit sous un commentaire méchant"},
+          "bin": "bad",
+          "hint": {"en": "A small reaction still tells Mika that one more person agrees with the mean comment.", "fr": "Une petite réaction dit quand même à Mika qu’une personne de plus appuie le commentaire méchant."}
+        }
+      ],
+      "success": {"en": "Well sorted! Even a small action online, like an emoji, has an effect on someone.", "fr": "Bien trié! Même un petit geste en ligne, comme un émoji, a un effet sur quelqu’un."},
+      "flag": "noor_board_ok",
+      "teacherNote": {"en": "Ask: is a comment different at school, at home and in an online game? What stays the same?", "fr": "Demandez : un commentaire est-il différent à l’école, à la maison et dans un jeu en ligne? Qu’est-ce qui reste pareil?"}
+    },
+    {
+      "id": "zoe_files_c2",
+      "family": "zoe_files",
+      "tiers": ["E2"],
+      "element": "4a",
+      "dcf": ["D2"],
+      "type": "choice",
+      "application": {"en": "Save a file with a meaningful name and ask a peer to find it.", "fr": "Enregistrer un fichier avec un nom significatif et demander à un pair de le retrouver."},
+      "prompt": {"en": "Zoé's poster for the village fair is saved as \"aaaa\". Which name is the best?", "fr": "L’affiche de Zoé pour la fête du village s’appelle « aaaa ». Quel nom est le meilleur?"},
+      "options": [
+        {
+          "icon": "file",
+          "text": {"en": "Village fair poster", "fr": "Affiche de la fête du village"},
+          "correct": true
+        },
+        {
+          "icon": "file",
+          "text": {"en": "New file 2", "fr": "Nouveau fichier 2"},
+          "hint": {"en": "This name says nothing about the poster. Pick the name that tells what the file is.", "fr": "Ce nom ne dit rien sur l’affiche. Choisis le nom qui dit ce qu’est le fichier."}
+        },
+        {
+          "icon": "file",
+          "text": {"en": "zzzzzz!!!", "fr": "zzzzzz!!!"},
+          "hint": {"en": "Funny, but nobody could find it! Pick the name that tells what the file is.", "fr": "C’est drôle, mais personne ne le retrouverait! Choisis le nom qui dit ce qu’est le fichier."}
+        }
+      ],
+      "success": {"en": "Good choice! A name that says what is inside makes a file easy to find, for you and for a friend.", "fr": "Bon choix! Un nom qui dit ce qu’il y a dedans rend un fichier facile à trouver, pour toi et pour un ami ou une amie."},
+      "flag": "zoe_files_ok",
+      "teacherNote": {"en": "Try it: save a file with a meaningful name, then ask a classmate to find it.", "fr": "À essayer : enregistrez un fichier avec un nom significatif, puis demandez à un ou une camarade de le retrouver."}
+    },
+    {
+      "id": "zoe_files_c3",
+      "family": "zoe_files",
+      "tiers": ["E3"],
+      "element": "4a",
+      "dcf": ["D2"],
+      "type": "sequence",
+      "application": {"en": "Save a file with a meaningful name and ask a peer to find it.", "fr": "Enregistrer un fichier avec un nom significatif et demander à un pair de le retrouver."},
+      "prompt": {"en": "Help Zoé save her poster the right way. Tap the steps in order.", "fr": "Aide Zoé à bien enregistrer son affiche. Touche les étapes dans l’ordre."},
+      "steps": [
+        {
+          "id": "create",
+          "text": {"en": "Create the poster in the drawing app.", "fr": "Créer l’affiche dans l’application de dessin."},
+          "hint": {"en": "Start at the beginning: the file has to exist first.", "fr": "Commence par le début : le fichier doit d’abord exister."}
+        },
+        {
+          "id": "name",
+          "text": {"en": "Save it with a meaningful name: \"Village fair poster\".", "fr": "L’enregistrer avec un nom significatif : « Affiche de la fête du village »."},
+          "hint": {"en": "Once the work exists, what keeps it from getting lost under a name like \"aaaa\"?", "fr": "Une fois le travail commencé, qu’est-ce qui l’empêche de se perdre sous un nom comme « aaaa »?"}
+        },
+        {
+          "id": "folder",
+          "text": {"en": "Put the file in the right folder: \"Posters\".", "fr": "Classer le fichier dans le bon dossier : « Affiches »."},
+          "hint": {"en": "The file has a good name. Now, where should it live?", "fr": "Le fichier a un bon nom. Maintenant, où devrait-il être rangé?"}
+        },
+        {
+          "id": "peer",
+          "text": {"en": "Ask a friend to find the file, as a test.", "fr": "Demander à un ami ou à une amie de retrouver le fichier, pour vérifier."},
+          "hint": {"en": "The last step is a test: can someone else find it?", "fr": "La dernière étape est un test : quelqu’un d’autre peut-il le retrouver?"}
+        }
+      ],
+      "success": {"en": "A solid routine: create, name, file and test. If a peer can find it, your organization works.", "fr": "Une bonne routine : créer, nommer, classer et vérifier. Si un pair le retrouve, ton organisation fonctionne."},
+      "flag": "zoe_files_ok",
+      "teacherNote": {"en": "Ask: what naming rule could our class agree on so files are easy to find, even for a peer?", "fr": "Demandez : sur quelle règle pour nommer les fichiers la classe pourrait-elle s’entendre pour qu’ils soient faciles à trouver, même pour un pair?"}
+    },
+    {
+      "id": "fern_energy_c2",
+      "family": "fern_energy",
+      "tiers": ["E2"],
+      "element": "1b",
+      "dcf": ["D1"],
+      "type": "sort",
+      "application": {"en": "Identify actions that reduce the environmental impact of their use of digital technology.", "fr": "Identifier des gestes qui diminuent les répercussions de son usage du numérique sur l’environnement."},
+      "prompt": {"en": "Fern is making a sign. Which habits are good for the planet? Which ones waste?", "fr": "Fern prépare une affiche. Quels gestes sont bons pour la planète? Lesquels gaspillent?"},
+      "bins": [
+        {
+          "id": "good",
+          "icon": "leaf",
+          "text": {"en": "Good for the planet", "fr": "Bon pour la planète"}
+        },
+        {"id": "waste", "icon": "trash", "text": {"en": "Wastes", "fr": "Gaspille"}}
+      ],
+      "items": [
+        {
+          "id": "off",
+          "icon": "tablet",
+          "text": {"en": "Turn the tablet off when you are done.", "fr": "Éteindre la tablette quand on a fini."},
+          "bin": "good",
+          "hint": {"en": "A screen that is off uses no energy. Good for the planet!", "fr": "Un écran éteint n’utilise pas d’énergie. C’est bon pour la planète!"}
+        },
+        {
+          "id": "video",
+          "icon": "play",
+          "text": {"en": "Leave a video playing when nobody is watching.", "fr": "Laisser jouer une vidéo quand personne ne la regarde."},
+          "bin": "waste",
+          "hint": {"en": "A video that plays for nobody uses energy for nothing.", "fr": "Une vidéo qui joue pour personne utilise de l’énergie pour rien."}
+        },
+        {
+          "id": "care",
+          "icon": "like",
+          "text": {"en": "Take good care of a device so it lasts a long time.", "fr": "Prendre soin d’un appareil pour qu’il dure longtemps."},
+          "bin": "good",
+          "hint": {"en": "A device that lasts longer means fewer new ones to build. That saves materials.", "fr": "Un appareil qui dure longtemps, c’est moins d’appareils à fabriquer. Ça économise des matériaux."}
+        },
+        {
+          "id": "bury",
+          "icon": "trash",
+          "text": {"en": "Throw an old tablet in the garbage, or in the garden.", "fr": "Jeter une vieille tablette à la poubelle, ou dans le jardin."},
+          "bin": "waste",
+          "hint": {"en": "Old devices have materials that can be used again. They go to a recycling depot, not in the garbage.", "fr": "Les vieux appareils contiennent des matériaux réutilisables. On les apporte à l’écocentre, pas à la poubelle."}
+        }
+      ],
+      "success": {"en": "Fern's sign is ready! Devices need energy and materials. Good habits use less of both.", "fr": "L’affiche de Fern est prête! Les appareils ont besoin d’énergie et de matériaux. Les bons gestes en utilisent moins."},
+      "flag": "fern_energy_ok",
+      "teacherNote": {"en": "Ask: what is one thing our class could do to use less energy with our devices?", "fr": "Demandez : que pourrait faire la classe pour utiliser moins d’énergie avec ses appareils?"}
+    },
+    {
+      "id": "fern_energy_c3",
+      "family": "fern_energy",
+      "tiers": ["E3"],
+      "element": "1b",
+      "dcf": ["D1"],
+      "type": "match",
+      "application": {"en": "Identify and explain the stages of the life cycle of a digital device, from design to the end of its useful life, as well as the environmental impact.", "fr": "Identifier et expliquer les étapes du cycle de vie d’un appareil numérique, de sa conception à sa fin de vie utile, ainsi que les répercussions sur l’environnement."},
+      "prompt": {"en": "Match each stage in the life of a device with its effect on the environment.", "fr": "Associe chaque étape de la vie d’un appareil à son effet sur l’environnement."},
+      "leftTitle": {"en": "Stage", "fr": "Étape"},
+      "rightTitle": {"en": "Effect on the environment", "fr": "Effet sur l’environnement"},
+      "pairs": [
+        {
+          "id": "design",
+          "left": {"text": {"en": "Design", "fr": "Conception"}},
+          "right": {
+            "text": {"en": "Decides how long it will last and whether it can be repaired", "fr": "Détermine sa durée de vie et s’il pourra être réparé"}
+          },
+          "hint": {"en": "At this stage, nothing is built yet. People are making plans and choices.", "fr": "À cette étape, rien n’est encore construit. On fait des plans et des choix."}
+        },
+        {
+          "id": "make",
+          "left": {"text": {"en": "Manufacturing", "fr": "Fabrication"}},
+          "right": {
+            "text": {"en": "Takes metals and other natural resources, and energy to build it", "fr": "Demande des métaux et d’autres ressources naturelles, et de l’énergie pour le construire"}
+          },
+          "hint": {"en": "Where do the materials inside a tablet come from?", "fr": "D’où viennent les matériaux à l’intérieur d’une tablette?"}
+        },
+        {
+          "id": "use",
+          "left": {"text": {"en": "Use", "fr": "Utilisation"}},
+          "right": {
+            "text": {"en": "Uses electricity each time it is charged or goes online", "fr": "Consomme de l’électricité à chaque recharge et à chaque connexion"}
+          },
+          "hint": {"en": "This is the stage you know best. What does the device need every day?", "fr": "C’est l’étape que tu connais le mieux. De quoi l’appareil a-t-il besoin chaque jour?"}
+        },
+        {
+          "id": "end",
+          "left": {"text": {"en": "End of useful life", "fr": "Fin de vie utile"}},
+          "right": {
+            "text": {"en": "Becomes electronic waste, unless it is repaired, reused or recycled", "fr": "Devient un déchet électronique, sauf s’il est réparé, réutilisé ou recyclé"}
+          },
+          "hint": {"en": "What happened to the tablet Fern dug up? What should have happened?", "fr": "Qu’est-il arrivé à la tablette que Fern a déterrée? Qu’aurait-il fallu faire?"}
+        }
+      ],
+      "success": {"en": "That is the life cycle! Keeping a device longer, with care and repairs, reduces its impact at every stage.", "fr": "Voilà le cycle de vie! Garder un appareil plus longtemps, en l’entretenant et en le réparant, réduit son impact à chaque étape."},
+      "flag": "fern_energy_ok",
+      "teacherNote": {"en": "Ask: at which stage can a student make the biggest difference? Why?", "fr": "Demandez : à quelle étape un ou une élève peut-il ou elle faire la plus grande différence? Pourquoi?"}
+    },
+    {
+      "id": "sami_image_c2",
+      "family": "sami_image",
+      "tiers": ["E2"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "spot",
+      "application": {"en": "Examine and discuss an image produced by generative artificial intelligence (GenAI) provided by their teacher. Ask themselves, for example: Is this real? How might this image influence other people?", "fr": "Observer une image générée par l’intelligence artificielle générative (IAG) fournie par son enseignante ou son enseignant et en discuter. Se demander, par exemple : est-ce réel? Comment cette image peut-elle influencer les autres?"},
+      "prompt": {"en": "Is this picture real? Find the 3 clues.", "fr": "Cette image est-elle réelle? Trouve les 3 indices."},
+      "help": {"en": "Tap the parts of the picture that show it is not real.", "fr": "Touche les parties de l’image qui montrent qu’elle n’est pas réelle."},
+      "picture": "assets/pictures/giant_duck.png",
+      "pictureAlt": {"en": "A picture of the village pond. A yellow duck stands taller than the house beside it. The duck has three legs. There are two suns in the sky.", "fr": "Une image de l’étang du village. Un canard jaune est plus grand que la maison à côté de lui. Le canard a trois pattes. Il y a deux soleils dans le ciel."},
+      "spots": [
+        {
+          "id": "duck",
+          "clue": true,
+          "x": 27,
+          "y": 10,
+          "w": 44,
+          "h": 56,
+          "name": {"en": "The giant duck", "fr": "Le canard géant"},
+          "why": {"en": "A duck is much smaller than a house. This size is not possible.", "fr": "Un canard est bien plus petit qu’une maison. Cette taille est impossible."}
+        },
+        {
+          "id": "legs",
+          "clue": true,
+          "x": 35,
+          "y": 69,
+          "w": 21,
+          "h": 18,
+          "name": {"en": "Three legs", "fr": "Trois pattes"},
+          "why": {"en": "Ducks have two legs. Pictures made by AI often have mistakes like this.", "fr": "Les canards ont deux pattes. Les images créées par l’IA ont souvent des erreurs comme celle-ci."}
+        },
+        {
+          "id": "suns",
+          "clue": true,
+          "x": 70,
+          "y": 1,
+          "w": 24,
+          "h": 19,
+          "name": {"en": "Two suns", "fr": "Deux soleils"},
+          "why": {"en": "Our sky has only one sun.", "fr": "Notre ciel n’a qu’un seul soleil."}
+        },
+        {
+          "id": "house",
+          "clue": false,
+          "x": 3,
+          "y": 37,
+          "w": 24,
+          "h": 37,
+          "name": {"en": "The house", "fr": "La maison"},
+          "hint": {"en": "The house looks normal. Look for something that could not happen in real life.", "fr": "La maison a l’air normale. Cherche quelque chose qui ne pourrait pas arriver dans la vraie vie."}
+        },
+        {
+          "id": "pond",
+          "clue": false,
+          "x": 57,
+          "y": 79,
+          "w": 37,
+          "h": 20,
+          "name": {"en": "The pond", "fr": "L’étang"},
+          "hint": {"en": "The pond looks like our pond. Look at the duck and at the sky.", "fr": "L’étang ressemble au nôtre. Regarde le canard et le ciel."}
+        }
+      ],
+      "success": {"en": "Good eyes! This picture is not real. A computer program made it.", "fr": "Bien vu! Cette image n’est pas réelle. Un programme d’ordinateur l’a créée."},
+      "flag": "sami_image_ok",
+      "teacherNote": {"en": "Show an AI-generated image of your choice. Ask: is this real? What makes you say so?", "fr": "Montrez une image générée par l’IA de votre choix. Demandez : est-ce réel? Qu’est-ce qui vous le fait dire?"}
+    },
+    {
+      "id": "sami_image_c3",
+      "family": "sami_image",
+      "tiers": ["E3"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "spot",
+      "application": {"en": "Examine and discuss an image produced by generative artificial intelligence (GenAI) provided by their teacher. Ask themselves, for example: Is this real? How might this image influence other people?", "fr": "Observer une image générée par l’intelligence artificielle générative (IAG) fournie par son enseignante ou son enseignant et en discuter. Se demander, par exemple : est-ce réel? Comment cette image peut-elle influencer les autres?"},
+      "prompt": {"en": "Is this real? Examine the image and find the 3 things that could not exist.", "fr": "Est-ce réel? Examine l’image et trouve les 3 choses qui ne pourraient pas exister."},
+      "help": {"en": "Tap the parts of the picture that show it is not real.", "fr": "Touche les parties de l’image qui montrent qu’elle n’est pas réelle."},
+      "picture": "assets/pictures/giant_duck.png",
+      "pictureAlt": {"en": "A picture of the village pond. A yellow duck stands taller than the house beside it. The duck has three legs. There are two suns in the sky.", "fr": "Une image de l’étang du village. Un canard jaune est plus grand que la maison à côté de lui. Le canard a trois pattes. Il y a deux soleils dans le ciel."},
+      "spots": [
+        {
+          "id": "duck",
+          "clue": true,
+          "x": 27,
+          "y": 10,
+          "w": 44,
+          "h": 56,
+          "name": {"en": "The giant duck", "fr": "Le canard géant"},
+          "why": {"en": "Compared with the house and the tree, this duck is impossibly large.", "fr": "Comparé à la maison et à l’arbre, ce canard est d’une taille impossible."}
+        },
+        {
+          "id": "legs",
+          "clue": true,
+          "x": 35,
+          "y": 69,
+          "w": 21,
+          "h": 18,
+          "name": {"en": "Three legs", "fr": "Trois pattes"},
+          "why": {"en": "Ducks have two legs. Generative AI can produce details that look right at first but are wrong.", "fr": "Les canards ont deux pattes. L’IA générative peut produire des détails qui semblent corrects, mais qui sont faux."}
+        },
+        {
+          "id": "suns",
+          "clue": true,
+          "x": 70,
+          "y": 1,
+          "w": 24,
+          "h": 19,
+          "name": {"en": "Two suns", "fr": "Deux soleils"},
+          "why": {"en": "There is only one sun in our sky. A second one breaks the rules of the real world.", "fr": "Il n’y a qu’un soleil dans notre ciel. Un deuxième ne respecte pas les règles du monde réel."}
+        },
+        {
+          "id": "house",
+          "clue": false,
+          "x": 3,
+          "y": 37,
+          "w": 24,
+          "h": 37,
+          "name": {"en": "The house", "fr": "La maison"},
+          "hint": {"en": "Nothing odd here. Compare the sizes of the things in the picture.", "fr": "Rien d’étrange ici. Compare la taille des choses dans l’image."}
+        },
+        {
+          "id": "pond",
+          "clue": false,
+          "x": 57,
+          "y": 79,
+          "w": 37,
+          "h": 20,
+          "name": {"en": "The pond", "fr": "L’étang"},
+          "hint": {"en": "The pond looks fine. Try counting things: legs, suns...", "fr": "L’étang semble normal. Essaie de compter des choses : les pattes, les soleils..."}
+        },
+        {
+          "id": "tree",
+          "clue": false,
+          "x": 82,
+          "y": 33,
+          "w": 16,
+          "h": 43,
+          "name": {"en": "The tree", "fr": "L’arbre"},
+          "hint": {"en": "A normal tree. What in this picture breaks the rules of the real world?", "fr": "Un arbre normal. Qu’est-ce qui, dans cette image, ne respecte pas les règles du monde réel?"}
+        }
+      ],
+      "success": {"en": "Well examined! Impossible sizes and odd details are clues. Some AI images have no clues at all, so always ask where an image comes from.", "fr": "Bien observé! Les tailles impossibles et les détails étranges sont des indices. Certaines images créées par l’IA n’en ont aucun : demande-toi toujours d’où vient une image."},
+      "flag": "sami_image_ok",
+      "teacherNote": {"en": "Show an AI-generated image of your choice. Ask: is this real? How might this image influence other people?", "fr": "Montrez une image générée par l’IA de votre choix. Demandez : est-ce réel? Comment cette image peut-elle influencer les autres?"}
+    },
+    {
+      "id": "sami_share_c2",
+      "family": "sami_share",
+      "tiers": ["E2"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "choice",
+      "application": {"en": "Examine and discuss an image produced by generative artificial intelligence (GenAI) provided by their teacher. Ask themselves, for example: Is this real? How might this image influence other people?", "fr": "Observer une image générée par l’intelligence artificielle générative (IAG) fournie par son enseignante ou son enseignant et en discuter. Se demander, par exemple : est-ce réel? Comment cette image peut-elle influencer les autres?"},
+      "prompt": {"en": "Sami wants to send the picture to everyone with the words \"Giant duck in our pond!\" What could happen?", "fr": "Sami veut envoyer l’image à tout le monde avec les mots « Canard géant dans notre étang! » Que pourrait-il arriver?"},
+      "options": [
+        {
+          "text": {"en": "Some people could believe it and get scared for nothing.", "fr": "Des gens pourraient y croire et avoir peur pour rien."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Nothing. Everyone always knows what is real.", "fr": "Rien. Tout le monde sait toujours ce qui est réel."},
+          "hint": {"en": "Sami believed it at first! Other people could believe it too.", "fr": "Sami y a cru au début! D’autres personnes pourraient y croire aussi."}
+        },
+        {
+          "text": {"en": "The real ducks will grow bigger.", "fr": "Les vrais canards vont grossir."},
+          "hint": {"en": "A picture can't change the ducks. But it can change what people think.", "fr": "Une image ne peut pas changer les canards. Mais elle peut changer ce que les gens pensent."}
+        }
+      ],
+      "success": {"en": "Right! A picture can make people believe things. It is better to say it was made by AI.", "fr": "Exact! Une image peut faire croire des choses aux gens. Mieux vaut dire qu’elle a été créée par l’IA."},
+      "flag": "sami_share_ok",
+      "teacherNote": {"en": "Ask: how might this image influence other people?", "fr": "Demandez : comment cette image peut-elle influencer les autres?"}
+    },
+    {
+      "id": "sami_share_c3",
+      "family": "sami_share",
+      "tiers": ["E3"],
+      "element": "1a",
+      "dcf": ["D1"],
+      "type": "choice",
+      "application": {"en": "Examine and discuss an image produced by generative artificial intelligence (GenAI) provided by their teacher. Ask themselves, for example: Is this real? How might this image influence other people?", "fr": "Observer une image générée par l’intelligence artificielle générative (IAG) fournie par son enseignante ou son enseignant et en discuter. Se demander, par exemple : est-ce réel? Comment cette image peut-elle influencer les autres?"},
+      "prompt": {"en": "Sami still wants to share the image. Which way of sharing it has the best effect on other people?", "fr": "Sami veut quand même partager l’image. Quelle façon de la partager a le meilleur effet sur les autres?"},
+      "options": [
+        {
+          "text": {"en": "Share it and say clearly that it was made by AI, for fun.", "fr": "La partager en disant clairement qu’elle a été créée par l’IA, pour s’amuser."},
+          "correct": true
+        },
+        {
+          "text": {"en": "Share it with \"BREAKING NEWS: giant duck!\" to get more reactions.", "fr": "La partager avec « DERNIÈRE HEURE : canard géant! » pour avoir plus de réactions."},
+          "hint": {"en": "More reactions, but people may believe it or pass it on. What effect would that have?", "fr": "Plus de réactions, mais des gens pourraient y croire ou la repartager. Quel effet cela aurait-il?"}
+        },
+        {
+          "text": {"en": "Share it with no words. People will figure it out.", "fr": "La partager sans rien écrire. Les gens vont comprendre."},
+          "hint": {"en": "Sami did not figure it out at first. What would help the people who see it?", "fr": "Sami n’a pas compris au début. Qu’est-ce qui aiderait les gens qui la verront?"}
+        },
+        {
+          "text": {"en": "Tell people the photo was taken this morning.", "fr": "Dire aux gens que la photo a été prise ce matin."},
+          "hint": {"en": "That is not true, and it makes the image more convincing. Who could be misled?", "fr": "C’est faux, et cela rend l’image plus convaincante. Qui pourrait être trompé?"}
+        }
+      ],
+      "success": {"en": "Good thinking! An image can influence what people believe and do. Saying how it was made lets them judge for themselves.", "fr": "Bien réfléchi! Une image peut influencer ce que les gens croient et font. Dire comment elle a été créée leur permet de juger par eux-mêmes."},
+      "flag": "sami_share_ok",
+      "teacherNote": {"en": "Ask: have you ever seen an image online and wondered if it was real? What did you do?", "fr": "Demandez : avez-vous déjà vu une image en ligne en vous demandant si elle était réelle? Qu’avez-vous fait?"}
+    },
+    {
+      "id": "pip_network_c2",
+      "family": "pip_network",
+      "tiers": ["E2"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "spot",
+      "application": {"en": "Determine whether a digital device is connected to a network.", "fr": "Reconnaître si l’outil numérique est connecté ou non à un réseau."},
+      "prompt": {"en": "Pip's email will not send. Find the clue on the screen.", "fr": "Le courriel de Pip ne part pas. Trouve l’indice à l’écran."},
+      "help": {"en": "Tap the part of the screen that shows why the email will not send.", "fr": "Touche la partie de l’écran qui montre pourquoi le courriel ne part pas."},
+      "picture": "assets/pictures/tablet_offline.png",
+      "pictureAlt": {"en": "A tablet screen. An envelope is waiting to be sent. At the top of the screen: a Wi-Fi icon with a line through it, a speaker icon and a full battery icon.", "fr": "L’écran d’une tablette. Une enveloppe attend d’être envoyée. En haut de l’écran : une icône Wi-Fi barrée, une icône de haut-parleur et une icône de pile pleine."},
+      "spots": [
+        {
+          "id": "wifi",
+          "clue": true,
+          "x": 11.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Wi-Fi icon with a line through it", "fr": "Icône Wi-Fi barrée"},
+          "why": {"en": "The line means the tablet is not connected to the network. No network, no email.", "fr": "La barre veut dire que la tablette n’est pas connectée au réseau. Sans réseau, pas de courriel."}
+        },
+        {
+          "id": "battery",
+          "clue": false,
+          "x": 76.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Battery", "fr": "Pile"},
+          "hint": {"en": "The battery is full. That is not the problem. Look for an icon with a line through it.", "fr": "La pile est pleine. Ce n’est pas le problème. Cherche une icône barrée."}
+        },
+        {
+          "id": "sound",
+          "clue": false,
+          "x": 61.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Sound", "fr": "Son"},
+          "hint": {"en": "The sound is on, but an email does not need sound. Look for an icon with a line through it.", "fr": "Le son est activé, mais un courriel n’a pas besoin de son. Cherche une icône barrée."}
+        },
+        {
+          "id": "email",
+          "clue": false,
+          "x": 28,
+          "y": 41,
+          "w": 34,
+          "h": 37,
+          "name": {"en": "The email", "fr": "Le courriel"},
+          "hint": {"en": "The email is ready and waiting. Something else is stopping it. Look at the top of the screen.", "fr": "Le courriel est prêt et il attend. Autre chose le bloque. Regarde en haut de l’écran."}
+        }
+      ],
+      "success": {"en": "You found it! The Wi-Fi icon shows if a device is connected to the network.", "fr": "Tu l’as trouvé! L’icône Wi-Fi montre si un appareil est connecté au réseau."},
+      "flag": "pip_network_ok",
+      "teacherNote": {"en": "Ask: how can you tell that the device you use at school is connected to the network?", "fr": "Demandez : comment voit-on que l’appareil utilisé à l’école est connecté au réseau?"}
+    },
+    {
+      "id": "pip_network_c3",
+      "family": "pip_network",
+      "tiers": ["E3"],
+      "element": "3a",
+      "dcf": ["D2"],
+      "type": "spot",
+      "application": {"en": "Determine whether a digital device is connected to a network.", "fr": "Reconnaître si l’outil numérique est connecté ou non à un réseau."},
+      "prompt": {"en": "Pip's email is stuck. Find the 2 indicators that show the tablet is not connected.", "fr": "Le courriel de Pip est bloqué. Trouve les 2 indicateurs qui montrent que la tablette n’est pas connectée."},
+      "help": {"en": "Tap the part of the screen that shows why the email will not send.", "fr": "Touche la partie de l’écran qui montre pourquoi le courriel ne part pas."},
+      "picture": "assets/pictures/tablet_offline_plane.png",
+      "pictureAlt": {"en": "A tablet screen. An envelope is waiting to be sent, with a waiting ring beside it. At the top of the screen: a Wi-Fi icon with a line through it, an airplane icon, a speaker icon and a full battery icon.", "fr": "L’écran d’une tablette. Une enveloppe attend d’être envoyée, avec un cercle d’attente à côté. En haut de l’écran : une icône Wi-Fi barrée, une icône d’avion, une icône de haut-parleur et une icône de pile pleine."},
+      "spots": [
+        {
+          "id": "wifi",
+          "clue": true,
+          "x": 11.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Wi-Fi icon with a line through it", "fr": "Icône Wi-Fi barrée"},
+          "why": {"en": "A crossed-out Wi-Fi icon means there is no connection to the wireless network.", "fr": "Une icône Wi-Fi barrée signifie qu’il n’y a aucune connexion au réseau sans fil."}
+        },
+        {
+          "id": "plane",
+          "clue": true,
+          "x": 26.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Airplane mode icon", "fr": "Icône du mode avion"},
+          "why": {"en": "Airplane mode turns off network connections such as Wi-Fi. Turning it off reconnects the tablet.", "fr": "Le mode avion coupe les connexions au réseau, comme le Wi-Fi. Le désactiver reconnecte la tablette."}
+        },
+        {
+          "id": "battery",
+          "clue": false,
+          "x": 76.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Battery", "fr": "Pile"},
+          "hint": {"en": "The battery is full, so power is not the cause. Which indicators are about the network?", "fr": "La pile est pleine, donc l’alimentation n’est pas en cause. Quels indicateurs concernent le réseau?"}
+        },
+        {
+          "id": "sound",
+          "clue": false,
+          "x": 61.5,
+          "y": 8,
+          "w": 12,
+          "h": 19,
+          "name": {"en": "Sound", "fr": "Son"},
+          "hint": {"en": "Sound has nothing to do with sending. Which indicators are about the network?", "fr": "Le son n’a rien à voir avec l’envoi. Quels indicateurs concernent le réseau?"}
+        },
+        {
+          "id": "email",
+          "clue": false,
+          "x": 28,
+          "y": 41,
+          "w": 34,
+          "h": 37,
+          "name": {"en": "The email", "fr": "Le courriel"},
+          "hint": {"en": "The message is waiting. That is a symptom, not the cause. Check the top of the screen.", "fr": "Le message attend. C’est un symptôme, pas la cause. Vérifie le haut de l’écran."}
+        },
+        {
+          "id": "ring",
+          "clue": false,
+          "x": 65.5,
+          "y": 49,
+          "w": 13,
+          "h": 20,
+          "name": {"en": "The waiting ring", "fr": "Le cercle d’attente"},
+          "hint": {"en": "The ring only shows that the tablet is still trying. Why can't it finish?", "fr": "Le cercle montre seulement que la tablette essaie encore. Pourquoi n’y arrive-t-elle pas?"}
+        }
+      ],
+      "success": {"en": "Solved! Checking the network indicators is a good first step when something will not send or load.", "fr": "Résolu! Vérifier les indicateurs de réseau est une bonne première étape quand quelque chose ne s’envoie pas ou ne se charge pas."},
+      "flag": "pip_network_ok",
+      "teacherNote": {"en": "Ask: what could you check on your own when a page or a file will not load?", "fr": "Demandez : que pourriez-vous vérifier par vous-mêmes quand une page ou un fichier ne se charge pas?"}
+    },
+    {
+      "id": "bruno_notify_c2",
+      "family": "bruno_notify",
+      "tiers": ["E2"],
+      "element": "1c",
+      "dcf": ["D1"],
+      "type": "choice",
+      "application": {"en": "Identify strategies to minimize influencing factors, such as turning off sound notifications.", "fr": "Identifier des stratégies qui lui permettent d’atténuer des facteurs d’influence, par exemple enlever les notifications sonores."},
+      "prompt": {"en": "The game keeps dinging and Bruno keeps burning his buns. What will help him the most?", "fr": "Le jeu sonne sans arrêt et Bruno brûle ses petits pains. Qu’est-ce qui l’aidera le plus?"},
+      "options": [
+        {
+          "icon": "mute",
+          "text": {"en": "Turn off the game's sound notifications.", "fr": "Désactiver les notifications sonores du jeu."},
+          "correct": true
+        },
+        {
+          "icon": "bell",
+          "text": {"en": "Turn the volume up so he never misses a ding.", "fr": "Monter le volume pour ne manquer aucun son."},
+          "hint": {"en": "More dings will pull him away even more. What would make the dings stop?", "fr": "Plus de sons vont l’éloigner encore plus. Qu’est-ce qui ferait arrêter les sons?"}
+        },
+        {
+          "icon": "bread",
+          "text": {"en": "Bake faster between two dings.", "fr": "Cuisiner plus vite entre deux sons."},
+          "hint": {"en": "The dings will keep coming. Make them stop: turn the notifications off.", "fr": "Les sons vont continuer. Fais-les arrêter : désactive les notifications."}
+        }
+      ],
+      "success": {"en": "Peace and quiet! With the notifications off, Bruno chooses when he plays.", "fr": "Enfin le calme! Sans les notifications, c’est Bruno qui choisit quand il joue."},
+      "flag": "bruno_notify_ok",
+      "teacherNote": {"en": "Ask: what pulls you back to a game or a video? What could you do about it?", "fr": "Demandez : qu’est-ce qui vous ramène vers un jeu ou une vidéo? Que pourriez-vous faire?"}
+    },
+    {
+      "id": "bruno_notify_c3",
+      "family": "bruno_notify",
+      "tiers": ["E3"],
+      "element": "1c",
+      "dcf": ["D1"],
+      "type": "sort",
+      "application": {"en": "Recognize the technological mechanisms that shape and guide their digital consumption, such as notifications and recommendation algorithms.", "fr": "Reconnaître des mécanismes technologiques façonnant et orientant sa consommation du numérique, comme des notifications et des algorithmes de recommandation."},
+      "prompt": {"en": "Why is it so hard for Bruno to stop? Sort each feature.", "fr": "Pourquoi Bruno a-t-il tant de mal à arrêter? Classe chaque fonction."},
+      "bins": [
+        {
+          "id": "pull",
+          "icon": "bell",
+          "text": {"en": "Made to keep you on the app", "fr": "Conçu pour te garder dans l’application"}
+        },
+        {"id": "tool", "text": {"en": "A tool you control", "fr": "Un outil que tu contrôles"}}
+      ],
+      "items": [
+        {
+          "id": "streak",
+          "icon": "bell",
+          "text": {"en": "\"DING! Your 12-day streak ends in 1 hour!\"", "fr": "« DING! Ta série de 12 jours se termine dans 1 heure! »"},
+          "bin": "pull",
+          "hint": {"en": "Who benefits if Bruno opens the game right now?", "fr": "À qui cela profite-t-il si Bruno ouvre le jeu maintenant?"}
+        },
+        {
+          "id": "autoplay",
+          "icon": "play",
+          "text": {"en": "The next video starts by itself in 5 seconds.", "fr": "La vidéo suivante démarre toute seule dans 5 secondes."},
+          "bin": "pull",
+          "hint": {"en": "Bruno did not choose the next video. What does the app want him to do?", "fr": "Bruno n’a pas choisi la vidéo suivante. Que veut l’application?"}
+        },
+        {
+          "id": "timer",
+          "icon": "bread",
+          "text": {"en": "The oven timer Bruno set for 15 minutes", "fr": "La minuterie du four que Bruno a réglée à 15 minutes"},
+          "bin": "tool",
+          "hint": {"en": "Bruno set this one himself, for his own goal. Who is in control?", "fr": "Bruno l’a réglée lui-même, pour son propre but. Qui contrôle?"}
+        },
+        {
+          "id": "reco",
+          "icon": "star",
+          "text": {"en": "\"Recommended for you: 20 more bread videos\"", "fr": "« Recommandé pour toi : 20 autres vidéos de pain »"},
+          "bin": "pull",
+          "hint": {"en": "A recommendation algorithm picks what is most likely to keep him watching.", "fr": "Un algorithme de recommandation choisit ce qui a le plus de chances de le garder devant l’écran."}
+        },
+        {
+          "id": "limit",
+          "icon": "lock",
+          "text": {"en": "A daily time limit Bruno chose for the game", "fr": "Une limite de temps par jour que Bruno a choisie pour le jeu"},
+          "bin": "tool",
+          "hint": {"en": "This setting helps Bruno keep a balance. Who decided on it?", "fr": "Ce réglage aide Bruno à garder un équilibre. Qui l’a décidé?"}
+        }
+      ],
+      "success": {"en": "Well spotted! Notifications, streaks, autoplay and recommendations are designed to hold attention. Turning off notifications is one way to take back control.", "fr": "Bien vu! Les notifications, les séries, la lecture automatique et les recommandations sont conçues pour retenir l’attention. Désactiver les notifications est une façon de reprendre le contrôle."},
+      "flag": "bruno_notify_ok",
+      "teacherNote": {"en": "Ask: which of these mechanisms have you noticed in the apps you use? How do they change your habits?", "fr": "Demandez : lesquels de ces mécanismes avez-vous remarqués dans les applications que vous utilisez? Comment changent-ils vos habitudes?"}
+    },
+    {
+      "id": "rosa_voice_c2",
+      "family": "rosa_voice",
+      "tiers": ["E2"],
+      "element": "3b",
+      "dcf": ["D2"],
+      "type": "match",
+      "application": {"en": "Use assistive features, such as text-to-speech or voice dictation, to support text comprehension or production.", "fr": "Utiliser des fonctions d’aide, par exemple la synthèse vocale ou la dictée vocale, pour soutenir sa compréhension ou sa production de textes."},
+      "prompt": {"en": "Match what Rosa wants to do with the right helper on her tablet.", "fr": "Associe ce que Rosa veut faire à la bonne fonction d’aide de sa tablette."},
+      "leftTitle": {"en": "Rosa wants to...", "fr": "Rosa veut..."},
+      "rightTitle": {"en": "Helper", "fr": "Fonction d’aide"},
+      "pairs": [
+        {
+          "id": "listen",
+          "left": {
+            "icon": "speaker",
+            "text": {"en": "Hear a long message read out loud", "fr": "Entendre un long message lu à voix haute"}
+          },
+          "right": {"text": {"en": "Text-to-speech", "fr": "Synthèse vocale"}},
+          "hint": {"en": "Text-to-speech reads the words on the screen out loud.", "fr": "La synthèse vocale lit à voix haute les mots à l’écran."}
+        },
+        {
+          "id": "talk",
+          "left": {
+            "icon": "mic",
+            "text": {"en": "Write a message by talking", "fr": "Écrire un message en parlant"}
+          },
+          "right": {"text": {"en": "Voice dictation", "fr": "Dictée vocale"}},
+          "hint": {"en": "With voice dictation, you talk and the tablet writes your words.", "fr": "Avec la dictée vocale, tu parles et la tablette écrit tes mots."}
+        },
+        {
+          "id": "big",
+          "left": {
+            "icon": "text",
+            "text": {"en": "See the letters bigger", "fr": "Voir les lettres plus grosses"}
+          },
+          "right": {"text": {"en": "Larger text size", "fr": "Texte plus gros"}},
+          "hint": {"en": "The text size setting makes every letter bigger.", "fr": "Le réglage de la taille du texte grossit toutes les lettres."}
+        }
+      ],
+      "success": {"en": "Now Rosa can listen, talk and see better. Helpers like these support reading and writing.", "fr": "Rosa peut maintenant écouter, dicter et mieux voir. Ces fonctions d’aide soutiennent la lecture et l’écriture."},
+      "flag": "rosa_voice_ok",
+      "teacherNote": {"en": "Ask: which helpers on our class devices have you tried? When could they help you?", "fr": "Demandez : quelles fonctions d’aide des appareils de la classe avez-vous essayées? Quand pourraient-elles vous aider?"}
+    },
+    {
+      "id": "rosa_voice_c3",
+      "family": "rosa_voice",
+      "tiers": ["E3"],
+      "element": "3b",
+      "dcf": ["D2"],
+      "type": "match",
+      "application": {"en": "Use assistive features, such as text-to-speech or voice dictation, to support text comprehension or production.", "fr": "Utiliser des fonctions d’aide, par exemple la synthèse vocale ou la dictée vocale, pour soutenir sa compréhension ou sa production de textes."},
+      "prompt": {"en": "Match each need with the assistive feature that supports it.", "fr": "Associe chaque besoin à la fonction d’aide qui y répond."},
+      "leftTitle": {"en": "Need", "fr": "Besoin"},
+      "rightTitle": {"en": "Assistive feature", "fr": "Fonction d’aide"},
+      "pairs": [
+        {
+          "id": "listen",
+          "left": {
+            "icon": "speaker",
+            "text": {"en": "Understand a long text without reading every word on the screen", "fr": "Comprendre un long texte sans lire chaque mot à l’écran"}
+          },
+          "right": {"text": {"en": "Text-to-speech", "fr": "Synthèse vocale"}},
+          "hint": {"en": "Which feature turns written text into spoken words?", "fr": "Quelle fonction transforme un texte écrit en paroles?"}
+        },
+        {
+          "id": "talk",
+          "left": {
+            "icon": "mic",
+            "text": {"en": "Write a reply without typing", "fr": "Rédiger une réponse sans taper au clavier"}
+          },
+          "right": {"text": {"en": "Voice dictation", "fr": "Dictée vocale"}},
+          "hint": {"en": "Which feature turns spoken words into written text?", "fr": "Quelle fonction transforme les paroles en texte écrit?"}
+        },
+        {
+          "id": "big",
+          "left": {
+            "icon": "text",
+            "text": {"en": "Read small letters more easily", "fr": "Lire plus facilement de petits caractères"}
+          },
+          "right": {"text": {"en": "Zoom or larger text size", "fr": "Zoom ou texte plus gros"}},
+          "hint": {"en": "Which setting changes how big things look on the screen?", "fr": "Quel réglage change la grosseur de ce qu’on voit à l’écran?"}
+        },
+        {
+          "id": "captions",
+          "left": {
+            "icon": "play",
+            "text": {"en": "Follow a video in a noisy room", "fr": "Suivre une vidéo dans un endroit bruyant"}
+          },
+          "right": {"text": {"en": "Captions", "fr": "Sous-titres"}},
+          "hint": {"en": "Which feature shows spoken words as text on the screen?", "fr": "Quelle fonction affiche à l’écran les paroles sous forme de texte?"}
+        }
+      ],
+      "success": {"en": "Well matched! Assistive features support understanding and writing text. Anyone can use them when they help.", "fr": "Bien associé! Les fonctions d’aide soutiennent la compréhension et la production de textes. Tout le monde peut les utiliser quand elles sont utiles."},
+      "flag": "rosa_voice_ok",
+      "teacherNote": {"en": "Ask: when would text-to-speech or voice dictation help you in your schoolwork?", "fr": "Demandez : dans quels travaux scolaires la synthèse vocale ou la dictée vocale vous aideraient-elles?"}
     }
-  ]
+  ],
+  "labels": {
+    "well": {"en": "Wishing well", "fr": "Puits à souhaits"},
+    "board": {"en": "Village board", "fr": "Babillard du village"},
+    "statue": {"en": "Statue", "fr": "Statue"},
+    "bench": {"en": "Bench", "fr": "Banc"},
+    "home": {"en": "Your house", "fr": "Ta maison"},
+    "mailbox": {"en": "Mailbox", "fr": "Boîte aux lettres"},
+    "duck": {"en": "Duck", "fr": "Canard"},
+    "cat": {"en": "Pixel the cat", "fr": "Pixel le chat"},
+    "chicken": {"en": "Chicken", "fr": "Poule"},
+    "pigeon": {"en": "Pigeon", "fr": "Pigeon"},
+    "scarecrow": {"en": "Scarecrow", "fr": "Épouvantail"},
+    "stump": {"en": "Tree stump", "fr": "Souche"},
+    "kite": {"en": "Kite in a tree", "fr": "Cerf-volant dans un arbre"},
+    "bakery": {"en": "Bakery door", "fr": "Porte de la boulangerie"}
+  },
+  "items": {
+    "golden_feather": {
+      "kind": "item",
+      "fx": 14,
+      "name": {"en": "Golden feather", "fr": "Plume dorée"},
+      "desc": {"en": "A gift from the ducks. It does nothing, but it is very shiny.", "fr": "Un cadeau des canards. Elle ne sert à rien, mais elle brille beaucoup."}
+    }
+  },
+  "arrivals": [
+    {"if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1"},
+    {"if": "got_piece_traces", "seen": "saw_grow_2", "node": "grow_2"},
+    {"if": "got_piece_keys", "seen": "saw_grow_3", "node": "grow_3"},
+    {"if": "got_piece_gallery", "seen": "saw_grow_4", "node": "grow_4"},
+    {"if": "area2_done", "seen": "saw_village_grow", "node": "village_grew"}
+  ],
+  "quests": {
+    "q_fixit": {
+      "title": {"en": "Théo's frozen app", "fr": "L’application gelée de Théo"},
+      "giver": "fixer",
+      "dcf": "D2",
+      "elements": ["4b"],
+      "families": ["fixer_steps", "fixer_first_try"],
+      "flag": "fixer_done"
+    },
+    "q_sound": {
+      "title": {"en": "Gus and the silent video", "fr": "Gus et la vidéo muette"},
+      "giver": "gus",
+      "dcf": "D2",
+      "elements": ["3a"],
+      "families": ["gus_parts", "gus_volume"],
+      "flag": "q_sound_done"
+    },
+    "q_kind": {
+      "title": {"en": "Kind words on the village board", "fr": "Des mots gentils sur le babillard"},
+      "giver": "noor",
+      "dcf": "D1",
+      "elements": ["1a"],
+      "families": ["noor_board"],
+      "flag": "q_kind_done"
+    },
+    "q_files": {
+      "title": {"en": "Zoé's lost poster", "fr": "L’affiche perdue de Zoé"},
+      "giver": "zoe",
+      "dcf": "D2",
+      "elements": ["4a"],
+      "families": ["zoe_files"],
+      "flag": "q_files_done",
+      "after": "got_lantern"
+    },
+    "q_green": {
+      "title": {"en": "Fern's garden sign", "fr": "L’affiche du jardin de Fern"},
+      "giver": "fern",
+      "dcf": "D1",
+      "elements": ["1b"],
+      "families": ["fern_energy"],
+      "flag": "q_green_done",
+      "after": "got_piece_traces"
+    },
+    "q_real": {
+      "title": {"en": "Sami and the giant duck", "fr": "Sami et le canard géant"},
+      "giver": "sami",
+      "dcf": "D1",
+      "elements": ["1a"],
+      "families": ["sami_image", "sami_share"],
+      "flag": "q_real_done",
+      "after": "got_piece_keys"
+    },
+    "q_wifi": {
+      "title": {"en": "Pip's stuck email", "fr": "Le courriel coincé de Pip"},
+      "giver": "pip",
+      "dcf": "D2",
+      "elements": ["3a"],
+      "families": ["pip_network"],
+      "flag": "q_wifi_done",
+      "after": "got_piece_gallery"
+    },
+    "q_ding": {
+      "title": {"en": "Bruno and the dinging game", "fr": "Bruno et le jeu qui sonne"},
+      "giver": "bruno",
+      "dcf": "D1",
+      "elements": ["1c"],
+      "families": ["bruno_notify"],
+      "flag": "q_ding_done",
+      "after": "area2_done"
+    },
+    "q_voice": {
+      "title": {"en": "Rosa's talking tablet", "fr": "La tablette parlante de Rosa"},
+      "giver": "elder",
+      "dcf": "D2",
+      "elements": ["3b"],
+      "families": ["rosa_voice"],
+      "flag": "q_voice_done",
+      "after": "area2_done"
+    }
+  },
+  "reflections": [
+    {
+      "id": "r_hub_fixit",
+      "element": "4b",
+      "after": "fixer_done",
+      "speaker": "fixer",
+      "prompt": {"en": "When something stops working on a device, what do you usually do first?", "fr": "Quand quelque chose ne fonctionne plus sur un appareil, que fais-tu d’habitude en premier?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "I try to fix it myself.", "fr": "J’essaie de régler le problème par moi-même."}
+        },
+        {
+          "id": "b",
+          "text": {"en": "I look for help in the app.", "fr": "Je cherche de l’aide dans l’application."}
+        },
+        {"id": "c", "text": {"en": "I ask someone.", "fr": "Je demande à quelqu’un."}}
+      ]
+    },
+    {
+      "id": "r_hub_sound",
+      "element": "3a",
+      "after": "q_sound_done",
+      "speaker": "gus",
+      "prompt": {"en": "Which part of a device would you like to understand better?", "fr": "Quelle partie d’un appareil aimerais-tu mieux comprendre?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "The keyboard and its keys", "fr": "Le clavier et ses touches"}
+        },
+        {"id": "b", "text": {"en": "The sound and the volume", "fr": "Le son et le volume"}},
+        {
+          "id": "c",
+          "text": {"en": "The icons at the top of the screen", "fr": "Les icônes en haut de l’écran"}
+        }
+      ]
+    },
+    {
+      "id": "r_hub_kind",
+      "element": "1a",
+      "after": "q_kind_done",
+      "speaker": "noor",
+      "prompt": {"en": "Before you send a message, what helps you choose your words?", "fr": "Avant d’envoyer un message, qu’est-ce qui t’aide à choisir tes mots?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "I think about how the person will feel.", "fr": "Je pense à ce que la personne va ressentir."}
+        },
+        {
+          "id": "b",
+          "text": {"en": "I read it one more time.", "fr": "Je le relis une autre fois."}
+        },
+        {
+          "id": "c",
+          "text": {"en": "I ask myself: would I say this out loud?", "fr": "Je me demande : est-ce que je le dirais à voix haute?"}
+        }
+      ]
+    },
+    {
+      "id": "r_hub_files",
+      "element": "4a",
+      "after": "q_files_done",
+      "speaker": "zoe",
+      "prompt": {"en": "How do you find your work on a device?", "fr": "Comment retrouves-tu tes travaux sur un appareil?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "I give my files clear names.", "fr": "Je donne des noms clairs à mes fichiers."}
+        },
+        {"id": "b", "text": {"en": "I use folders.", "fr": "J’utilise des dossiers."}},
+        {
+          "id": "c",
+          "text": {"en": "I search, or I ask for help.", "fr": "Je fais une recherche ou je demande de l’aide."}
+        }
+      ]
+    },
+    {
+      "id": "r_hub_green",
+      "element": "1b",
+      "after": "q_green_done",
+      "speaker": "fern",
+      "prompt": {"en": "Which habit could you try this week?", "fr": "Quel geste pourrais-tu essayer cette semaine?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "Turn off the screen when I am done.", "fr": "Éteindre l’écran quand j’ai fini."}
+        },
+        {
+          "id": "b",
+          "text": {"en": "Take good care of a device so it lasts.", "fr": "Prendre soin d’un appareil pour qu’il dure."}
+        },
+        {
+          "id": "c",
+          "text": {"en": "Ask where old devices go in my town.", "fr": "Demander où vont les vieux appareils dans ma ville."}
+        }
+      ]
+    },
+    {
+      "id": "r_hub_real",
+      "element": "1a",
+      "after": "q_real_done",
+      "speaker": "sami",
+      "prompt": {"en": "When you see a surprising picture online, what could you do first?", "fr": "Quand tu vois une image surprenante en ligne, que pourrais-tu faire en premier?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "Look closely for odd details.", "fr": "Chercher des détails étranges."}
+        },
+        {
+          "id": "b",
+          "text": {"en": "Ask where the picture comes from.", "fr": "Demander d’où vient l’image."}
+        },
+        {
+          "id": "c",
+          "text": {"en": "Ask an adult what they think.", "fr": "Demander à un adulte ce qu’il en pense."}
+        }
+      ]
+    },
+    {
+      "id": "r_hub_wifi",
+      "element": "3a",
+      "after": "q_wifi_done",
+      "speaker": "pip",
+      "prompt": {"en": "What do you check when something will not load?", "fr": "Que vérifies-tu quand quelque chose ne se charge pas?"},
+      "options": [
+        {"id": "a", "text": {"en": "The Wi-Fi icon", "fr": "L’icône Wi-Fi"}},
+        {"id": "b", "text": {"en": "I wait and try again.", "fr": "J’attends et je réessaie."}},
+        {"id": "c", "text": {"en": "I am not sure yet.", "fr": "Je ne sais pas encore."}}
+      ]
+    },
+    {
+      "id": "r_hub_ding",
+      "element": "1c",
+      "after": "q_ding_done",
+      "speaker": "bruno",
+      "prompt": {"en": "What pulls you back to a screen most often?", "fr": "Qu’est-ce qui te ramène le plus souvent vers un écran?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "Sounds and notifications", "fr": "Les sons et les notifications"}
+        },
+        {
+          "id": "b",
+          "text": {"en": "The next video or the next level", "fr": "La vidéo suivante ou le niveau suivant"}
+        },
+        {"id": "c", "text": {"en": "My friends are there.", "fr": "Mes amis y sont."}},
+        {"id": "d", "text": {"en": "I am not sure.", "fr": "Je ne sais pas trop."}}
+      ]
+    },
+    {
+      "id": "r_hub_voice",
+      "element": "3b",
+      "after": "q_voice_done",
+      "speaker": "elder",
+      "prompt": {"en": "Which helper would you like to try?", "fr": "Quelle fonction d’aide aimerais-tu essayer?"},
+      "options": [
+        {
+          "id": "a",
+          "text": {"en": "Text-to-speech (it reads to me)", "fr": "La synthèse vocale (elle me lit le texte)"}
+        },
+        {
+          "id": "b",
+          "text": {"en": "Voice dictation (I talk, it writes)", "fr": "La dictée vocale (je parle, elle écrit)"}
+        },
+        {"id": "c", "text": {"en": "Bigger text", "fr": "Un texte plus gros"}}
+      ]
+    }
+  ],
+  "teacher": {
+    "before": [
+      {"en": "What do you do when a device does not do what you expect?", "fr": "Que faites-vous quand un appareil ne fait pas ce que vous attendez?"},
+      {"en": "How can words or pictures shared online affect other people?", "fr": "Quel effet les mots ou les images partagés en ligne peuvent-ils avoir sur les autres?"}
+    ],
+    "after": [
+      {"en": "Which villager's problem was most like something that has happened to you?", "fr": "Le problème de quel personnage ressemblait le plus à quelque chose qui vous est déjà arrivé?"},
+      {"en": "What is one habit from the village you would like to try at school or at home?", "fr": "Quel geste vu au village aimeriez-vous essayer à l’école ou à la maison?"}
+    ],
+    "lookFors": {
+      "1a": [
+        {"en": "Explains how a comment or an image shared online can affect someone else.", "fr": "Explique comment un commentaire ou une image partagés en ligne peuvent avoir un effet sur quelqu’un d’autre."},
+        {"en": "Asks \"Is this real?\" about a surprising image and looks for clues.", "fr": "Se demande « Est-ce réel? » devant une image surprenante et cherche des indices."}
+      ],
+      "1b": [
+        {"en": "Names an action that reduces the environmental impact of using a device.", "fr": "Nomme un geste qui diminue les répercussions environnementales de l’utilisation d’un appareil."}
+      ],
+      "1c": [
+        {"en": "Names something that draws them back to a screen (a notification, the next video) and a way to manage it.", "fr": "Nomme ce qui le ou la ramène vers un écran (une notification, la vidéo suivante) et une façon de le gérer."}
+      ],
+      "3a": [
+        {"en": "Names the external components of a device and what each one does.", "fr": "Nomme les composantes externes d’un appareil et le rôle de chacune."},
+        {"en": "Checks the indicators (sound, network, battery) before asking for help.", "fr": "Vérifie les indicateurs (son, réseau, état de charge) avant de demander de l’aide."}
+      ],
+      "3b": [
+        {"en": "Uses or suggests an assistive feature (text-to-speech, voice dictation) when it helps.", "fr": "Utilise ou propose une fonction d’aide (synthèse vocale, dictée vocale) quand c’est utile."}
+      ],
+      "4a": [
+        {"en": "Gives a file a meaningful name and can explain why.", "fr": "Donne un nom significatif à un fichier et peut expliquer pourquoi."}
+      ],
+      "4b": [
+        {"en": "Tries a first step on their own before asking for help.", "fr": "Essaie une première étape par soi-même avant de demander de l’aide."}
+      ]
+    }
+  }
 }

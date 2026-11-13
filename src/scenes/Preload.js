@@ -6,6 +6,8 @@ import * as music from '../systems/music.js';
 import * as avatar from '../systems/avatar.js';
 
 const NPC_ROWS = 9; // rows in assets/sprites/npcs.png
+const VILLAGER_ROWS = 7; // rows in assets/sprites/villagers.png (the people who move in as the village grows)
+const CRITTER_ROWS = 6; // rows in assets/sprites/critters.png (animals), 4 frames each
 
 export default class Preload extends Phaser.Scene {
   constructor() { super('Preload'); }
@@ -26,12 +28,14 @@ export default class Preload extends Phaser.Scene {
     }
     this.load.tilemapTiledJSON('hub', file('maps/hub.tmj'));
     this.load.tilemapTiledJSON('area2', file('maps/area2.tmj'));
-    this.load.image('tiles', file('assets/tiles/village.png'));
+    this.load.image('tiles', file('assets/tiles/hub.png'));
     this.load.image('dungeon-tiles', file('assets/tiles/dungeon.png'));
     this.load.spritesheet('fx', file('assets/sprites/fx.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('hero', file('assets/sprites/hero.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('npcs', file('assets/sprites/npcs.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.image('hero-parts', file('assets/sprites/hero_parts.png')); // the avatar maker's parts (src/systems/avatar.js)
+    this.load.spritesheet('villagers', file('assets/sprites/villagers.png'), { frameWidth: 16, frameHeight: 16 });
+    this.load.spritesheet('critters', file('assets/sprites/critters.png'), { frameWidth: 16, frameHeight: 16 });
   }
 
   create() {
@@ -55,6 +59,13 @@ export default class Preload extends Phaser.Scene {
     }
     for (let n = 0; n < NPC_ROWS; n++) {
       this.anims.create({ key: `npc${n}-idle`, frames: this.anims.generateFrameNumbers('npcs', { frames: [n * 2, n * 2, n * 2 + 1] }), frameRate: 2, repeat: -1 });
+    }
+    for (let n = 0; n < VILLAGER_ROWS; n++) {
+      this.anims.create({ key: `villagers${n}-idle`, frames: this.anims.generateFrameNumbers('villagers', { frames: [n * 2, n * 2, n * 2 + 1] }), frameRate: 2, repeat: -1 });
+    }
+    for (let n = 0; n < CRITTER_ROWS; n++) {
+      this.anims.create({ key: `critter${n}-rest`, frames: this.anims.generateFrameNumbers('critters', { frames: [n * 4, n * 4, n * 4, n * 4 + 1] }), frameRate: 2, repeat: -1 });
+      this.anims.create({ key: `critter${n}-move`, frames: this.anims.generateFrameNumbers('critters', { frames: [n * 4 + 2, n * 4 + 3] }), frameRate: 6, repeat: -1 });
     }
   }
 }

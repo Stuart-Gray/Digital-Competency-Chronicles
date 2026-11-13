@@ -14,8 +14,10 @@
 //   trace    a glowing trace only the lantern shows: fx (frame in fx.png)
 //   exit     walking onto it travels: to (scene), spawn (spawn name there)
 //   deco     changes a tile when a flag is set: tile, layer, ifFlag
+//   critter  an animal: kind (row in critters.png), move (roam, swim, flutter, still), range (tiles)
 // Any object can have ifFlag / ifNotFlag (only there when a flag is / is not set)
-// and lantern (only seen and used in lantern light).
+// and lantern (only seen and used in lantern light). Signs and critters can have "dialogues"
+// (a list of nodes, said in turn) and "label" (a name from the content file's "labels").
 
 import { buildMap } from './world.js';
 import * as layer from '../ui/textLayer.js';
@@ -32,6 +34,7 @@ import { state, saveNow, playerName } from '../systems/state.js';
 import * as music from '../systems/music.js';
 import * as a11y from '../systems/a11y.js';
 import * as avatar from '../systems/avatar.js';
+import * as quests from '../systems/quests.js';
 
 const SPEED = 72;
 const FACING = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -65,6 +68,7 @@ export default class World extends Phaser.Scene {
     this.onStone = undefined;
     this.path = null;
     this.dragging = false;
+    this.critters = [];
   }
 
   get FILE() { return this.opts.file; }
@@ -99,17 +103,22 @@ export default class World extends Phaser.Scene {
     this.npcGroup = this.physics.add.staticGroup();
     for (const o of objects) {
       if (o.type === 'npc') {
-        const s = this.npcGroup.create(o.x, o.y, 'npcs', o.props.sprite * 2);
+        // "sheet" picks the sprite sheet: npcs.png (default) or villagers.png
+        const sheet = o.props.sheet || 'npcs';
+        const s = this.npcGroup.create(o.x, o.y, sheet, o.props.sprite * 2);
         s.body.setSize(12, 10).setOffset(2, 6);
         s.refreshBody();
-        s.anims.play(`npc${o.props.sprite}-idle`);
+        s.anims.play(`${sheet === 'npcs' ? 'npc' : sheet}${o.props.sprite}-idle`);
         s.setDepth(o.y);
         o.sprite = s;
+      } else if (o.type === 'critter') {
+        this.makeCritter(o);
       } else if (o.type === 'trace' || (o.props.fx != null && o.type !== 'keystone')) {
         const c = center(o);
         o.sprite = this.add.image(c.x, c.y, 'fx', o.props.fx).setDepth(o.type === 'trace' ? 1 : c.y + 8);
       }
       if (['npc', 'sign', 'gate', 'talk', 'door', 'chest'].includes(o.type)) this.interactables.push(o);
+      if (o.type === 'critter' && (o.props.dialogue || o.props.dialogues)) this.interactables.push(o);
     }
     this.physics.add.collider(this.player, this.npcGroup);
     this.keystones = objects.filter((o) => o.type === 'keystone');
@@ -118,6 +127,7 @@ export default class World extends Phaser.Scene {
 
     // ----- light -----
     if (this.opts.dark) this.makeDarkness();
+    if (this.opts.shimmer) this.makeShimmer(this.opts.shimmer);
 
     // ----- camera -----
     const cam = this.cameras.main;
@@ -160,6 +170,9 @@ export default class World extends Phaser.Scene {
     window.DCC.debug.pos = () => ({ x: Math.round(this.player.x), y: Math.round(this.player.y) });
     window.DCC.debug.screenOf = (name) => this.debugScreenOf(name);
     window.DCC.debug.walking = () => !!this.path;
+    window.DCC.debug.marks = () => this.objects.filter((o) => o.mark && o.mark.visible).map((o) => o.name);
+    window.DCC.debug.here = () => this.objects.filter((o) => o.active && o.name).map((o) => o.name);
+    window.DCC.debug.critters = () => this.critters.filter((c) => c.sprite.visible).length;
 
     this.onArrive();
   }
@@ -254,15 +267,104 @@ export default class World extends Phaser.Scene {
           }
         }
       } else if (o.type === 'chest') {
-        this.setTile(S, tx, ty, here ? (state.slot.flags[o.props.flag] ? 16 : 15) : -1);
+        this.setTile(S, tx, ty, here ? (state.slot.flags[o.props.flag] ? (o.props.openTile ?? 16) : (o.props.closedTile ?? 15)) : -1);
       } else if (o.type === 'keystone') {
         const pressed = this.flagOn(o.props.flag) || (this.pressed && this.pressed[o.props.group] && this.pressed[o.props.group].includes(o));
         this.setTile(G, tx, ty, pressed ? 11 : 10);
       } else if (o.type === 'deco' && here) {
         this.setTile(o.props.layer === 'ground' ? G : S, tx, ty, o.props.tile);
       }
+      if (o.type === 'npc') this.setQuestMark(o, here && !!quests.openFor(state.slot, o.props.npc));
     }
     this.buildHud();
+  }
+
+  /** A small bubble over a villager who could use a hand. It goes away once they are helped. */
+  setQuestMark(o, on) {
+    if (on && !o.mark) {
+      o.mark = this.add.image(o.x, o.y - 15, 'fx', 13).setDepth(o.y + 1);
+      if (!a11y.reducedMotion()) this.tweens.add({ targets: o.mark, y: o.y - 17, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    } else if (!on && o.mark) {
+      this.tweens.killTweensOf(o.mark);
+      o.mark.destroy();
+      o.mark = null;
+    }
+  }
+
+  // ---------- animals and other small life ----------
+  makeCritter(o) {
+    const k = o.props.kind || 0;
+    const s = this.add.sprite(o.x, o.y, 'critters', k * 4);
+    o.alt = !!o.props.frames; // a second colour: uses the "move" frames all the time
+    s.anims.play(`critter${k}-${o.alt ? 'move' : 'rest'}`);
+    s.setDepth(o.props.move === 'flutter' ? 9000 : o.props.move === 'swim' ? 1 : o.y);
+    o.sprite = s;
+    o.home = { x: o.x, y: o.y };
+    o.nextMove = this.time.now + 500 + Math.random() * 2500;
+    this.critters.push(o);
+  }
+
+  updateCritters(time) {
+    if (!this.critters.length || a11y.reducedMotion()) return; // reduced motion: animals stay where they are
+    const busy = layer.isBusy();
+    let blocked = null;
+    for (const o of this.critters) {
+      const s = o.sprite;
+      if (o.moving) { o.x = s.x; o.y = s.y; if (o.props.move !== 'flutter' && o.props.move !== 'swim') s.setDepth(s.y); continue; }
+      if (busy || o.active === false || o.props.move === 'still' || !o.props.move || time < o.nextMove) continue;
+      const range = (o.props.range || 2) * T;
+      let to = null;
+      if (o.props.move === 'flutter') {
+        to = { x: o.home.x + (Math.random() * 2 - 1) * range, y: o.home.y + (Math.random() * 2 - 1) * range };
+      } else {
+        blocked = blocked || this.blocker();
+        const [ptx, pty] = this.tileOfPlayer();
+        const dirs = Phaser.Utils.Array.Shuffle([[1, 0], [-1, 0], [0, 1], [0, -1]]);
+        for (const [dx, dy] of dirs) {
+          const x = o.x + dx * T, y = o.y + dy * T;
+          if (Math.abs(x - o.home.x) > range || Math.abs(y - o.home.y) > range) continue;
+          const tx = Math.floor(x / T), ty = Math.floor(y / T);
+          if (o.props.move === 'swim') {
+            const tile = this.layers.ground.getTileAt(tx, ty);
+            if (!tile || !this.waterTiles || !this.waterTiles.has(tile.index)) continue;
+          } else if (blocked(tx, ty) || (tx === ptx && ty === pty)) continue;
+          to = { x, y };
+          break;
+        }
+      }
+      if (!to) { o.nextMove = time + 1500; continue; }
+      o.moving = true;
+      s.setFlipX(to.x < s.x);
+      const k = o.props.kind || 0;
+      s.anims.play(`critter${k}-move`, true);
+      const slow = o.props.move === 'swim' ? 1400 : o.props.move === 'flutter' ? 1100 : 600;
+      this.tweens.add({
+        targets: s, x: to.x, y: to.y, duration: slow * Math.max(0.6, Math.hypot(to.x - s.x, to.y - s.y) / T),
+        ease: o.props.move === 'flutter' ? 'Sine.easeInOut' : 'Linear',
+        onComplete: () => {
+          o.moving = false;
+          o.x = s.x; o.y = s.y;
+          if (!o.alt) s.anims.play(`critter${k}-rest`, true);
+          o.nextMove = this.time.now + (o.props.move === 'flutter' ? 300 : 1200) + Math.random() * 3000;
+        },
+      });
+    }
+  }
+
+  /** Water that shimmers: every so often the water tiles swap between two pictures. */
+  makeShimmer([a, b]) {
+    this.waterTiles = new Set([a + 1, b + 1]); // tile indexes as the map stores them
+    const tiles = this.layers.ground.filterTiles((t) => t.index === a + 1);
+    if (a11y.reducedMotion()) return;
+    let flip = false;
+    this.time.addEvent({
+      delay: 900, loop: true,
+      callback: () => {
+        if (a11y.reducedMotion()) return;
+        flip = !flip;
+        for (const t of tiles) t.index = ((t.x + t.y) % 2 === 0) === flip ? b + 1 : a + 1;
+      },
+    });
   }
 
   setTile(tl, tx, ty, index) {
@@ -303,12 +405,14 @@ export default class World extends Phaser.Scene {
   }
 
   updateLight() {
-    if (!this.dark) return;
-    const lantern = this.hasLantern();
-    this.dark.setTexture((lantern ? 'dark-lantern' : 'dark-small') + (a11y.highContrast() ? '-hc' : ''));
-    const cam = this.cameras.main;
-    this.dark.setPosition(this.player.x - cam.worldView.x, this.player.y - cam.worldView.y);
-    this.glow.setVisible(lantern).setPosition(this.player.x, this.player.y);
+    if (this.dark) {
+      const lantern = this.hasLantern();
+      this.dark.setTexture((lantern ? 'dark-lantern' : 'dark-small') + (a11y.highContrast() ? '-hc' : ''));
+      const cam = this.cameras.main;
+      this.dark.setPosition(this.player.x - cam.worldView.x, this.player.y - cam.worldView.y);
+      this.glow.setVisible(lantern).setPosition(this.player.x, this.player.y);
+    }
+    // Things only the lantern shows (also in daylight, like the duck tracks in the village)
     for (const o of this.objects) {
       if (!o.props.lantern || !o.sprite) continue;
       const show = o.active && this.lit(o);
@@ -323,6 +427,9 @@ export default class World extends Phaser.Scene {
     if (!p || !p.body) return;
     this.updateLight();
     this.updateBubble();
+    this.updateCritters(time);
+    const talking = layer.isBusy(); // quest bubbles step aside for speech bubbles and cards
+    for (const o of this.objects) if (o.mark) o.mark.setVisible(!talking);
     if (layer.isBusy() || this.travelling) {
       p.setVelocity(0, 0);
       p.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
@@ -656,8 +763,8 @@ export default class World extends Phaser.Scene {
       slot.flags['talked_' + id] = true;
       await this.talk(dialogue.nodeFor(this.FILE, id, slot.flags));
       this.afterTalk(id);
-    } else if (o.type === 'sign' || o.type === 'door') {
-      await this.talk(o.props.dialogue);
+    } else if (o.type === 'sign' || o.type === 'door' || o.type === 'critter') {
+      await this.talk(this.nodeOf(o));
     } else if (o.type === 'gate') {
       const area = content.get('ui').areas[String(o.props.area)];
       await this.talk(o.props.dialogue || (o.props.open ? 'gate_open' : 'gate_closed'), { area: t(area.title) });
@@ -672,6 +779,16 @@ export default class World extends Phaser.Scene {
     }
     this.refresh();
     saveNow();
+  }
+
+  /** The node a sign or animal says now. A "dialogues" list is said in turn, one per visit. */
+  nodeOf(o) {
+    if (!o.props.dialogues) return o.props.dialogue;
+    const list = String(o.props.dialogues).split(',').map((x) => x.trim());
+    const turns = this.turns = this.turns || {};
+    const i = turns[o.props.dialogues] || 0;
+    turns[o.props.dialogues] = (i + 1) % list.length;
+    return list[i];
   }
 
   /** Subclasses can react after talking to someone. */
@@ -691,9 +808,22 @@ export default class World extends Phaser.Scene {
       startPuzzle: (id) => this.startPuzzle(id),
       give: (id) => this.give(id),
       achieve: (id) => { achievements.unlock(state.slot, id); saveNow(); },
+      quest: (id) => this.completeQuest(id),
       travel: (scene, spawn) => this.travel(scene, spawn),
       changed: () => this.refresh(),
     });
+  }
+
+  // ---------- side quests: villagers who could use a hand ----------
+  completeQuest(id) {
+    const slot = state.slot;
+    if (!quests.complete(slot, id)) return;
+    const q = quests.defs()[id];
+    layer.toast(ui('quests.done'), t(q.title));
+    this.sparkle(this.player.x, this.player.y - 14);
+    achievements.unlock(slot, 'good_helper');
+    if (quests.allDone(slot)) achievements.unlock(slot, 'village_friend');
+    saveNow();
   }
 
   // ---------- items, pieces and badges ----------
@@ -785,8 +915,12 @@ export default class World extends Phaser.Scene {
     if (o.type === 'talk') return this.labelOf(this.interactables.find((x) => x.name === o.props.target));
     if (o.type === 'npc') {
       const npc = (content.get(this.FILE).npcs || {})[o.props.npc];
-      return npc ? t(npc.name) : ui('look.person');
+      const name = npc ? t(npc.name) : ui('look.person');
+      // Said in words too, for players who do not see the bubble over a villager's head
+      return quests.openFor(state.slot, o.props.npc) ? ui('quests.needsHelp', { name }) : name;
     }
+    const named = o.props.label && (content.get(this.FILE).labels || {})[o.props.label];
+    if (named) return t(named);
     if (o.type === 'gate') {
       const area = content.get('ui').areas[String(o.props.area)];
       return ui('look.gate', { area: area ? t(area.title) : '' });
@@ -906,11 +1040,24 @@ export default class World extends Phaser.Scene {
         layer.el('ul', { class: 'list items' }, items.map((d) => layer.el('li', {},
           layer.el('span', { class: 'fx', style: fxStyle(d.fx) }), layer.el('span', {}, layer.el('strong', {}, t(d.name)), ' · ', t(d.desc))))),
       ] : null,
+      this.journalQuests(),
       layer.el('h3', {}, ui('journal.achievements')),
       got.length
         ? layer.el('ul', { class: 'list' }, got.map((a) => layer.el('li', {}, layer.el('strong', {}, t(a.name)), ' · ', t(a.desc))))
         : layer.el('p', {}, ui('journal.empty')),
       layer.el('div', { class: 'actions' }, layer.el('button', { class: 'primary', onclick: back }, ui('common.back')))), { onCancel: back });
+  }
+
+  /** The journal's list of villagers the player has helped (only what is done, never what is not). */
+  journalQuests() {
+    const done = quests.listDone(state.slot);
+    if (!done.length) return null;
+    const npcs = content.get('hub').npcs || {};
+    return [
+      layer.el('h3', {}, ui('quests.journal')),
+      layer.el('ul', { class: 'list', 'data-test': 'journal-quests' }, done.map((q) => layer.el('li', {},
+        layer.el('strong', {}, t(q.title)), npcs[q.giver] ? ' · ' + ui('quests.helped', { name: t(npcs[q.giver].name) }) : ''))),
+    ];
   }
 
   quitToTitle() {

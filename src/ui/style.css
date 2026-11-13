@@ -298,7 +298,7 @@ input[type="text"] {
   background-repeat: no-repeat; image-rendering: pixelated; vertical-align: middle;
 }
 .icon { background-image: url("../../assets/sprites/icons.png"); background-size: calc(var(--icon) * 8) auto; }
-.fx { background-image: url("../../assets/sprites/fx.png"); background-size: calc(var(--icon) * 13) var(--icon); }
+.fx { background-image: url("../../assets/sprites/fx.png"); background-size: auto var(--icon); }
 .card .help { margin: 0; font-size: .85em; opacity: .85; }
 .card .feedback.note { background: #e6eefc; border-color: var(--accent); }
 .card h3 { margin: 0; font-size: .85em; text-transform: uppercase; letter-spacing: .05em; }

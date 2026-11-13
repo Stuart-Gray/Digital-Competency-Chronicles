@@ -153,10 +153,43 @@ async function run(lang, tier) {
     if (!slot.achievements.first_fix || !slot.flags.fixer_done) throw new Error('achievement or flag missing');
     if (slot.tier !== tier) throw new Error('tier not saved');
 
+    // Side quests: at the start, two more villagers need a hand (Framework dimensions 1 and 2).
+    const here = await page.evaluate(() => window.DCC.debug.here());
+    for (const who of ['gus', 'noor']) if (!here.includes(who)) throw new Error(who + ' should live in the village from the start');
+    for (const who of ['zoe', 'fern', 'sami', 'pip', 'bruno']) if (here.includes(who)) throw new Error(who + ' should not have moved in yet');
+    const marks = await page.evaluate(() => window.DCC.debug.marks());
+    if (marks.sort().join() !== 'gus,noor') throw new Error('expected "needs a hand" marks on Gus and Noor, got: ' + marks.join());
+    if (!(await page.evaluate(() => window.DCC.debug.critters()))) throw new Error('no animals in the village');
+    const solved = [];
+    for (const who of ['gus', 'noor']) await talkTo(page, tier, who, solved, problems);
+    const helped = await page.evaluate(() => window.DCC.debug.slot());
+    for (const q of ['q_fixit', 'q_sound', 'q_kind']) if (!helped.quests[q]) throw new Error('side quest not recorded: ' + q);
+    if (!helped.flags.q_sound_done || !helped.flags.q_kind_done) throw new Error('side quest flags missing');
+    if (!helped.achievements.good_helper) throw new Error('missing achievement good_helper');
+    if (helped.achievements.village_friend) throw new Error('village_friend came too early');
+    if (helped.flags.quests_open) throw new Error('nobody should need help right now');
+    if ((await page.evaluate(() => window.DCC.debug.marks())).length) throw new Error('"needs a hand" marks did not go away');
+    await talkTo(page, tier, 'gus', solved, problems); // a thank-you line, no puzzle again
+    if (solved.length !== 3) throw new Error('expected 3 side-quest puzzles, solved ' + solved.join());
+    // The well says something new each time, then starts again.
+    const wellLines = new Set();
+    for (let i = 0; i < 4; i++) {
+      await page.evaluate(() => window.DCC.debug.goTo('well'));
+      await page.waitForTimeout(150);
+      await page.keyboard.press('Space');
+      await page.locator('#dialogue').waitFor();
+      await page.waitForTimeout(700); // let the words finish appearing
+      wellLines.add(await page.locator('#dialogue').innerText());
+      await talkThrough(page);
+    }
+    if (wellLines.size !== 4) throw new Error('the well repeated itself: ' + wellLines.size + ' different lines');
+    step('helped Gus and Noor');
+
     // Journal, then save and quit, then continue from the slot.
     await page.click('[data-test=menu]');
     await page.click('[data-test=journal]');
     await page.waitForTimeout(200);
+    if ((await page.locator('[data-test=journal-quests] li').count()) !== 3) throw new Error('journal should list 3 people helped');
     await shot(page, `${lang}-8-journal`);
     await page.keyboard.press('Escape');
     await page.click('[data-test=quit]');
@@ -555,6 +588,15 @@ async function solvePuzzle(page, tier, problems) {
   return p;
 }
 
+/** Stands by someone (or something), talks, and plays the conversation to its end. */
+async function talkTo(page, tier, name, solved, problems) {
+  const ok = await page.evaluate((n) => window.DCC.debug.goTo(n), name);
+  if (!ok) throw new Error('could not stand by ' + name);
+  await page.waitForTimeout(150);
+  await page.keyboard.press('Space');
+  await converse(page, tier, solved, problems);
+}
+
 /** Talks, picks the first choice, solves any puzzle that opens, until everything closes. */
 async function converse(page, tier, solved, problems) {
   for (let i = 0; i < 80; i++) {
@@ -688,10 +730,33 @@ async function dungeon(lang, tier) {
     await page.waitForTimeout(800);
     await converse(page, tier, solved, problems);
     await need('saw_village_grow');
+    for (const f of ['saw_grow_1', 'saw_grow_2', 'saw_grow_3', 'saw_grow_4']) await need(f);
     await go('fixer');
+
+    // The grown village: everyone has moved in, and each of them needs a hand once.
+    const here = await page.evaluate(() => window.DCC.debug.here());
+    for (const who of ['gus', 'noor', 'zoe', 'fern', 'sami', 'pip', 'bruno']) if (!here.includes(who)) throw new Error(who + ' has not moved in');
+    for (const who of ['gus', 'noor', 'zoe', 'fern', 'sami', 'pip', 'bruno', 'elder']) await go(who);
+    const home = await page.evaluate(() => window.DCC.debug.slot());
+    const undone = Object.keys(hub.quests).filter((q) => !home.quests[q]);
+    if (undone.length) throw new Error('side quests not finished: ' + undone.join(', '));
+    const unsolved = hub.puzzles.filter((p) => p.tiers.includes(tier)).map((p) => p.id).filter((id) => !home.puzzles[id]);
+    if (unsolved.length) throw new Error('village puzzles not solved: ' + unsolved.join(', '));
+    for (const a of ['good_helper', 'village_friend']) if (!home.achievements[a]) throw new Error('missing achievement ' + a);
+    if (home.flags.quests_open) throw new Error('quests_open should be off when everyone has been helped');
+    // The secret: lantern tracks lead to a hidden chest
+    await go('secret_chest');
+    await need('hub_secret_chest');
+    if (!(await page.evaluate(() => window.DCC.debug.slot())).items.includes('golden_feather')) throw new Error('no golden feather in the secret chest');
+    for (let i = 0; i < 3; i++) await go('duck1');
+    await go('cat_nap');
+    const ach = (await page.evaluate(() => window.DCC.debug.slot())).achievements;
+    for (const a of ['lantern_secret', 'duck_friend', 'cat_nap']) if (!ach[a]) throw new Error('missing achievement ' + a);
+    step('helped all the villagers, found the secret grove');
     await page.click('[data-test=menu]');
     await page.click('[data-test=journal]');
     await page.waitForTimeout(200);
+    if ((await page.locator('[data-test=journal-quests] li').count()) !== Object.keys(hub.quests).length) throw new Error('journal should list everyone helped');
     await shot(page, `d-${lang}-${tier}-5-journal`);
     await page.keyboard.press('Escape');
     await page.keyboard.press('Escape');
@@ -711,7 +776,8 @@ async function dungeon(lang, tier) {
 
 // SMOKE_ONLY=dungeon runs just the dungeon play-throughs, and SMOKE_ONE=1 only the first of those
 // (faster while fixing a bug there); SMOKE_ONLY=touch runs just the tablet check, SMOKE_ONLY=a11y
-// just the accessibility options, SMOKE_ONLY=avatar just the avatar maker
+// just the accessibility options, SMOKE_ONLY=avatar just the avatar maker, SMOKE_ONLY=village just
+// the village start (Théo, Gus, Noor, the well)
 const only = process.env.SMOKE_ONLY;
 if (only === 'touch') {
   await touchCheck();
@@ -719,6 +785,9 @@ if (only === 'touch') {
   await a11yCheck();
 } else if (only === 'avatar') {
   await avatarCheck();
+} else if (only === 'village') {
+  await run('en', 'E3');
+  await run('fr', 'E2');
 } else {
 if (only !== 'dungeon') {
   await run('en', 'E3');

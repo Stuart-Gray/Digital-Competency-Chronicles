@@ -85,6 +85,26 @@ hold the button on the title screen) lets you clear one save or all saves on the
 | Temple of Traces, Window Gallery (one session) | 2c Understand online privacy protection | Find the clues in a photo (Cycle 3: a photo changed by an AI filter); decide which app requests to allow or ask about; notice a camera and mic still on after a call | Does changing a photo with AI make it safe to share? How can we tell if a camera or microphone is on? |
 | Temple of Traces, Mask Hall | 2a, 2b, 2c review | Answer the Mask Merchant's three tricks | What is one thing you would never share online? Why? |
 
+### Helping the villagers (side quests)
+
+The village is where students practise the two dimensions at the centre of the Framework by
+helping neighbours: **dimension 1, ethical citizenship** and **dimension 2, technological
+skills**. Each quest takes two to five minutes. Gus and Noor need a hand from the start; the
+others move in as badge pieces come home from the temple. A small speech bubble floats over
+anyone who needs help, and the village board lists who is asking. The journal keeps a list of
+"People you helped" (never a list of what is left).
+
+| Villager | Dimension, element | What students do | Ask afterwards |
+|---|---|---|---|
+| Gus (plaza) | D2, 3a Understand digital tools and hardware components | Match the parts of a laptop with what they do, then find out why a video has no sound | Where is the volume on the device you use at school? How can you tell the sound is off? |
+| Noor (village board) | D1, 1a Recognize the social impacts of digital technology | Sort online comments on a classmate's drawing: does it help, or could it hurt? | How can you tell if a comment will help or hurt before you send it? |
+| Zoé (west of the plaza, after the lantern) | D2, 4a Develop organizational skills | Choose a meaningful file name (Cycle 3: put the steps to save and find a file in order) | Try it: save a file with a meaningful name, then ask a classmate to find it. |
+| Fern (garden, after the Hall of Traces) | D1, 1b Recognize the environmental impacts of digital technology | Sort habits that save or waste energy (Cycle 3: match the stages of a device's life cycle) | What is one thing our class could do to use less energy with our devices? |
+| Sami (kite tree, after the Vault of Keys) | D1, 1a (generative AI) | Find the clues that a picture of a giant duck was made by an AI, then decide what could happen if it is shared | Is this real? What makes you say so? How might this image influence other people? |
+| Pip (mail stall, after the Window Gallery) | D2, 3a | Find out why an email will not send: is the tablet connected to a network? | How can you tell that the device you use at school is connected to the network? |
+| Bruno (bakery, after the badge) | D1, 1c Understand the factors that influence digital habits | Choose what helps when a game keeps dinging (Cycle 3: sort what pulls our attention and what helps) | What pulls you back to a game or a video? What could you do about it? |
+| Rosa (pond, after the badge) | D2, 3b Understand the basic features of digital tools | Match what Rosa wants to do with the right helper: text-to-speech, voice dictation, bigger text | Which helpers on our class devices have you tried? When could they help you? |
+
 Each wing fits a 10 to 15 minute session and ends with a badge piece; the game saves and resumes
 inside the temple. The discussion questions and look-fors for area 2 are in `content/area2.json`
 (`teacher`) and on each puzzle (`teacherNote`). They will appear in the teacher corner in

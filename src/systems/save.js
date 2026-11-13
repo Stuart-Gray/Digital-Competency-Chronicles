@@ -83,6 +83,7 @@ export function newSlot({ name = '', avatar = 0, look = null, tier = 'E2', lang 
     hints: {},                  // element code -> hints used (never shown as a score)
     achievements: {},           // achievementId -> date unlocked
     items: [],
+    quests: {},                 // side quest id -> date finished (villagers helped)
   };
 }
 

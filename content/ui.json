@@ -149,6 +149,12 @@
     "world": {
       "chestEmpty": {"en": "The chest is empty.", "fr": "Le coffre est vide."}
     },
+    "quests": {
+      "done": {"en": "You helped a neighbour!", "fr": "Tu as aidé quelqu’un!"},
+      "needsHelp": {"en": "{name} (could use a hand)", "fr": "{name} (a besoin d’un coup de main)"},
+      "journal": {"en": "People you helped", "fr": "Les personnes que tu as aidées"},
+      "helped": {"en": "You helped {name}", "fr": "Tu as aidé {name}"}
+    },
     "look": {
       "button": {"en": "Look around", "fr": "Regarder autour"},
       "open": {"en": "Look around: a list of what is near you (L key)", "fr": "Regarder autour : la liste de ce qui est près de toi (touche L)"},
@@ -259,6 +265,26 @@
     "area2_badge": {
       "name": {"en": "Digital Identity Badge", "fr": "Insigne de l’identité numérique"},
       "desc": {"en": "You saw through all of the Mask Merchant's tricks.", "fr": "Tu as déjoué toutes les ruses du marchand de masques."}
+    },
+    "good_helper": {
+      "name": {"en": "Helping hand", "fr": "Coup de main"},
+      "desc": {"en": "You helped a villager with a problem.", "fr": "Tu as aidé quelqu’un du village à régler un problème."}
+    },
+    "village_friend": {
+      "name": {"en": "Friend of the village", "fr": "Ami ou amie du village"},
+      "desc": {"en": "You helped every villager who needed a hand.", "fr": "Tu as aidé toutes les personnes du village qui avaient besoin d’un coup de main."}
+    },
+    "duck_friend": {
+      "name": {"en": "Duck friend", "fr": "Ami ou amie des canards"},
+      "desc": {"en": "You kept saying hello to a duck. The duck noticed.", "fr": "Tu as dit bonjour à un canard, encore et encore. Le canard l’a remarqué."}
+    },
+    "lantern_secret": {
+      "name": {"en": "Secret grove", "fr": "Bosquet secret"},
+      "desc": {"en": "Your lantern showed tiny tracks that led to a hidden grove.", "fr": "Ta lanterne a révélé de petites traces qui menaient à un bosquet caché."}
+    },
+    "cat_nap": {
+      "name": {"en": "Cat nap", "fr": "Sieste de chat"},
+      "desc": {"en": "You found where Pixel the cat sleeps.", "fr": "Tu as trouvé l’endroit où dort le chat Pixel."}
     }
   }
 }

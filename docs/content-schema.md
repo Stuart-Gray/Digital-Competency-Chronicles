@@ -11,7 +11,7 @@ After any change, check your work: open `tools/validate.html` on the live site (
 | File | What it holds |
 |---|---|
 | `ui.json` | Menus, buttons, settings, area names, achievements |
-| `hub.json` | The digital village: people, signs, gates, the Fix-it shop puzzles |
+| `hub.json` | The digital village: people, signs, gates, and the villagers' side quests (Framework dimensions 1 and 2) |
 | `area2.json` | Dungeon 2, the Temple of Traces (sheet 2: digital identity) |
 | `area1.json`, `area3.json` … `area7.json` | One per content area, added dungeon by dungeon |
 | `music.json` | Background music: the notes of each song (see [Music](#music-musicjson)) |
@@ -114,6 +114,7 @@ Actions:
 | `give:<item>` | Gives an item, badge piece or badge from an `items` list (see below). Also sets the flag `got_<item>`. |
 | `achieve:<id>` | Unlocks an achievement from `ui.json`. |
 | `travel:<Scene>:<spawn>` | Goes to another place, e.g. `travel:Dungeon2:from_village`. |
+| `quest:<id>` | Marks a side quest from the `quests` list as finished (see [Side quests](#side-quests-quests)). |
 
 Story flags you can rely on: `got_<item>` when an item is given, `talked_<npc>` after talking to
 someone, and each puzzle's `flag` when it is solved.
@@ -153,6 +154,7 @@ Every puzzle must cite the element it comes from and the sheet's student applica
 | `flag` | no | Story flag set when solved. |
 | `achievement` | no | Achievement unlocked when solved (id from `ui.json`). |
 | `teacherNote` | no | A question for a brief class discussion (teacher layer, milestone 3). |
+| `dcf` | no | Framework dimensions this puzzle practises, e.g. `["D1"]` or `["D2"]` (`D1` to `D12`). Used for the village side quests. |
 
 There is no score and no fail state. A wrong try shows a hint and the player tries again.
 Hints used are counted quietly for the teacher view, by element, and never shown as a mark.
@@ -222,7 +224,8 @@ shuffles both columns. Each pair needs a `hint` (shown when its left side is pai
 words in them, so they work in both languages); `pictureAlt` says what it shows, for screen readers.
 `labels` put words on the picture (like a street name) from the content file. Each spot is a
 rectangle in percent of the picture (`x`, `y`, `w`, `h`). Spots with `"clue": true` must all be found
-and need `why`; the others are decoys and need a `hint`.
+and need `why`; the others are decoys and need a `hint`. An optional `help` replaces the usual
+instruction line under the picture (for example "Find 3 clues that the picture is not real.").
 
 ```json
 "picture": "assets/pictures/photo_house.png",
@@ -255,6 +258,67 @@ purpose: mark those puzzles `"finale": true` and the check skips them.
 `kind` is `item`, `piece` or `badge`; `fx` is the picture (a frame of `assets/sprites/fx.png`);
 `achievement` is unlocked when the item is given. `wing` lists the puzzle families of a wing:
 finishing them all without a hint quietly unlocks the *Clear thinker* achievement.
+
+## Side quests (`quests`)
+
+A side quest is a villager's everyday problem: one or two ordinary puzzles, wrapped in a short
+conversation. The village's quests practise the two dimensions at the centre of the Framework:
+dimension 1 (ethical citizenship) and dimension 2 (technological skills).
+
+```json
+"quests": {
+  "q_sound": {
+    "title": { "en": "Gus and the silent video", "fr": "Gus et la vidéo muette" },
+    "giver": "gus",
+    "dcf": "D2",
+    "elements": ["3a"],
+    "families": ["gus_parts", "gus_volume"],
+    "flag": "q_sound_done",
+    "after": "got_lantern"
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `title` | Shown in the journal ("People you helped") and in the toast when the quest is finished. |
+| `giver` | The villager (an id from `npcs`). A small speech bubble floats over them while they need a hand. |
+| `dcf` | `D1` or `D2`: the Framework dimension. |
+| `elements` | The sheet elements the quest's puzzles come from. |
+| `families` | The quest's puzzle families (each must exist in `puzzles`). |
+| `flag` | Story flag set when the quest is finished. Use it in `if` / `ifNot` so the villager says thank you instead of asking again. |
+| `after` | Optional story flag: the quest is only offered once this flag is set (the villager has moved in). Leave it out for quests open from the start. |
+
+How to write one:
+
+1. Add the villager to `npcs`, newest situation first: `{ "if": "<quest flag>", "node": "…_thanks" }`, then the intro.
+2. In the intro node, a choice opens the first puzzle (`"action": "puzzle:<family>"`). Always offer a "Maybe later" choice.
+3. The last line of the conversation carries `"action": "quest:<id>"`.
+4. Write a Cycle 2 and a Cycle 3 version of each puzzle (same `family`), with the sheet's `application` in both languages and `"dcf"`.
+5. Put the villager on the map (`tools/art/make_hub_map.py`) with `ifFlag` set to the quest's `after` flag.
+6. Add the quest to `docs/content-mapping.md`, and append its families and reflections to the end of the lists in `content/progress.json` if the teacher view uses that file.
+
+A finished quest is saved as `quests: { "<id>": "<date>" }` in the player's save. The game never
+shows what is not done. The flag `quests_open` is set by the game while anyone in the village
+needs a hand (the village board uses it).
+
+`reflections` is a list of short "what about you?" moments for the teacher layer, one per quest.
+Each has an `id`, the sheet `element`, `after` (the story flag that makes it available), the
+`speaker` who asks, a `prompt`, and three or four `options`. There is no right answer: the
+options are ways of seeing things, to start a class discussion. The village only stores them;
+the teacher layer decides when and how they are shown.
+
+## Village life (`arrivals`, `labels`)
+
+`arrivals` are short scenes played once, the first time the player comes home after a story flag
+is set (someone has moved in, something was built):
+
+```json
+"arrivals": [ { "if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1" } ]
+```
+
+`labels` are the names of things for the *Look around* list (and screen readers), used by map
+objects with a `label` property: `"labels": { "duck": { "en": "A duck", "fr": "Un canard" } }`.
 
 ## Teacher notes (`teacher`)
 
@@ -362,19 +426,24 @@ Maps are Tiled files (`.tmj`) in `/maps`. Objects on the `objects` layer:
 | Type | Properties | What it is |
 |---|---|---|
 | `spawn` | | Where a new player starts |
-| `npc` | `npc` (id in content), `sprite` (row in `npcs.png`) | A person |
-| `sign` | `dialogue` (node id) | Something to read or look at |
+| `npc` | `npc` (id in content), `sprite` (row in `npcs.png`), `sheet` (`villagers` to use a row of `villagers.png` instead) | A person |
+| `sign` | `dialogue` (node id), or `dialogues` (several node ids, comma-separated: one each time, in turn), `label` (id in `labels`) | Something to read or look at |
 | `gate` | `area` (1 to 7), `open` (true/false) | A gate to a content area |
 | `talk` | `target` (another object's name) | Talking here talks to the target (e.g. across a counter) |
 | `door` | `flag` (opens when set; `a,b` means all of them), `w`, `h`, `dialogue` (said when closed), `closed`, `closedTop` (tiles) | A door that opens with the story |
-| `chest` | `flag` (set when opened), `dialogue` (usually with a `give:` action) | A treasure chest |
+| `chest` | `flag` (set when opened), `dialogue` (usually with a `give:` action), `closedTile`, `openTile` (optional tile numbers) | A treasure chest |
 | `keystone` | `group`, `order` (1, 2, 3…), `flag` (set when the group is pressed in order), `resetDialogue`, `doneDialogue` | A floor stone to step on |
-| `trace` | `fx` (frame of `fx.png`) | A glowing trace on the floor |
+| `trace` | `fx` (frame of `fx.png`) | A glowing trace on the floor. With `lantern: true` it also works outdoors: it only shows near a player who carries the lantern |
+| `critter` | `kind` (row in `critters.png`), `move` (`roam`, `swim`, `flutter` or `still`), `range` (tiles from home), `dialogue` / `dialogues`, `label` | An animal. It wanders a little (not when *Reduce motion* is on) and can be looked at |
 | `exit` | `to` (scene), `spawn` (spawn name there) | Walking onto it goes to another place |
 | `deco` | `tile`, `layer` (`ground` or `structures`) | Changes a tile, usually with `ifFlag` (the village grows) |
 
 Any object can also have `ifFlag` / `ifNotFlag` (only there when a flag is or is not set) and
 `lantern: true` (only seen and used inside the lantern's light). A `spawn` can have `facing`.
+
+The village uses the tileset `assets/tiles/hub.png` (the first 25 tiles are the same as
+`village.png`; the rest are drawn by `tools/art/make_village_art.py`, which also draws the
+villagers and the animals).
 
 Tiles with the `collides` property block walking. The maps are made by `tools/art/make_hub_map.py`
 and `tools/art/make_area2_map.py`; once someone edits a map in Tiled, stop running its script.

@@ -8,7 +8,7 @@
 //   if/ifNot  only shown when a story flag is (not) set
 //   choices   [{ text, next, action }]
 //   action    "puzzle:<id>", "set:<flag>", "unset:<flag>", "goto:<node>",
-//             "give:<item>", "achieve:<id>" or "travel:<Scene>:<spawn>"
+//             "give:<item>", "achieve:<id>", "quest:<id>" or "travel:<Scene>:<spawn>"
 // See docs/content-schema.md.
 
 import * as layer from '../ui/textLayer.js';
@@ -22,7 +22,7 @@ const END = '__end__'; // special "node" that stops the conversation
  *   flags: {},                       story flags of the save slot (read and written)
  *   vars: {},                        placeholder values, e.g. { name: 'Sam' }
  *   startPuzzle: async (id) => {},   called for "puzzle:<id>" actions
- *   give, achieve, travel, changed    optional callbacks from the world scene
+ *   give, achieve, quest, travel, changed   optional callbacks from the world scene
  * }
  */
 export async function run(file, nodeId, ctx) {
@@ -77,6 +77,7 @@ async function doAction(action, ctx) {
   else if (kind === 'goto') return arg;
   else if (kind === 'give' && ctx.give) { ctx.give(arg); ctx.changed && ctx.changed(); }
   else if (kind === 'achieve' && ctx.achieve) ctx.achieve(arg);
+  else if (kind === 'quest' && ctx.quest) { ctx.quest(arg); ctx.changed && ctx.changed(); }
   else if (kind === 'travel' && ctx.travel) { ctx.travel(arg, arg2); return END; }
   else if (kind === 'puzzle' && ctx.startPuzzle) {
     layer.closeDialogue();

@@ -37,8 +37,9 @@ for (const f of readdirSync(join(root, 'maps')).filter((n) => n.endsWith('.tmj')
   files[`maps/${f}`] = JSON.parse(readFileSync(join(root, 'maps', f), 'utf8'));
 }
 const art = [
-  'assets/tiles/village.png', 'assets/tiles/dungeon.png',
+  'assets/tiles/hub.png', 'assets/tiles/dungeon.png',
   'assets/sprites/hero.png', 'assets/sprites/hero_parts.png', 'assets/sprites/npcs.png', 'assets/sprites/fx.png',
+  'assets/sprites/villagers.png', 'assets/sprites/critters.png',
   ...readdirSync(join(root, 'assets/pictures')).filter((n) => n.endsWith('.png')).map((n) => `assets/pictures/${n}`),
 ];
 for (const rel of art) files[rel] = dataUri(rel);

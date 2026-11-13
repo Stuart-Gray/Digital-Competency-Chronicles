@@ -360,6 +360,36 @@ def fx_glow_ring():
     return im
 
 
+def fx_quest_mark():
+    """A small speech bubble with a star: this villager could use a hand."""
+    im = tile()
+    rect(im, 3, 2, 12, 10, P["wh"]); rect(im, 4, 1, 11, 11, P["wh"])
+    rect(im, 6, 11, 8, 12, P["wh"]); put(im, 7, 13, P["wh"])
+    rect(im, 7, 3, 8, 7, D["rg"]); rect(im, 7, 9, 8, 9, D["rg"])
+    return outline(im)
+
+
+def fx_feather():
+    """The golden feather, a gift from the ducks."""
+    im = tile()
+    for i in range(10):
+        put(im, 3 + i, 13 - i, P["wd"])
+    ImageDraw.Draw(im).polygon([(6, 10), (5, 5), (10, 2), (13, 3), (12, 7), (8, 11)], fill=D["rg"])
+    for i in range(5):
+        put(im, 7 + i, 8 - i, D["glow2"])
+    return outline(im)
+
+
+def fx_duck_tracks():
+    """Webbed footprints that only the lantern shows."""
+    im = tile()
+    for (x, y) in [(4, 11), (10, 5)]:
+        put(im, x, y - 2, D["glow"]); put(im, x - 2, y, D["glow"]); put(im, x + 2, y, D["glow"])
+        put(im, x - 1, y - 1, D["glow"]); put(im, x + 1, y - 1, D["glow"]); put(im, x, y - 1, D["glow2"]); put(im, x, y, D["glow"])
+        put(im, x, y + 1, D["glow"])
+    return im
+
+
 FX = [
     ("traces1", lambda: fx_footprints(1)),   # 0
     ("traces2", lambda: fx_footprints(2)),   # 1
@@ -374,6 +404,9 @@ FX = [
     ("badge", fx_badge),                     # 10
     ("glow_ring", fx_glow_ring),             # 11
     ("traces_cyan", lambda: fx_footprints(4, "cyan")),  # 12
+    ("quest_mark", fx_quest_mark),           # 13
+    ("feather", fx_feather),                 # 14
+    ("duck_tracks", fx_duck_tracks),         # 15
 ]
 
 
@@ -565,6 +598,111 @@ def i_email():
     return outline(im)
 
 
+def i_speaker(muted=False):
+    im = ic(); rect(im, 2, 6, 4, 9, P["r2"])
+    ImageDraw.Draw(im).polygon([(4, 6), (8, 2), (8, 13), (4, 9)], fill=P["r2"])
+    if muted:
+        for i in range(5):
+            put(im, 10 + i, 5 + i, P["ro"]); put(im, 14 - i, 5 + i, P["ro"])
+    else:
+        for (x, y0, y1) in [(10, 6, 9), (12, 4, 11), (14, 2, 13)]:
+            rect(im, x, y0, x, y1, P["w2"])
+    return outline(im)
+
+
+def i_wifi(off=False):
+    im = ic(); d = ImageDraw.Draw(im)
+    c = P["r1"] if off else P["w2"]
+    d.arc([0, 2, 15, 17], 215, 325, fill=c, width=2)
+    d.arc([3, 6, 12, 15], 215, 325, fill=c, width=2)
+    rect(im, 7, 11, 8, 12, c)
+    if off:
+        for i in range(12):
+            put(im, 2 + i, 13 - i, P["ro"]); put(im, 3 + i, 13 - i, P["ro"])
+    return outline(im)
+
+
+def i_battery():
+    im = ic(); rect(im, 1, 4, 12, 11, P["wh"]); rect(im, 13, 6, 14, 9, P["wh"])
+    rect(im, 2, 5, 9, 10, P["g2"]); return outline(im)
+
+
+def i_folder():
+    im = ic(); rect(im, 1, 3, 6, 5, P["gd"]); rect(im, 1, 5, 14, 12, P["ye"]); rect(im, 1, 5, 14, 6, P["gd"]); return outline(im)
+
+
+def i_file():
+    im = ic(); rect(im, 3, 1, 12, 14, P["wh"]); rect(im, 10, 1, 12, 3, P["r2"])
+    for y in (5, 7, 9, 11):
+        rect(im, 5, y, 10, y, P["r1"])
+    return outline(im)
+
+
+def i_keyboard():
+    im = ic(); rect(im, 0, 4, 15, 12, P["r2"])
+    for y in (6, 8):
+        for x in range(2, 14, 2):
+            put(im, x, y, P["k"])
+    rect(im, 4, 10, 11, 10, P["k"]); return outline(im)
+
+
+def i_mouse():
+    im = ic(); rect(im, 5, 4, 10, 13, P["wh"]); rect(im, 6, 3, 9, 14, P["wh"])
+    rect(im, 7, 4, 8, 7, P["r1"]); rect(im, 5, 8, 10, 8, P["r2"]); rect(im, 7, 0, 8, 2, P["r3"]); return outline(im)
+
+
+def i_screen():
+    im = ic(); rect(im, 1, 2, 14, 10, P["r3"]); rect(im, 2, 3, 13, 9, P["w2"]); put(im, 3, 4, P["w4"]); put(im, 4, 4, P["w4"])
+    rect(im, 7, 11, 8, 12, P["r3"]); rect(im, 4, 13, 11, 13, P["r3"]); return outline(im)
+
+
+def i_touchpad():
+    im = ic(); rect(im, 2, 3, 13, 12, P["r2"]); rect(im, 2, 10, 13, 10, P["r3"]); rect(im, 7, 10, 7, 12, P["r3"])
+    circle(im, 6, 6, 1.5, P["wh"]); return outline(im)
+
+
+def i_plug():
+    im = ic(); rect(im, 5, 5, 10, 10, P["r2"]); rect(im, 6, 2, 6, 4, P["r3"]); rect(im, 9, 2, 9, 4, P["r3"])
+    rect(im, 7, 11, 8, 14, P["k"]); put(im, 7, 7, P["ye"]); put(im, 8, 8, P["ye"]); put(im, 8, 7, P["ye"]); return outline(im)
+
+
+def i_leaf():
+    im = ic(); ImageDraw.Draw(im).polygon([(3, 12), (4, 5), (10, 2), (13, 3), (12, 9), (7, 13)], fill=P["g2"])
+    for i in range(7):
+        put(im, 4 + i, 11 - i, P["g3"])
+    return outline(im)
+
+
+def i_bell():
+    im = ic(); rect(im, 5, 4, 10, 10, P["ye"]); rect(im, 6, 3, 9, 3, P["ye"]); rect(im, 3, 11, 12, 11, P["ye"]); rect(im, 4, 10, 11, 10, P["ye"])
+    rect(im, 7, 1, 8, 2, D["rg"]); rect(im, 7, 13, 8, 13, D["rg"]); return outline(im)
+
+
+def i_play():
+    im = ic(); rect(im, 1, 2, 14, 13, P["r3"]); ImageDraw.Draw(im).polygon([(6, 4), (11, 7), (11, 8), (6, 11)], fill=P["wh"]); return outline(im)
+
+
+def i_bread():
+    im = ic(); rect(im, 2, 6, 13, 12, P["d1"]); rect(im, 3, 5, 12, 5, P["d1"]); rect(im, 2, 6, 13, 7, P["d3"])
+    for x in (5, 8, 11):
+        put(im, x, 8, P["d2"]); put(im, x - 1, 9, P["d2"])
+    return outline(im)
+
+
+def i_plane():
+    im = ic(); d = ImageDraw.Draw(im)
+    d.polygon([(7, 1), (9, 1), (9, 14), (7, 14)], fill=P["wh"])
+    d.polygon([(1, 9), (7, 5), (9, 5), (15, 9), (15, 10), (1, 10)], fill=P["wh"])
+    rect(im, 5, 13, 11, 14, P["wh"]); return outline(im)
+
+
+def i_text():
+    """Letters getting bigger: text size."""
+    im = ic(); rect(im, 1, 9, 1, 13, P["wh"]); rect(im, 4, 9, 4, 13, P["wh"]); rect(im, 2, 8, 3, 8, P["wh"]); rect(im, 2, 11, 3, 11, P["wh"])
+    rect(im, 7, 4, 8, 13, P["wh"]); rect(im, 13, 4, 14, 13, P["wh"]); rect(im, 9, 2, 12, 3, P["wh"]); rect(im, 9, 8, 12, 9, P["wh"])
+    return outline(im)
+
+
 ICONS = [
     ("post", i_post), ("like", i_like), ("comment", i_comment), ("photo", i_photo),
     ("game", i_game), ("house", i_house), ("cake", i_cake), ("star", i_star),
@@ -575,6 +713,12 @@ ICONS = [
     ("globe", i_globe), ("eye", i_eye), ("gift", i_gift), ("mask", i_mask),
     ("number", i_number), ("palette", i_palette), ("ball", i_ball), ("phone", i_phone),
     ("email", i_email), ("lantern", fx_lantern),
+    # the village side quests
+    ("speaker", i_speaker), ("mute", lambda: i_speaker(True)), ("wifi", i_wifi), ("nowifi", lambda: i_wifi(True)),
+    ("battery", i_battery), ("folder", i_folder), ("file", i_file), ("keyboard", i_keyboard),
+    ("mouse", i_mouse), ("screen", i_screen), ("touchpad", i_touchpad), ("plug", i_plug),
+    ("leaf", i_leaf), ("bell", i_bell), ("play", i_play), ("bread", i_bread),
+    ("plane", i_plane), ("text", i_text),
 ]
 
 
@@ -717,12 +861,72 @@ def classroom_call(light_on=True):
     return im
 
 
+ORANGE = hexc("e8823a")
+
+
+def paste_icon(im, icon, x, y, s=1):
+    """Pastes a 16x16 icon into a picture, scaled s times."""
+    ic_ = icon.resize((T * s, T * s), Image.NEAREST)
+    im.alpha_composite(ic_, (x, y))
+
+
+def tablet_offline(plane=False):
+    """Pip's tablet: a message that will not send. The status bar shows why.
+    Clues: Wi-Fi crossed out (and airplane mode on, in the Cycle 3 picture).
+    Not clues: the battery (full), the sound, the message itself."""
+    im = picture()
+    prect(im, 0, 0, PW, PH, hexc("d8c7a0"))
+    prect(im, 10, 4, 150, 92, P["k"]); prect(im, 14, 8, 146, 88, hexc("1d2a44"))
+    prect(im, 14, 8, 146, 26, hexc("2c3c5c"))                       # status bar
+    paste_icon(im, i_wifi(True), 20, 9)
+    if plane:
+        paste_icon(im, i_plane(), 44, 9)
+    paste_icon(im, i_speaker(), 100, 9)
+    paste_icon(im, i_battery(), 124, 9)
+    # the message: an envelope with a little "waiting" ring beside it
+    d = ImageDraw.Draw(im)
+    prect(im, 46, 40, 98, 74, P["wh"])
+    d.line([(46, 40), (72, 60), (98, 40)], fill=P["r3"], width=2)
+    d.arc([106, 48, 124, 66], 30, 300, fill=P["ye"], width=3)
+    return im
+
+
+def giant_duck():
+    """A picture made by generative AI: a giant duck in the village.
+    Clues that it is not real: the duck is taller than the house, it has three legs,
+    there are two suns. Not clues: the house, the pond, the tree."""
+    im = picture()
+    d = ImageDraw.Draw(im)
+    prect(im, 0, 62, PW, PH, P["g2"])
+    d.ellipse([114, 2, 128, 16], fill=P["ye"]); d.ellipse([134, 4, 148, 18], fill=P["ye"])   # two suns, side by side
+    d.ellipse([8, 10, 32, 18], fill=P["wh"]); d.ellipse([52, 4, 72, 11], fill=P["wh"])
+    # small house (left)
+    prect(im, 10, 50, 40, 70, P["wa"]); d.polygon([(6, 51), (25, 36), (44, 51)], fill=P["ro"])
+    prect(im, 22, 58, 28, 70, P["wd"]); prect(im, 13, 54, 19, 60, P["w2"])
+    # tree (right)
+    prect(im, 142, 52, 145, 72, P["tk"]); d.ellipse([132, 32, 156, 56], fill=P["t2"])
+    # pond
+    d.ellipse([92, 76, 150, 94], fill=P["w1"]); d.line([(104, 84), (116, 84)], fill=P["w4"]); d.line([(126, 88), (136, 88)], fill=P["w4"])
+    # the giant duck: three legs
+    for x in (60, 72, 84):
+        prect(im, x, 66, x + 3, 80, ORANGE); prect(im, x - 3, 80, x + 6, 82, ORANGE)
+    d.ellipse([44, 30, 104, 70], fill=P["ye"])
+    d.polygon([(44, 46), (34, 38), (48, 40)], fill=P["ye"])
+    d.ellipse([84, 10, 112, 38], fill=P["ye"])
+    d.polygon([(110, 22), (124, 25), (110, 30)], fill=ORANGE)
+    d.ellipse([99, 18, 103, 22], fill=P["k"])
+    d.arc([54, 40, 84, 62], 20, 160, fill=D["rg"], width=2)
+    return im
+
+
 def build_pictures():
     out = os.path.join(ROOT, "assets", "pictures")
     os.makedirs(out, exist_ok=True)
     paths = []
     for name, im in [("photo_house.png", house_scene(False)), ("photo_house_ai.png", house_scene(True)),
-                     ("call_camera_on.png", classroom_call(True))]:
+                     ("call_camera_on.png", classroom_call(True)),
+                     ("tablet_offline.png", tablet_offline(False)), ("tablet_offline_plane.png", tablet_offline(True)),
+                     ("giant_duck.png", giant_duck())]:
         p = os.path.join(out, name)
         im.save(p)
         paths.append(p)

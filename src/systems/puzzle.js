@@ -276,7 +276,7 @@ register('spot', (p, api) => {
     fig.appendChild(b);
   }
   update();
-  api.body.append(el('p', { class: 'help' }, ui('puzzle.spot.help')), fig, counter, list);
+  api.body.append(el('p', { class: 'help' }, p.help ? t(p.help) : ui('puzzle.spot.help')), fig, counter, list);
 });
 
 // ---------- sequence: put the steps in order (tap to place, tap again to take back) ----------
