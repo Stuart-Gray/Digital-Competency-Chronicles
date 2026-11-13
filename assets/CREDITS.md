@@ -16,6 +16,7 @@ Add a line here whenever an asset is added or replaced.
 | `../maps/area2.tmj` | Built for this project by `tools/art/make_area2_map.py`; editable in Tiled | CC0 1.0 |
 | `fonts/atkinson-hyperlegible-*.woff2` | Atkinson Hyperlegible by the Braille Institute of America, via Fontsource (`@fontsource/atkinson-hyperlegible` 5.x) | SIL OFL 1.1 (`fonts/OFL-AtkinsonHyperlegible.txt`) |
 | `fonts/press-start-2p-*.woff2` | Press Start 2P by CodeMan38, via Fontsource (`@fontsource/press-start-2p` 5.3.0) | SIL OFL 1.1 (`fonts/OFL-PressStart2P.txt`) |
+| `fonts/opendyslexic-latin-*-normal.woff2` (Dyslexia-friendly letter style) | OpenDyslexic by Abbie Gonzalez, via Fontsource (`@fontsource/opendyslexic` 5.3.0) | SIL OFL 1.1 (`fonts/OFL-OpenDyslexic.txt`) |
 | Phaser 3.90.0 (loaded from jsDelivr, not stored here) | https://phaser.io | MIT |
 
 Why our own placeholder art: the plan suggested Kenney's CC0 packs, but drawing a small

@@ -36,7 +36,7 @@ export function el(tag, attrs = {}, ...children) {
     else if (k === 'style' && typeof v === 'object') Object.assign(node.style, v);
     else node.setAttribute(k, v === true ? '' : v);
   }
-  for (const c of children.flat()) {
+  for (const c of children.flat(Infinity)) {
     if (c == null || c === false) continue;
     node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
   }
@@ -58,12 +58,17 @@ window.addEventListener('resize', layout);
 window.addEventListener('orientationchange', () => setTimeout(layout, 200));
 layout();
 
+const TEXT_SCALE = { normal: 1, large: 1.25, larger: 1.5 };
+
 export function applySettings(s) {
-  document.documentElement.style.setProperty('--text-scale', s.largeText ? '1.25' : '1');
+  document.documentElement.style.setProperty('--text-scale', String(TEXT_SCALE[s.textSize] || 1));
   document.body.classList.toggle('hc', !!s.highContrast);
+  document.body.classList.toggle('font-dyslexia', s.font === 'dyslexia');
   textSpeed = s.textSpeed || 'normal';
-  speech.setReadAloud(s.readAloud);
+  toastScale = textSpeed === 'slow' || s.textSize === 'larger' ? 2 : 1;
+  speech.applySettings(s);
 }
+let toastScale = 1;
 
 /** Converts a world position (game pixels on screen) into a CSS position on the stage. */
 export function placeMarker(screenX, screenY) {
@@ -240,7 +245,13 @@ export function toast(title, text, ms = 3500) {
   const node = el('div', { class: 'toast' }, el('span', { class: 't' }, title), text);
   toastsEl.appendChild(node);
   announce(title + '. ' + text);
-  setTimeout(() => node.remove(), ms);
+  // Slow readers get longer; a mouse or finger resting on it keeps it up. Everything in a toast
+  // is also kept in the journal, so nothing is lost when it goes.
+  let left = ms * toastScale, since = performance.now(), timer = 0;
+  const run = () => { since = performance.now(); timer = setTimeout(() => node.remove(), left); };
+  node.addEventListener('pointerenter', () => { clearTimeout(timer); left -= performance.now() - since; });
+  node.addEventListener('pointerleave', run);
+  run();
 }
 
 // ---------- touch controls ----------

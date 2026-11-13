@@ -5,6 +5,7 @@ import * as menus from '../ui/menus.js';
 import * as layer from '../ui/textLayer.js';
 import { startSlot } from '../systems/state.js';
 import * as music from '../systems/music.js';
+import * as a11y from '../systems/a11y.js';
 
 export default class Title extends Phaser.Scene {
   constructor() { super('Title'); }
@@ -15,7 +16,8 @@ export default class Title extends Phaser.Scene {
     cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.t0 = 0;
     this.maxX = map.widthInPixels - this.scale.width;
-    cam.fadeIn(400);
+    cam.scrollX = this.maxX / 2; cam.scrollY = 20;
+    if (!a11y.reducedMotion()) cam.fadeIn(400);
     music.play('title');
 
     layer.setHud(null);
@@ -26,16 +28,19 @@ export default class Title extends Phaser.Scene {
       start: (index, slot) => {
         startSlot(index, slot);
         layer.hideScreen();
-        cam.fadeOut(250);
         const loc = slot.location || {};
         const scene = this.scene.get(loc.scene) ? loc.scene : 'Hub';
-        cam.once('camerafadeoutcomplete', () => this.scene.start(scene, { spawn: loc.x == null ? loc.spawn : undefined }));
+        const go = () => this.scene.start(scene, { spawn: loc.x == null ? loc.spawn : undefined });
+        if (a11y.reducedMotion()) { this.time.delayedCall(60, go); return; }
+        cam.fadeOut(250);
+        cam.once('camerafadeoutcomplete', go);
       },
     };
     menus.titleScreen(go);
   }
 
   update(time, delta) {
+    if (a11y.reducedMotion()) return; // the village stays still behind the menus
     this.t0 += delta / 1000;
     const cam = this.cameras.main;
     cam.scrollX = (Math.sin(this.t0 / 12) * 0.5 + 0.5) * this.maxX;

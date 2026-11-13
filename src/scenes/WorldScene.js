@@ -30,6 +30,7 @@ import { findPath, nearestFree, key } from '../systems/pathfind.js';
 import { t, ui, forTier, getTier } from '../systems/i18n.js';
 import { state, saveNow, playerName } from '../systems/state.js';
 import * as music from '../systems/music.js';
+import * as a11y from '../systems/a11y.js';
 
 const SPEED = 72;
 const FACING = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -119,7 +120,7 @@ export default class World extends Phaser.Scene {
     const cam = this.cameras.main;
     cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     cam.startFollow(this.player, true, 0.2, 0.2);
-    cam.fadeIn(300);
+    if (!a11y.reducedMotion()) cam.fadeIn(300);
 
     // ----- HTML layer: HUD and touch -----
     this.buildHud();
@@ -133,6 +134,8 @@ export default class World extends Phaser.Scene {
     // ----- input -----
     this.offAction = input.on('action', () => this.onAction());
     this.offCancel = input.on('cancel', () => { if (!layer.isBusy()) this.openPause(); });
+    this.offLook = input.on('look', () => { if (!layer.isBusy() && !this.travelling) this.openLook(); });
+    this.lastTarget = null;
     this.events.once('shutdown', () => this.cleanup());
 
     // ----- saving -----
@@ -164,6 +167,7 @@ export default class World extends Phaser.Scene {
   cleanup() {
     this.offAction && this.offAction();
     this.offCancel && this.offCancel();
+    this.offLook && this.offLook();
     document.removeEventListener('visibilitychange', this.onHide);
     window.removeEventListener('pagehide', this.onHide);
     this.input.off('pointerdown', this.onPointerDown, this);
@@ -190,7 +194,8 @@ export default class World extends Phaser.Scene {
       layer.el('span', { class: 'hud-right' },
         items.length ? layer.el('span', { class: 'hud-items', 'aria-label': ui('journal.items') },
           items.map((d) => layer.el('span', { class: 'fx', title: t(d.name), style: fxStyle(d.fx) }))) : null,
-        layer.el('button', { class: 'small', 'data-test': 'menu', 'aria-label': ui('pause.open'), onclick: () => this.openPause() }, '☰ ' + ui('pause.menu'))),
+        layer.el('button', { class: 'small', 'data-test': 'look', 'aria-label': ui('look.open'), 'aria-keyshortcuts': 'L', onclick: () => this.openLook() }, ui('look.button')),
+        layer.el('button', { class: 'small', 'data-test': 'menu', 'aria-label': ui('pause.open'), 'aria-keyshortcuts': 'Escape', onclick: () => this.openPause() }, '☰ ' + ui('pause.menu'))),
     ]);
   }
 
@@ -268,12 +273,12 @@ export default class World extends Phaser.Scene {
   // ---------- darkness and the lantern's light ----------
   makeDarkness() {
     const { width, height } = this.scale;
-    const make = (key, r) => {
+    const make = (key, r, shade = 0.82) => {
       if (this.textures.exists(key)) return;
       const w = width * 2, h = height * 2;
       const tex = this.textures.createCanvas(key, w, h);
       const ctx = tex.getContext();
-      ctx.fillStyle = 'rgba(10,8,20,0.82)';
+      ctx.fillStyle = `rgba(10,8,20,${shade})`;
       ctx.fillRect(0, 0, w, h);
       const g = ctx.createRadialGradient(w / 2, h / 2, r * 0.35, w / 2, h / 2, r);
       g.addColorStop(0, 'rgba(0,0,0,1)');
@@ -285,6 +290,10 @@ export default class World extends Phaser.Scene {
     };
     make('dark-small', LIGHT_SMALL);
     make('dark-lantern', LIGHT_LANTERN);
+    // High contrast: the dark is lighter so walls and paths can be seen (the lantern still
+    // decides what glowing traces show).
+    make('dark-small-hc', LIGHT_SMALL, 0.6);
+    make('dark-lantern-hc', LIGHT_LANTERN, 0.6);
     this.dark = this.add.image(0, 0, 'dark-small').setScrollFactor(0).setDepth(10000);
     // A warm tint inside the lantern circle
     this.glow = this.add.circle(0, 0, LIGHT_LANTERN - 8, 0xffe680, 0.08).setDepth(9999).setVisible(false);
@@ -293,7 +302,7 @@ export default class World extends Phaser.Scene {
   updateLight() {
     if (!this.dark) return;
     const lantern = this.hasLantern();
-    this.dark.setTexture(lantern ? 'dark-lantern' : 'dark-small');
+    this.dark.setTexture((lantern ? 'dark-lantern' : 'dark-small') + (a11y.highContrast() ? '-hc' : ''));
     const cam = this.cameras.main;
     this.dark.setPosition(this.player.x - cam.worldView.x, this.player.y - cam.worldView.y);
     this.glow.setVisible(lantern).setPosition(this.player.x, this.player.y);
@@ -301,7 +310,7 @@ export default class World extends Phaser.Scene {
       if (!o.props.lantern || !o.sprite) continue;
       const show = o.active && this.lit(o);
       o.sprite.setVisible(show);
-      if (show) o.sprite.setAlpha(0.75 + 0.25 * Math.sin(this.time.now / 250));
+      if (show) o.sprite.setAlpha(a11y.reducedMotion() ? 1 : 0.75 + 0.25 * Math.sin(this.time.now / 250));
     }
   }
 
@@ -338,6 +347,11 @@ export default class World extends Phaser.Scene {
     this.checkFloor();
 
     this.target = this.findTarget();
+    if (this.target !== this.lastTarget) {
+      // Screen readers hear what is in front of the hero (the "!" that sighted players see).
+      this.lastTarget = this.target;
+      if (this.target) layer.announce(ui('look.inFront', { name: this.labelOf(this.target) }));
+    }
     if (this.target) {
       const cam = this.cameras.main;
       const tgt = center(this.target.type === 'talk' ? this.interactables.find((o) => o.name === this.target.props.target) : this.target);
@@ -526,12 +540,20 @@ export default class World extends Phaser.Scene {
   /** A small ring where the player tapped: steady while walking there, a quick red flash if there is no way. */
   tapMark(x, y, ok) {
     if (this.destMark) { this.destMark.destroy(); this.destMark = null; }
-    const ring = this.add.circle(x, y, 5).setStrokeStyle(1.5, ok ? 0xffffff : 0xff6b6b, 0.9).setDepth(2);
+    const still = a11y.reducedMotion();
+    const w = a11y.highContrast() ? 2.5 : 1.5;
     if (ok) {
+      const ring = this.add.circle(x, y, 5).setStrokeStyle(w, 0xffffff, 0.95).setDepth(2);
       this.destMark = ring;
-      this.tweens.add({ targets: ring, scale: 0.6, duration: 450, yoyo: true, repeat: -1 });
+      if (!still) this.tweens.add({ targets: ring, scale: 0.6, duration: 450, yoyo: true, repeat: -1 });
     } else {
-      this.tweens.add({ targets: ring, scale: 1.8, alpha: 0, duration: 450, onComplete: () => ring.destroy() });
+      // No way there: a red X, so the shape says it as well as the colour.
+      const g = this.add.graphics({ x, y }).setDepth(2);
+      g.lineStyle(w, 0xff6b6b, 1);
+      g.lineBetween(-4, -4, 4, 4); g.lineBetween(-4, 4, 4, -4);
+      if (still) this.time.delayedCall(600, () => g.destroy());
+      else this.tweens.add({ targets: g, scale: 1.6, alpha: 0, duration: 500, onComplete: () => g.destroy() });
+      layer.announce(ui('look.noWay'));
     }
   }
 
@@ -595,7 +617,7 @@ export default class World extends Phaser.Scene {
     } else if (list.length === group.length) {
       state.slot.flags[p.flag] = true;
       saveNow();
-      this.cameras.main.shake(250, 0.004);
+      if (!a11y.reducedMotion()) this.cameras.main.shake(250, 0.004);
       this.refresh();
       if (p.doneDialogue) await this.talk(p.doneDialogue);
     }
@@ -699,7 +721,8 @@ export default class World extends Phaser.Scene {
 
   sparkle(x, y) {
     const s = this.add.image(x, y, 'fx', 5).setDepth(20000);
-    this.tweens.add({ targets: s, y: y - 10, alpha: 0, scale: 2, duration: 700, onComplete: () => s.destroy() });
+    if (a11y.reducedMotion()) this.tweens.add({ targets: s, alpha: 0, delay: 500, duration: 300, onComplete: () => s.destroy() });
+    else this.tweens.add({ targets: s, y: y - 10, alpha: 0, scale: 2, duration: 700, onComplete: () => s.destroy() });
   }
 
   findPuzzle(ref) {
@@ -741,8 +764,97 @@ export default class World extends Phaser.Scene {
     layer.closeDialogue();
     layer.placeMarker(null);
     input.clearHeld();
-    this.cameras.main.fadeOut(300);
-    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start(scene, { spawn }));
+    this.fadeThen(300, () => this.scene.start(scene, { spawn }));
+  }
+
+  /** Fades out, then goes on. With reduced motion there is no fade, just a short pause. */
+  fadeThen(ms, fn) {
+    if (a11y.reducedMotion()) { this.time.delayedCall(60, fn); return; }
+    this.cameras.main.fadeOut(ms);
+    this.cameras.main.once('camerafadeoutcomplete', fn);
+  }
+
+  // ---------- look around: a list of what is nearby (screen readers, switches, anyone) ----------
+
+  /** A short name for a person, thing or path, from content. */
+  labelOf(o) {
+    if (!o) return '';
+    if (o.type === 'talk') return this.labelOf(this.interactables.find((x) => x.name === o.props.target));
+    if (o.type === 'npc') {
+      const npc = (content.get(this.FILE).npcs || {})[o.props.npc];
+      return npc ? t(npc.name) : ui('look.person');
+    }
+    if (o.type === 'gate') {
+      const area = content.get('ui').areas[String(o.props.area)];
+      return ui('look.gate', { area: area ? t(area.title) : '' });
+    }
+    if (o.type === 'exit') {
+      const sc = this.scene.get(o.props.to);
+      const place = sc && sc.opts ? ui(sc.opts.place) : '';
+      return ui('look.exit', { place });
+    }
+    if (o.type === 'chest') return ui(state.slot.flags[o.props.flag] ? 'look.chestOpen' : 'look.chest');
+    if (o.type === 'keystone') return ui('look.keystone');
+    if (o.type === 'door') return ui('look.door');
+    return ui('look.sign');
+  }
+
+  /** "up and to the left, close" from the hero to a point. */
+  whereIs(x, y) {
+    const dx = (x - this.player.x) / T, dy = (y - this.player.y - 4) / T;
+    const dist = Math.hypot(dx, dy);
+    const v = dy < -0.7 ? 'up' : dy > 0.7 ? 'down' : '';
+    const h = dx < -0.7 ? 'left' : dx > 0.7 ? 'right' : '';
+    const dir = ui('look.dir.' + (v && h ? v + h[0].toUpperCase() + h.slice(1) : v || h || 'here'));
+    const how = ui(dist <= 2.5 ? 'look.close' : dist <= 7 ? 'look.near' : 'look.far');
+    return ui('look.where', { dir, how });
+  }
+
+  /** People, things and paths the hero could go to now, nearest first. */
+  nearby() {
+    const view = this.cameras.main.worldView;
+    const pad = T * 4;
+    const inView = (c) => c.x > view.x - pad && c.x < view.right + pad && c.y > view.y - pad && c.y < view.bottom + pad;
+    const out = [];
+    for (const o of this.interactables) {
+      if (o.type === 'talk' || o.active === false || !this.lit(o)) continue;
+      const c = center(o);
+      if (inView(c)) out.push({ o, c, label: this.labelOf(o) });
+    }
+    for (const o of [...this.exits, ...this.keystones]) {
+      if (!this.present(o) || (o.type === 'keystone' && this.flagOn(o.props.flag))) continue;
+      const c = { x: o.x, y: o.y };
+      if (inView(c)) out.push({ o, c, label: this.labelOf(o), walk: true });
+    }
+    out.forEach((it) => { it.d = Math.hypot(it.c.x - this.player.x, it.c.y - this.player.y); });
+    return out.sort((a, b) => a.d - b.d).slice(0, 10);
+  }
+
+  openLook() {
+    if (layer.isBusy()) return;
+    input.clearHeld();
+    this.clearPath();
+    const close = () => layer.hidePanel();
+    const facing = ui('look.face.' + this.facing);
+    const items = this.nearby();
+    const front = this.target ? ui('look.inFront', { name: this.labelOf(this.target) }) : '';
+    const summary = [ui('look.youAre', { place: ui(this.opts.place) }), facing, front].filter(Boolean).join(' ');
+    layer.showPanel(layer.el('section', { class: 'card look', 'aria-label': ui('look.title') },
+      layer.el('h2', {}, ui('look.title')),
+      layer.el('p', { class: 'help' }, summary),
+      items.length
+        ? layer.el('div', { class: 'options' }, items.map((it) => layer.el('button', {
+          'data-test': 'look-item',
+          onclick: () => {
+            close();
+            if (it.walk) this.walkToPoint(it.c.x, it.c.y);
+            else this.walkToObject(it.o);
+          },
+        }, layer.el('strong', {}, it.label), layer.el('span', {}, ' · ' + this.whereIs(it.c.x, it.c.y)))))
+        : layer.el('p', {}, ui('look.nothing')),
+      layer.el('p', { class: 'help' }, ui('look.help')),
+      layer.el('div', { class: 'actions' }, layer.el('button', { class: 'primary', onclick: close }, ui('common.back')))), { onCancel: close });
+    layer.announce(summary);
   }
 
   // ---------- pause menu and journal ----------
@@ -789,8 +901,7 @@ export default class World extends Phaser.Scene {
     layer.hidePanel();
     layer.placeMarker(null);
     layer.hideTouch();
-    this.cameras.main.fadeOut(250);
-    this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Title'));
+    this.fadeThen(250, () => this.scene.start('Title'));
   }
 
   // ---------- test helpers: stand in front of a named object, facing it ----------

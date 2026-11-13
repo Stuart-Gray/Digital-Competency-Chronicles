@@ -239,7 +239,7 @@ async function touchCheck() {
     if (await page.locator('#panel').isVisible()) await page.keyboard.press('Escape');
     await page.tap('[data-test=menu]');
     await page.tap('#panel button:has-text("Settings")');
-    await page.tap('#panel .settings [role=group]:last-of-type button:has-text("On")');
+    await page.tap('#panel [data-setting=arrowPad] [data-value=true]');
     await page.tap('#panel .actions button');
     await page.waitForTimeout(150);
     if (await page.locator('#touch .act').isVisible()) throw new Error('touch controls still showing over a card');
@@ -252,6 +252,110 @@ async function touchCheck() {
     failures++;
     console.error('FAIL touch: ' + e.message);
     await shot(page, 'touch-fail');
+  } finally {
+    await context.close();
+  }
+}
+
+// ---------- accessibility options ----------
+async function a11yCheck() {
+  // The device asks for reduced motion, and has the voices a Windows 11 laptop has.
+  const { context, page, problems } = await newPage('en', { reducedMotion: 'reduce' });
+  await page.addInitScript(() => {
+    const V = (name, lang) => ({ name, lang, default: false, localService: true, voiceURI: name });
+    const list = [V('Microsoft David - English (United States)', 'en-US'), V('Microsoft Zira - English (United States)', 'en-US'),
+      V('Microsoft Clara Online (Natural) - English (Canada)', 'en-CA'), V('Microsoft Liam Online (Natural) - English (Canada)', 'en-CA'),
+      V('Microsoft Sylvie Online (Natural) - French (Canada)', 'fr-CA'), V('Microsoft Antoine Online (Natural) - French (Canada)', 'fr-CA')];
+    if (window.speechSynthesis) window.speechSynthesis.getVoices = () => list;
+  });
+  const step = (s) => console.log(`  [a11y] ${s}`);
+  const has = (cls) => page.evaluate((c) => document.body.classList.contains(c), cls);
+  const pick = async (key, value) => {
+    await page.click(`[data-setting=${key}] [data-value="${value}"]`);
+    await page.waitForTimeout(80);
+    const focused = await page.evaluate(() => document.activeElement && document.activeElement.closest('[data-setting]') && document.activeElement.closest('[data-setting]').dataset.setting);
+    if (focused !== key) throw new Error(`focus left the ${key} setting after choosing it (now on ${focused})`);
+  };
+  try {
+    await page.goto(base);
+    await page.locator('[data-test=play]').waitFor({ timeout: 15000 });
+    if (!(await has('rm'))) throw new Error('device reduced-motion setting not followed');
+    step('follows the device reduced-motion setting');
+
+    await page.click('[data-test=settings]');
+    await pick('highContrast', 'true');
+    if (!(await has('hc'))) throw new Error('high contrast class missing');
+    await pick('reduceMotion', 'off');
+    if (await has('rm')) throw new Error('reduce motion off did not override the device');
+    await pick('reduceMotion', 'on');
+    await pick('font', 'dyslexia');
+    if (!(await has('font-dyslexia'))) throw new Error('dyslexia font class missing');
+    await pick('textSize', 'larger');
+    const scale = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--text-scale').trim());
+    if (scale !== '1.5') throw new Error('text size not applied: ' + scale);
+    await pick('readAloud', 'true');
+    await pick('voice', 'female');
+    let info = await page.locator('[data-test=voice-info]').textContent();
+    if (!info.includes('Clara')) throw new Error('female English voice should be Clara, got: ' + info);
+    await pick('voice', 'male');
+    info = await page.locator('[data-test=voice-info]').textContent();
+    if (!info.includes('Liam')) throw new Error('male English voice should be Liam, got: ' + info);
+    await pick('lang', 'fr');
+    info = await page.locator('[data-test=voice-info]').textContent();
+    if (!info.includes('Antoine')) throw new Error('male French voice should be Antoine, got: ' + info);
+    await pick('lang', 'en');
+    await pick('walkMode', 'toggle');
+    await shot(page, 'a11y-settings');
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('dcc.v1.settings')));
+    if (saved.voice !== 'male' || saved.textSize !== 'larger' || saved.walkMode !== 'toggle') throw new Error('settings not saved');
+    await pick('textSize', 'normal');
+    step('settings apply, save and keep focus');
+
+    await page.click('#screen button.primary');
+    await page.click('[data-test=play]');
+    await page.click('[data-test=slot-0]');
+    await page.click('[data-test=avatar-0]');
+    await page.click('[data-test=skip-name]');
+    await page.click('[data-test=cycle-E2]');
+    await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
+    await page.locator('#dialogue').waitFor();
+    await talkThrough(page);
+    await shot(page, 'a11y-hub-contrast');
+
+    // Toggle walking: one press starts, Space stops.
+    await page.locator('#game canvas').focus().catch(() => {});
+    await page.evaluate(() => document.activeElement && document.activeElement.blur());
+    const p0 = await page.evaluate(() => window.DCC.debug.pos());
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(500);
+    const p1 = await page.evaluate(() => window.DCC.debug.pos());
+    if (p1.y === p0.y) throw new Error('toggle walking did not keep walking after the key was let go');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(150);
+    const p2 = await page.evaluate(() => window.DCC.debug.pos());
+    await page.waitForTimeout(300);
+    const p3 = await page.evaluate(() => window.DCC.debug.pos());
+    if (p3.y !== p2.y) throw new Error('Space did not stop toggle walking');
+    step('toggle walking starts and stops');
+
+    // Look around: a list of nearby people and things; picking one walks there and talks.
+    await page.keyboard.press('KeyL');
+    await page.locator('.card.look').waitFor();
+    await shot(page, 'a11y-look');
+    const names = await page.locator('[data-test=look-item] strong').allTextContents();
+    if (!names.includes('Ada')) throw new Error('Ada not in the look-around list: ' + names.join(', '));
+    await page.locator('[data-test=look-item]', { hasText: 'Ada' }).click();
+    await page.locator('#dialogue').waitFor({ timeout: 15000 });
+    await talkThrough(page);
+    step('look around lists Ada and walks to her');
+
+    if (problems.length) throw new Error(problems.join('\n'));
+    console.log('PASS a11y');
+  } catch (e) {
+    failures++;
+    console.error('FAIL a11y: ' + e.message);
+    if (problems.length) console.error(problems.join('\n'));
+    await shot(page, 'a11y-fail');
   } finally {
     await context.close();
   }
@@ -462,15 +566,19 @@ async function dungeon(lang, tier) {
 }
 
 // SMOKE_ONLY=dungeon runs just the dungeon play-throughs, and SMOKE_ONE=1 only the first of those
-// (faster while fixing a bug there); SMOKE_ONLY=touch runs just the tablet check
+// (faster while fixing a bug there); SMOKE_ONLY=touch runs just the tablet check, SMOKE_ONLY=a11y
+// just the accessibility options
 const only = process.env.SMOKE_ONLY;
 if (only === 'touch') {
   await touchCheck();
+} else if (only === 'a11y') {
+  await a11yCheck();
 } else {
 if (only !== 'dungeon') {
   await run('en', 'E3');
   await run('fr', 'E2');
   await touchCheck();
+  await a11yCheck();
 }
 for (const [lang, tier] of (process.env.SMOKE_ONE ? [['en','E2']] : [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']])) await dungeon(lang, tier);
 }

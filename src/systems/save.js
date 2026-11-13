@@ -41,10 +41,29 @@ function remove(key) {
 }
 
 // ---------- settings (shared by every slot on this device) ----------
-const DEFAULT_SETTINGS = { lang: null, readAloud: false, textSpeed: 'normal', largeText: false, highContrast: false, music: true, musicVolume: 'medium', arrowPad: false };
+// See docs/accessibility.md for what each one does.
+const DEFAULT_SETTINGS = {
+  lang: null,
+  // sound and voice
+  music: true, musicVolume: 'medium',
+  readAloud: false, voice: 'male', speechRate: 'normal',
+  // reading and seeing
+  textSpeed: 'normal',        // slow, normal, fast, instant
+  textSize: 'normal',         // normal, large, larger
+  font: 'standard',           // standard (Atkinson Hyperlegible) or dyslexia (OpenDyslexic)
+  highContrast: false,
+  reduceMotion: 'auto',       // auto (follow the device), on, off
+  // moving
+  walkMode: 'hold',           // hold a direction to walk, or toggle: tap once to start, again to stop
+  arrowPad: false,
+};
 
 export function loadSettings() {
-  return { ...DEFAULT_SETTINGS, ...(read('settings') || {}) };
+  const saved = read('settings') || {};
+  // Older saves had largeText: true/false.
+  if (saved.textSize == null && saved.largeText) saved.textSize = 'large';
+  delete saved.largeText;
+  return { ...DEFAULT_SETTINGS, ...saved };
 }
 export function saveSettings(s) { write('settings', s); }
 

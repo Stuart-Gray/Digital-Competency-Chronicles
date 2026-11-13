@@ -7,6 +7,7 @@ import * as save from '../systems/save.js';
 import * as speech from '../systems/speech.js';
 import { isTouchDevice } from '../systems/input.js';
 import { state, updateSettings } from '../systems/state.js';
+import * as a11y from '../systems/a11y.js';
 
 const AVATARS = 4;
 const NAME_MAX = 12;
@@ -147,44 +148,94 @@ export function cycleScreen(current, onPick, onBack) {
 }
 
 // ---------- settings (title screen or in-game panel) ----------
+// Grouped like most games: sound and voice, reading and seeing, moving.
+// See docs/accessibility.md for what each option does and why.
 function settingsBody(rerender) {
   const s = state.settings;
-  const seg = (label, key, options) => [
-    el('span', {}, label),
-    el('div', { class: 'seg', role: 'group', 'aria-label': label },
-      options.map(([value, text, lang]) => el('button', {
-        class: 'small', lang, 'aria-pressed': String(s[key] === value),
-        onclick: () => { updateSettings({ [key]: value }); rerender(); },
-      }, text))),
+  const seg = (label, key, options, extra) => [
+    el('span', { class: 'label', id: 'set-' + key }, label),
+    el('div', { class: 'seg', role: 'group', 'aria-labelledby': 'set-' + key, 'data-setting': key },
+      options.map(([value, text, attrs]) => el('button', {
+        class: 'small', 'aria-pressed': String(s[key] === value), 'data-value': String(value), ...(attrs || {}),
+        onclick: () => {
+          updateSettings({ [key]: value });
+          rerender();
+          // Keep focus and the scroll position on the option just chosen (keyboard, switches, screen readers).
+          setTimeout(() => {
+            const b = document.querySelector(`[data-setting="${key}"] [data-value="${String(value)}"]`);
+            if (b) b.focus({ preventScroll: true });
+          }, 40);
+        },
+      }, text)), extra || null),
   ];
+  const onOff = [[false, ui('common.off')], [true, ui('common.on')]];
+  const section = (title) => el('h3', { class: 'section' }, title);
+  const note = (text) => el('p', { class: 'note' }, text);
+
+  // Read-aloud voice: show which voice this device will use, and let players hear it.
   const canSpeak = speech.isSupported();
+  let voiceInfo = null;
+  if (canSpeak && s.readAloud) {
+    const pick = speech.currentVoice(getLang());
+    const kind = ui(s.voice === 'female' ? 'settings.femaleWord' : 'settings.maleWord');
+    voiceInfo = note(!pick || !pick.voice ? ui('settings.voiceNone')
+      : pick.matched ? ui('settings.voiceUsing', { name: pick.voice.name })
+        : ui('settings.voiceShifted', { kind }));
+    voiceInfo.setAttribute('data-test', 'voice-info');
+  }
+  const tryBtn = el('button', { class: 'small', 'data-test': 'try-voice', onclick: () => speech.sample(ui('settings.voiceSample'), getLang()) }, '▶ ' + ui('settings.tryVoice'));
+
   return el('div', { class: 'settings' },
-    seg(ui('settings.language'), 'lang', [['en', 'English', 'en'], ['fr', 'Français', 'fr']]),
-    canSpeak ? seg(ui('settings.readAloud'), 'readAloud', [[false, ui('common.off')], [true, ui('common.on')]]) : null,
-    seg(ui('settings.music'), 'music', [[false, ui('common.off')], [true, ui('common.on')]]),
+    seg(ui('settings.language'), 'lang', [['en', 'English', { lang: 'en' }], ['fr', 'Français', { lang: 'fr' }]]),
+
+    section(ui('settings.sectionSound')),
+    seg(ui('settings.music'), 'music', onOff),
     s.music !== false ? seg(ui('settings.musicVolume'), 'musicVolume', [['low', ui('settings.quiet')], ['medium', ui('settings.medium')], ['high', ui('settings.loud')]]) : null,
-    seg(ui('settings.textSpeed'), 'textSpeed', [['slow', ui('settings.slow')], ['normal', ui('settings.normal')], ['fast', ui('settings.fast')]]),
-    seg(ui('settings.largeText'), 'largeText', [[false, ui('common.off')], [true, ui('common.on')]]),
-    seg(ui('settings.highContrast'), 'highContrast', [[false, ui('common.off')], [true, ui('common.on')]]),
+    canSpeak ? seg(ui('settings.readAloud'), 'readAloud', onOff) : null,
+    canSpeak && s.readAloud ? [
+      seg(ui('settings.voice'), 'voice', [['female', ui('settings.female')], ['male', ui('settings.male')]], tryBtn),
+      seg(ui('settings.speechRate'), 'speechRate', [['slow', ui('settings.slow')], ['normal', ui('settings.normal')], ['fast', ui('settings.fast')]]),
+      voiceInfo,
+    ] : null,
+
+    section(ui('settings.sectionSee')),
+    seg(ui('settings.textSpeed'), 'textSpeed', [['slow', ui('settings.slow')], ['normal', ui('settings.normal')], ['fast', ui('settings.fast')], ['instant', ui('settings.instant')]]),
+    seg(ui('settings.textSize'), 'textSize', [['normal', ui('settings.normal')], ['large', ui('settings.large')], ['larger', ui('settings.larger')]]),
+    seg(ui('settings.font'), 'font', [['standard', ui('settings.fontStandard')], ['dyslexia', ui('settings.fontDyslexia'), { class: 'small font-dyslexia-sample' }]]),
+    seg(ui('settings.highContrast'), 'highContrast', onOff),
+    seg(ui('settings.reduceMotion'), 'reduceMotion', [['auto', ui('settings.likeDevice')], ['on', ui('common.on')], ['off', ui('common.off')]]),
+    s.reduceMotion === 'auto' && a11y.deviceAsksReducedMotion() ? note(ui('settings.deviceMotion')) : null,
+
+    section(ui('settings.sectionMove')),
+    seg(ui('settings.walkMode'), 'walkMode', [['hold', ui('settings.walkHold')], ['toggle', ui('settings.walkToggle')]]),
     // Tapping where to go always works; the old arrow pad is an option for players who prefer it.
-    isTouchDevice() ? seg(ui('settings.arrowPad'), 'arrowPad', [[false, ui('common.off')], [true, ui('common.on')]]) : null,
+    isTouchDevice() ? seg(ui('settings.arrowPad'), 'arrowPad', onOff) : null,
   );
 }
 
+/** Re-draws a settings screen without jumping back to the top. */
+function keepScroll(getBox, draw) {
+  const box = getBox();
+  const top = box ? box.scrollTop : 0;
+  draw();
+  const after = getBox();
+  if (after) after.scrollTop = top;
+}
+
 export function settingsScreen(back) {
-  const render = () => showScreen(
+  const render = () => keepScroll(() => document.getElementById('screen'), () => showScreen(
     el('h2', {}, ui('settings.title')),
     settingsBody(render),
     el('button', { class: 'primary', onclick: back }, ui('common.back')),
-  );
+  ));
   render();
 }
 
 export function settingsPanel(back) {
-  const render = () => showPanel(el('section', { class: 'card', 'aria-label': ui('settings.title') },
+  const render = () => keepScroll(() => document.querySelector('#panel .card'), () => showPanel(el('section', { class: 'card', 'aria-label': ui('settings.title') },
     el('h2', {}, ui('settings.title')),
     settingsBody(render),
-    el('div', { class: 'actions' }, el('button', { class: 'primary', onclick: back }, ui('common.back')))), { onCancel: back });
+    el('div', { class: 'actions' }, el('button', { class: 'primary', onclick: back }, ui('common.back')))), { onCancel: back }));
   render();
 }
 

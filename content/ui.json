@@ -47,14 +47,40 @@
       "slow": {"en": "Slow", "fr": "Lente"},
       "normal": {"en": "Normal", "fr": "Normale"},
       "fast": {"en": "Fast", "fr": "Rapide"},
-      "largeText": {"en": "Large text", "fr": "Gros texte"},
       "highContrast": {"en": "High contrast", "fr": "Contraste élevé"},
       "music": {"en": "Music", "fr": "Musique"},
       "musicVolume": {"en": "Music volume", "fr": "Volume de la musique"},
       "quiet": {"en": "Quiet", "fr": "Bas"},
       "medium": {"en": "Medium", "fr": "Moyen"},
       "loud": {"en": "Loud", "fr": "Fort"},
-      "arrowPad": {"en": "Arrow buttons on screen", "fr": "Flèches à l’écran"}
+      "arrowPad": {"en": "Arrow buttons on screen", "fr": "Flèches à l’écran"},
+      "sectionSound": {"en": "Sound and voice", "fr": "Son et voix"},
+      "sectionSee": {"en": "Reading and seeing", "fr": "Lecture et affichage"},
+      "sectionMove": {"en": "Moving", "fr": "Déplacements"},
+      "voice": {"en": "Voice", "fr": "Voix"},
+      "female": {"en": "Female", "fr": "Féminine"},
+      "male": {"en": "Male", "fr": "Masculine"},
+      "femaleWord": {"en": "female", "fr": "féminine"},
+      "maleWord": {"en": "male", "fr": "masculine"},
+      "speechRate": {"en": "Reading speed", "fr": "Vitesse de lecture"},
+      "tryVoice": {"en": "Try the voice", "fr": "Essayer la voix"},
+      "voiceSample": {"en": "Hi! I can read the words in the game to you.", "fr": "Salut! Je peux te lire les mots du jeu."},
+      "voiceUsing": {"en": "Voice on this device: {name}", "fr": "Voix sur cet appareil : {name}"},
+      "voiceNone": {"en": "This device has no voice for this language yet.", "fr": "Cet appareil n’a pas encore de voix pour cette langue."},
+      "voiceShifted": {"en": "This device has no {kind} voice, so another voice is made higher or lower.", "fr": "Cet appareil n’a pas de voix {kind}, alors une autre voix est rendue plus aiguë ou plus grave."},
+      "instant": {"en": "All at once", "fr": "Tout d’un coup"},
+      "textSize": {"en": "Text size", "fr": "Taille du texte"},
+      "large": {"en": "Large", "fr": "Grande"},
+      "larger": {"en": "Larger", "fr": "Très grande"},
+      "font": {"en": "Letter style", "fr": "Style des lettres"},
+      "fontStandard": {"en": "Standard", "fr": "Standard"},
+      "fontDyslexia": {"en": "Dyslexia-friendly", "fr": "Adapté à la dyslexie"},
+      "reduceMotion": {"en": "Reduce motion", "fr": "Réduire les mouvements"},
+      "likeDevice": {"en": "Like the device", "fr": "Comme l’appareil"},
+      "deviceMotion": {"en": "This device asks for less motion, so the game keeps still.", "fr": "Cet appareil demande moins de mouvements, alors le jeu bouge moins."},
+      "walkMode": {"en": "Walking", "fr": "Marche"},
+      "walkHold": {"en": "Hold to walk", "fr": "Garder appuyé"},
+      "walkToggle": {"en": "Press to start and stop", "fr": "Appuyer pour partir et arrêter"}
     },
     "teacher": {
       "title": {"en": "Teacher corner", "fr": "Coin enseignant"},
@@ -64,7 +90,9 @@
       "clearAll": {"en": "Clear all saves", "fr": "Effacer toutes les parties"},
       "confirm": {"en": "Tap again to confirm", "fr": "Touche encore pour confirmer"}
     },
-    "hub": {"place": {"en": "Digital Village", "fr": "Village numérique"}},
+    "hub": {
+      "place": {"en": "Digital Village", "fr": "Village numérique"}
+    },
     "pause": {
       "menu": {"en": "Menu", "fr": "Menu"},
       "open": {"en": "Open the menu", "fr": "Ouvrir le menu"},
@@ -91,7 +119,9 @@
         "order": {"en": "Your order", "fr": "Ton ordre"},
         "check": {"en": "Check my order", "fr": "Vérifier mon ordre"}
       },
-      "predict": {"next": {"en": "Keep watching", "fr": "La suite"}},
+      "predict": {
+        "next": {"en": "Keep watching", "fr": "La suite"}
+      },
       "sort": {
         "items": {"en": "Cards to sort", "fr": "Cartes à classer"},
         "help": {"en": "Tap a card, then tap the box where it goes.", "fr": "Touche une carte, puis touche la boîte où elle va."},
@@ -113,8 +143,51 @@
       "right": {"en": "Walk right", "fr": "Marcher vers la droite"},
       "action": {"en": "Talk or look", "fr": "Parler ou regarder"}
     },
-    "area2": {"place": {"en": "Temple of Traces", "fr": "Temple des traces"}},
-    "world": {"chestEmpty": {"en": "The chest is empty.", "fr": "Le coffre est vide."}}
+    "area2": {
+      "place": {"en": "Temple of Traces", "fr": "Temple des traces"}
+    },
+    "world": {
+      "chestEmpty": {"en": "The chest is empty.", "fr": "Le coffre est vide."}
+    },
+    "look": {
+      "button": {"en": "Look around", "fr": "Regarder autour"},
+      "open": {"en": "Look around: a list of what is near you (L key)", "fr": "Regarder autour : la liste de ce qui est près de toi (touche L)"},
+      "title": {"en": "Look around", "fr": "Regarder autour"},
+      "youAre": {"en": "Place: {place}.", "fr": "Lieu : {place}."},
+      "inFront": {"en": "In front of you: {name}.", "fr": "Devant toi : {name}."},
+      "where": {"en": "{dir}, {how}", "fr": "{dir}, {how}"},
+      "close": {"en": "close", "fr": "tout près"},
+      "near": {"en": "a few steps away", "fr": "à quelques pas"},
+      "far": {"en": "far", "fr": "loin"},
+      "nothing": {"en": "Nothing close by. Try walking a little.", "fr": "Rien tout près. Essaie de marcher un peu."},
+      "help": {"en": "Pick one and your character walks there. Press L to open this list.", "fr": "Choisis-en un et ton personnage y va. Appuie sur L pour ouvrir cette liste."},
+      "noWay": {"en": "You can't get there from here.", "fr": "Tu ne peux pas aller là d’ici."},
+      "person": {"en": "Someone", "fr": "Quelqu’un"},
+      "gate": {"en": "Gate: {area}", "fr": "Portail : {area}"},
+      "exit": {"en": "Way to: {place}", "fr": "Chemin : {place}"},
+      "chest": {"en": "Chest", "fr": "Coffre"},
+      "chestOpen": {"en": "Open chest", "fr": "Coffre ouvert"},
+      "keystone": {"en": "Floor stone", "fr": "Dalle au sol"},
+      "door": {"en": "Door", "fr": "Porte"},
+      "sign": {"en": "Sign", "fr": "Panneau"},
+      "dir": {
+        "up": {"en": "up", "fr": "en haut"},
+        "down": {"en": "down", "fr": "en bas"},
+        "left": {"en": "left", "fr": "à gauche"},
+        "right": {"en": "right", "fr": "à droite"},
+        "upLeft": {"en": "up and left", "fr": "en haut à gauche"},
+        "upRight": {"en": "up and right", "fr": "en haut à droite"},
+        "downLeft": {"en": "down and left", "fr": "en bas à gauche"},
+        "downRight": {"en": "down and right", "fr": "en bas à droite"},
+        "here": {"en": "right here", "fr": "juste ici"}
+      },
+      "face": {
+        "up": {"en": "You are facing up.", "fr": "Tu regardes vers le haut."},
+        "down": {"en": "You are facing down.", "fr": "Tu regardes vers le bas."},
+        "left": {"en": "You are facing left.", "fr": "Tu regardes vers la gauche."},
+        "right": {"en": "You are facing right.", "fr": "Tu regardes vers la droite."}
+      }
+    }
   },
   "areas": {
     "1": {

@@ -27,16 +27,47 @@ Sessions are designed for 10 to 15 minutes.
 
 ## Settings for accessibility
 
-- **English / Français** on the title screen and in Settings.
-- **Read aloud** uses the device's built-in voices. All game text is real web text, so
-  Read&Write (text-to-speech, hover to read) and screen readers can read it too.
-- **Text speed**, **Large text** and **High contrast**.
-- **Music** on or off, and **Music volume** (quiet, medium, loud). Music starts after the first
-  tap or key press and is on by default at medium volume; turn it off for silent work time.
-  The setting is saved on the device, so it stays off for the next player too.
-- Keyboard (arrows or WASD, Space or Enter to talk) or tap/click to move: tap a spot and the hero
-  walks there; tap a person or thing to walk up and talk or look. Both work everywhere. On tablets,
-  an on-screen arrow pad can be turned on in Settings.
+Open **Settings** on the title screen, or **Menu → Settings** during play. Settings are saved on
+the device, so they stay the same for the next student on that device (check them when devices
+are shared). Full details, and how the game meets game accessibility standards, are in
+[accessibility.md](accessibility.md).
+
+**Sound and voice**
+- **Music** on or off, and **Music volume** (quiet, medium, loud). On by default at medium; turn
+  it off for silent work time.
+- **Read aloud** reads each line with the device's own voice. When it is on, choose a **Female** or
+  **Male** voice and a **Reading speed** (slow, normal, fast), and press **Try the voice** to hear it.
+  The game picks the clearest voice of that kind on the device, in English or Quebec French, and
+  shows its name. If a device has no voice of that kind (for example, Chromebooks have no built-in
+  male French voice), the game makes another voice a little lower or higher and says so. Better
+  voices can be added in the device's settings (Windows: *Time & language → Speech*; iPad:
+  *Accessibility → Spoken Content → Voices*).
+- All game text is real web text, so Read&Write and screen readers can read it too.
+
+**Reading and seeing**
+- **Text speed**: slow, normal, fast, or *All at once*. Students always press to go on; nothing
+  moves on by itself.
+- **Text size**: normal, large or larger.
+- **Letter style**: *Standard* (a font made for easy reading) or *Dyslexia-friendly* (OpenDyslexic,
+  with more space between words and lines).
+- **High contrast**: black, white and yellow, thick borders, a bigger "!" marker, a sharper game
+  picture and lighter dark rooms in the temple.
+- **Reduce motion**: no camera shake, fades, drifting or bouncing. *Like the device* (the default)
+  follows the device's own "reduce motion" or "show animations" setting.
+
+**Moving**
+- **Walking**: *Hold to walk* (the default), or *Press to start and stop* for students who find
+  holding a key or button hard. Space stops.
+- **Arrow buttons on screen** (tablets): an on-screen arrow pad, if a student prefers it to tapping.
+
+**Always there**
+- Three ways to move: keyboard (arrows or WASD, Space or Enter to talk), tap or click where to go,
+  and **Look around** (button at the top, or the **L** key), which lists nearby people, things and
+  paths with where they are. Picking one walks there. This helps students who use a screen reader,
+  a switch, or find steering hard.
+- No timers, no scores, no way to fail: a wrong try gives a hint, and *Leave for now* is always
+  there. Escape or **Menu** pauses at any time.
+- Colour is never the only clue: hints, correct answers and choices also show a symbol.
 
 ## Privacy
 

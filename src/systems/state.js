@@ -4,6 +4,8 @@ import * as save from './save.js';
 import * as i18n from './i18n.js';
 import * as layer from '../ui/textLayer.js';
 import * as music from './music.js';
+import * as a11y from './a11y.js';
+import * as input from './input.js';
 
 export const state = {
   settings: save.loadSettings(),
@@ -16,6 +18,8 @@ export function applySettings() {
   if (!s.lang) s.lang = i18n.browserLang();
   i18n.setLang(s.lang);
   layer.applySettings(s);
+  a11y.applySettings(s);
+  input.setWalkMode(s.walkMode);
   music.applySettings(s);
 }
 

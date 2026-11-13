@@ -106,6 +106,7 @@ Each element in the sheets has: knowledge ("students come to understand"), skill
 - **Hosting:** public GitHub repo + GitHub Pages to start; other hosting later if needed.
 - **Saves:** browser `localStorage` for now (simple, privacy-friendly). Sign-in for cross-device progress parked as a future option.
 - **Music:** original chiptune songs played by the browser's Web Audio API from note data in `content/music.json` (no audio files, no licence questions). On/off and volume in Settings.
+- **Accessibility:** female or male read-aloud voice (best voice per device, English and Quebec French), text size, dyslexia-friendly letters, strong high contrast, reduce motion (follows the device), press-to-walk, and a *Look around* list for screen readers and switches. See `docs/accessibility.md`.
 - **Content as data:** each area's dialogue/puzzles live in plain JSON under `/content/` so consultants and teachers can contribute without editing engine code.
 
 ### Proposed repo layout

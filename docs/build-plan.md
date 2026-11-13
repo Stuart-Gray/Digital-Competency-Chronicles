@@ -142,7 +142,7 @@ One generic `Dungeon.js` means dungeons 1 and 3 to 7 are mostly content and map 
 
 - All text in the HTML layer (4.1), so Read&Write, screen readers and browser zoom work.
 - Built-in read-aloud toggle (browser voices) as a fallback where Read&Write is not installed.
-- Text speed, large-text mode, high-contrast dialogue box, no time pressure, no fail state, colour never the only signal, 44 px minimum touch targets.
+- Text speed, large-text mode, high-contrast dialogue box, no time pressure, no fail state, colour never the only signal, 44 px minimum touch targets. Built 2026-11-13; the full list and the standards checklist are in `docs/accessibility.md`.
 - Both keyboard and touch can do everything, including puzzles.
 
 ---
