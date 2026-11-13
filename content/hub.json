@@ -51,12 +51,12 @@
       {
         "speaker": "guide",
         "tiers": ["E2"],
-        "text": {"en": "Walk with the arrow keys. Press Space or tap A to talk.", "fr": "Marche avec les flèches. Appuie sur la barre d’espacement ou touche A pour parler."}
+        "text": {"en": "To walk, use the arrow keys or tap where you want to go. To talk, press Space or tap the person.", "fr": "Pour marcher, utilise les flèches ou touche l’endroit où tu veux aller. Pour parler, appuie sur la barre d’espacement ou touche la personne."}
       },
       {
         "speaker": "guide",
         "tiers": ["E3"],
-        "text": {"en": "Use the arrow keys or WASD to walk. Press Space, Enter or the A button to talk and look at things.", "fr": "Utilise les flèches ou les touches WASD pour marcher. Appuie sur Espace, Entrée ou le bouton A pour parler et observer."}
+        "text": {"en": "Walk with the arrow keys or WASD, or tap or click where you want to go. To talk or look at something, press Space or Enter, or tap it.", "fr": "Marche avec les flèches ou les touches WASD, ou touche ou clique l’endroit où tu veux aller. Pour parler ou observer quelque chose, appuie sur Espace ou Entrée, ou touche-le."}
       },
       {
         "speaker": "guide",

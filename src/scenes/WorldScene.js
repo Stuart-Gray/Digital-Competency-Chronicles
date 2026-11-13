@@ -26,6 +26,7 @@ import * as content from '../systems/content.js';
 import * as achievements from '../systems/achievements.js';
 import * as menus from '../ui/menus.js';
 import { fxStyle } from '../ui/art.js';
+import { findPath, nearestFree, key } from '../systems/pathfind.js';
 import { t, ui, forTier, getTier } from '../systems/i18n.js';
 import { state, saveNow, playerName } from '../systems/state.js';
 import * as music from '../systems/music.js';
@@ -60,6 +61,8 @@ export default class World extends Phaser.Scene {
     this.target = null;
     this.onExit = null;
     this.onStone = undefined;
+    this.path = null;
+    this.dragging = false;
   }
 
   get FILE() { return this.opts.file; }
@@ -120,7 +123,12 @@ export default class World extends Phaser.Scene {
 
     // ----- HTML layer: HUD and touch -----
     this.buildHud();
-    layer.showTouch({ up: ui('touch.up'), down: ui('touch.down'), left: ui('touch.left'), right: ui('touch.right'), action: ui('touch.action') });
+    this.applyTouch();
+
+    // ----- tap or click to move (touch screens, mice and trackpads) -----
+    this.input.on('pointerdown', this.onPointerDown, this);
+    this.input.on('pointermove', this.onPointerMove, this);
+    this.input.on('pointerup', this.onPointerUp, this);
 
     // ----- input -----
     this.offAction = input.on('action', () => this.onAction());
@@ -144,6 +152,8 @@ export default class World extends Phaser.Scene {
     window.DCC.debug.flags = () => ({ ...state.slot.flags });
     window.DCC.debug.walkTo = (name) => this.debugWalkTo(name);
     window.DCC.debug.pos = () => ({ x: Math.round(this.player.x), y: Math.round(this.player.y) });
+    window.DCC.debug.screenOf = (name) => this.debugScreenOf(name);
+    window.DCC.debug.walking = () => !!this.path;
 
     this.onArrive();
   }
@@ -156,7 +166,20 @@ export default class World extends Phaser.Scene {
     this.offCancel && this.offCancel();
     document.removeEventListener('visibilitychange', this.onHide);
     window.removeEventListener('pagehide', this.onHide);
+    this.input.off('pointerdown', this.onPointerDown, this);
+    this.input.off('pointermove', this.onPointerMove, this);
+    this.input.off('pointerup', this.onPointerUp, this);
+    this.clearPath();
     layer.placeMarker(null);
+  }
+
+  /** The on-screen arrow pad is an option (Settings); tapping where to go always works. */
+  applyTouch() {
+    if (state.settings.arrowPad) {
+      layer.showTouch({ up: ui('touch.up'), down: ui('touch.down'), left: ui('touch.left'), right: ui('touch.right'), action: ui('touch.action') });
+    } else {
+      layer.hideTouch();
+    }
   }
 
   buildHud() {
@@ -283,7 +306,7 @@ export default class World extends Phaser.Scene {
   }
 
   // ---------- each frame ----------
-  update() {
+  update(time, delta) {
     const p = this.player;
     if (!p || !p.body) return;
     this.updateLight();
@@ -292,14 +315,20 @@ export default class World extends Phaser.Scene {
       p.setVelocity(0, 0);
       p.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
       layer.placeMarker(null);
+      if (this.path) this.clearPath();
       return;
     }
-    const d = input.dir();
-    let vx = d.x * SPEED, vy = d.y * SPEED;
-    if (vx && vy) { vx *= Math.SQRT1_2; vy *= Math.SQRT1_2; }
-    p.setVelocity(vx, vy);
+    let d = input.dir();
     if (d.x || d.y) {
-      this.facing = d.x < 0 ? 'left' : d.x > 0 ? 'right' : d.y < 0 ? 'up' : 'down';
+      if (this.path) this.clearPath(); // the keyboard or arrow pad always wins over a tap
+      const n = d.x && d.y ? Math.SQRT1_2 : 1;
+      d = { x: d.x * n, y: d.y * n };
+    } else if (this.path) {
+      d = this.followPath(time, delta || 16);
+    }
+    p.setVelocity(d.x * SPEED, d.y * SPEED);
+    if (d.x || d.y) {
+      this.facing = Math.abs(d.x) > Math.abs(d.y) + 0.01 ? (d.x < 0 ? 'left' : 'right') : (d.y < 0 ? 'up' : 'down');
       p.anims.play(`hero${this.avatar}-walk-${this.facing}`, true);
     } else {
       p.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
@@ -315,6 +344,194 @@ export default class World extends Phaser.Scene {
       layer.placeMarker(tgt.x - cam.worldView.x, tgt.y - 9 - cam.worldView.y);
     } else {
       layer.placeMarker(null);
+    }
+  }
+
+  // ---------- tap or click to move ----------
+  // A tap on the ground walks there, around walls and people. A tap on a person or a thing
+  // walks up to it and talks or looks. Holding and sliding a finger keeps walking toward it.
+
+  worldPoint(pointer) {
+    return this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+  }
+
+  onPointerDown(pointer) {
+    if (layer.isBusy() || this.travelling) return;
+    const w = this.worldPoint(pointer);
+    this.dragging = true;
+    this.dragFrom = { x: pointer.x, y: pointer.y };
+    this.dragAt = this.time.now;
+    const p = this.player;
+    // Tapping yourself acts on what is just in front (like the A button).
+    if (Math.abs(w.x - p.x) <= 8 && w.y >= p.y - 9 && w.y <= p.y + 9) {
+      this.clearPath();
+      if (this.target) this.interact(this.target);
+      return;
+    }
+    const o = this.objectAt(w.x, w.y);
+    if (o) this.walkToObject(o);
+    else this.walkToPoint(w.x, w.y);
+  }
+
+  onPointerMove(pointer) {
+    if (!this.dragging || !pointer.isDown || layer.isBusy() || this.travelling) return;
+    if (Math.hypot(pointer.x - this.dragFrom.x, pointer.y - this.dragFrom.y) < 8) return;
+    if (this.time.now - this.dragAt < 150) return;
+    this.dragAt = this.time.now;
+    const w = this.worldPoint(pointer);
+    this.walkToPoint(w.x, w.y, { quiet: true });
+  }
+
+  onPointerUp() { this.dragging = false; }
+
+  tileOfPlayer() { return [Math.floor(this.player.x / T), Math.floor((this.player.y + 4) / T)]; }
+
+  /** Tiles taken by an object (doors can be wide or tall). */
+  objectTiles(o) {
+    const tx = Math.floor(o.x / T), ty = Math.floor(o.y / T), out = [];
+    for (let dy = 0; dy < (o.props.h || 1); dy++) for (let dx = 0; dx < (o.props.w || 1); dx++) out.push([tx + dx, ty + dy]);
+    return out;
+  }
+
+  /** A blocked() test for this moment: walls, water, closed doors, people, and exits we are not aiming for. */
+  blocker() {
+    const people = new Set();
+    for (const o of this.objects) {
+      if (o.type === 'npc' && o.active !== false && o.sprite && o.sprite.body && o.sprite.body.enable) people.add(key(Math.floor(o.x / T), Math.floor(o.y / T)));
+    }
+    const exits = new Set(this.exits.filter((e) => this.present(e)).map((e) => key(Math.floor(e.x / T), Math.floor(e.y / T))));
+    const W = this.map.width, H = this.map.height;
+    return (tx, ty, { allowExits } = {}) => {
+      if (tx < 0 || ty < 0 || tx >= W || ty >= H) return true;
+      const k = key(tx, ty);
+      if (people.has(k)) return true;
+      if (!allowExits && exits.has(k)) return true;
+      for (const l of [this.layers.ground, this.layers.structures]) {
+        const tile = l.getTileAt(tx, ty);
+        if (tile && tile.collides) return true;
+      }
+      return false;
+    };
+  }
+
+  /** Key stones waiting to be pressed are walked around when there is another way. */
+  stoneCost() {
+    const live = new Set(this.keystones.filter((k) => this.present(k) && !this.flagOn(k.props.flag)).map((k) => key(Math.floor(k.x / T), Math.floor(k.y / T))));
+    return (tx, ty) => (live.has(key(tx, ty)) ? 25 : 0);
+  }
+
+  /** The person or thing under a tap, if any (only what the player could talk to or look at). */
+  objectAt(wx, wy) {
+    let best = null, bestD = Infinity;
+    for (const o of this.interactables) {
+      if (o.active === false || !this.lit(o)) continue;
+      const x0 = Math.floor(o.x / T) * T, y0 = Math.floor(o.y / T) * T;
+      const x1 = x0 + (o.props.w || 1) * T, y1 = y0 + (o.props.h || 1) * T;
+      const pad = 3, top = o.type === 'npc' ? 6 : 0;
+      if (wx < x0 - pad || wx > x1 + pad || wy < y0 - pad - top || wy > y1 + pad) continue;
+      const d = Math.hypot(wx - (x0 + x1) / 2, wy - (y0 + y1) / 2);
+      if (d < bestD) { best = o; bestD = d; }
+    }
+    return best;
+  }
+
+  walkToPoint(wx, wy, { quiet = false } = {}) {
+    const blocked = this.blocker();
+    const tx = Math.floor(wx / T), ty = Math.floor(wy / T);
+    // Exits are only walked onto when that is where the player tapped.
+    const isBlocked = (x, y) => blocked(x, y, { allowExits: x === tx && y === ty });
+    const goals = new Set(nearestFree(tx, ty, isBlocked).map(([x, y]) => key(x, y)));
+    const path = findPath({ width: this.map.width, height: this.map.height, start: this.tileOfPlayer(), goals, blocked: isBlocked, extraCost: this.stoneCost() });
+    if (!path) { if (!quiet) this.tapMark(wx, wy, false); return; }
+    this.startPath(path, null);
+    if (!quiet || !this.destMark) this.tapMark(wx, wy, true);
+  }
+
+  walkToObject(o) {
+    const blocked = this.blocker();
+    // Stand next to it, facing it. People behind a counter can be reached across it (talk spots).
+    const targets = [o, ...this.interactables.filter((x) => x.type === 'talk' && x.active !== false && x.props.target === o.name)];
+    const goals = new Map();
+    const SIDES = [[0, 1, 'up'], [0, -1, 'down'], [-1, 0, 'right'], [1, 0, 'left']];
+    for (const t of targets) {
+      const tiles = this.objectTiles(t);
+      const inside = new Set(tiles.map(([x, y]) => key(x, y)));
+      for (const [x, y] of tiles) {
+        for (const [dx, dy, facing] of SIDES) {
+          const k = key(x + dx, y + dy);
+          if (!inside.has(k) && !goals.has(k) && !blocked(x + dx, y + dy)) goals.set(k, facing);
+        }
+      }
+    }
+    const path = findPath({ width: this.map.width, height: this.map.height, start: this.tileOfPlayer(), goals: new Set(goals.keys()), blocked, extraCost: this.stoneCost() });
+    if (!path) { const c = center(o); this.tapMark(c.x, c.y, false); return; }
+    const end = path.length ? path[path.length - 1] : this.tileOfPlayer();
+    this.clearPath();
+    if (!path.length) { this.arrive(o, goals.get(key(end[0], end[1]))); return; }
+    this.startPath(path, { o, facing: goals.get(key(end[0], end[1])) });
+  }
+
+  startPath(path, then) {
+    this.clearPath();
+    if (!path.length) return;
+    this.path = path;
+    this.pathI = 0;
+    this.pathThen = then;
+    this.pathBest = Infinity;
+    this.pathStuckSince = this.time.now;
+  }
+
+  clearPath() {
+    this.path = null;
+    this.pathThen = null;
+    if (this.destMark) { this.destMark.destroy(); this.destMark = null; }
+    if (this.player && this.player.body) this.player.setVelocity(0, 0);
+  }
+
+  /** The direction to walk this frame to follow the route, or {0,0} when done or stuck. */
+  followPath(time, delta) {
+    const p = this.player;
+    const step = Math.max(1.5, (SPEED * delta) / 1000);
+    for (;;) {
+      const [tx, ty] = this.path[this.pathI];
+      const gx = tx * T + 8, gy = ty * T + 4; // feet on the middle of the tile
+      const dx = gx - p.x, dy = gy - p.y, dist = Math.hypot(dx, dy);
+      if (dist <= step) {
+        this.pathI++;
+        this.pathBest = Infinity;
+        this.pathStuckSince = time;
+        if (this.pathI >= this.path.length) {
+          p.body.reset(gx, gy);
+          const then = this.pathThen;
+          this.clearPath();
+          if (then) this.arrive(then.o, then.facing);
+          return { x: 0, y: 0 };
+        }
+        continue;
+      }
+      // Bumped into something that moved in the way: give up quietly.
+      if (dist < this.pathBest - 0.25) { this.pathBest = dist; this.pathStuckSince = time; }
+      else if (time - this.pathStuckSince > 600) { this.clearPath(); return { x: 0, y: 0 }; }
+      return { x: dx / dist, y: dy / dist };
+    }
+  }
+
+  /** Walked up to a person or thing: face it and talk or look. */
+  arrive(o, facing) {
+    if (facing) this.facing = facing;
+    this.player.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
+    if (o && o.active !== false && this.lit(o) && !layer.isBusy() && !this.travelling) this.interact(o);
+  }
+
+  /** A small ring where the player tapped: steady while walking there, a quick red flash if there is no way. */
+  tapMark(x, y, ok) {
+    if (this.destMark) { this.destMark.destroy(); this.destMark = null; }
+    const ring = this.add.circle(x, y, 5).setStrokeStyle(1.5, ok ? 0xffffff : 0xff6b6b, 0.9).setDepth(2);
+    if (ok) {
+      this.destMark = ring;
+      this.tweens.add({ targets: ring, scale: 0.6, duration: 450, yoyo: true, repeat: -1 });
+    } else {
+      this.tweens.add({ targets: ring, scale: 1.8, alpha: 0, duration: 450, onComplete: () => ring.destroy() });
     }
   }
 
@@ -538,7 +755,7 @@ export default class World extends Phaser.Scene {
       layer.el('div', { class: 'menu' },
         layer.el('button', { class: 'primary', onclick: close }, ui('pause.resume')),
         layer.el('button', { 'data-test': 'journal', onclick: () => this.openJournal() }, ui('journal.title')),
-        layer.el('button', { onclick: () => menus.settingsPanel(() => { this.buildHud(); this.openPausePanelAgain(); }) }, ui('title.settings')),
+        layer.el('button', { onclick: () => menus.settingsPanel(() => { this.buildHud(); this.applyTouch(); this.openPausePanelAgain(); }) }, ui('title.settings')),
         layer.el('button', { 'data-test': 'quit', onclick: () => this.quitToTitle() }, ui('pause.quit')))), { onCancel: close });
   }
 
@@ -592,6 +809,16 @@ export default class World extends Phaser.Scene {
       }
     }
     return false;
+  }
+
+  /** Where a named object is on the page (CSS pixels), for tapping it in tests. */
+  debugScreenOf(name) {
+    const o = this.objects.find((x) => x.name === name && x.active !== false);
+    if (!o) return null;
+    const cam = this.cameras.main;
+    const c = center(o);
+    const r = this.game.canvas.getBoundingClientRect();
+    return { x: r.left + ((c.x - cam.worldView.x) / cam.width) * r.width, y: r.top + ((c.y - cam.worldView.y) / cam.height) * r.height };
   }
 
   /** Puts the player right on top of an object (key stones, exits). */

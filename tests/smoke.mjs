@@ -178,8 +178,10 @@ async function run(lang, tier) {
 }
 
 async function touchCheck() {
-  // A tablet-sized screen with touch: the on-screen controls must appear.
+  // A tablet-sized screen with touch: tap to move, tap a person to talk, no arrow pad unless asked for.
   const { context, page, problems } = await newPage('en', { viewport: { width: 1024, height: 768 }, hasTouch: true, isMobile: true });
+  const tapAt = async (pt) => page.touchscreen.tap(Math.round(pt.x), Math.round(pt.y));
+  const waitStill = () => page.waitForFunction(() => !window.DCC.debug.walking(), null, { timeout: 15000 });
   try {
     await page.goto(base);
     await page.locator('[data-test=play]').waitFor({ timeout: 15000 });
@@ -189,23 +191,67 @@ async function touchCheck() {
     await page.tap('[data-test=skip-name]');
     await page.tap('[data-test=cycle-E2]');
     await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub');
-    await page.locator('#touch .act').waitFor();
     await page.locator('#dialogue').waitFor();
+    // Tapping the dialogue box moves it along.
     for (let i = 0; i < 12 && await page.locator('#dialogue').isVisible(); i++) {
-      await page.tap('#touch .act');
+      await page.tap('#dialogue');
       await page.waitForTimeout(150);
     }
-    await shot(page, 'touch-hub');
-    // Open the menu card: the on-screen controls must hide behind it.
+    if (await page.locator('#touch .act').isVisible()) throw new Error('arrow pad showing although it is off by default');
+
+    // Tap the ground a few tiles to the left: the hero walks there.
+    const before = await page.evaluate(() => window.DCC.debug.pos());
+    const me = await page.evaluate(() => {
+      const r = window.DCC.game.canvas.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2, u: r.width / 320 };
+    });
+    await page.waitForTimeout(400); // let the camera settle on the hero
+    await tapAt({ x: me.x - 48 * me.u, y: me.y });
+    await page.waitForTimeout(200);
+    await waitStill();
+    const after = await page.evaluate(() => window.DCC.debug.pos());
+    if (before.x - after.x < 30) throw new Error(`tap to move did not move the hero (${before.x} -> ${after.x})`);
+    await shot(page, 'touch-walked');
+
+    // Tap the guide: the hero walks up and they talk.
+    await tapAt(await page.evaluate(() => window.DCC.debug.screenOf('guide')));
+    await page.locator('#dialogue').waitFor({ timeout: 15000 });
+    const speaker = await page.locator('#dialogue .speaker').textContent().catch(() => '');
+    if (!speaker) throw new Error('tapping the guide did not start a talk');
+    await shot(page, 'touch-talk');
+    for (let i = 0; i < 12 && await page.locator('#dialogue').isVisible(); i++) {
+      await page.tap('#dialogue');
+      await page.waitForTimeout(150);
+    }
+
+    // Théo is behind the shop counter: tapping the counter walks up to it and talks to him across it.
+    await tapAt(await page.evaluate(() => window.DCC.debug.screenOf('counter30')));
+    await page.locator('#dialogue').waitFor({ timeout: 20000 });
+    await shot(page, 'touch-counter');
+    for (let i = 0; i < 20 && await page.locator('#dialogue').isVisible(); i++) {
+      if (await page.locator('#dialogue .choices button').count()) { await page.tap('#dialogue .choices button >> nth=-1'); }
+      else await page.tap('#dialogue');
+      await page.waitForTimeout(150);
+      if (await page.locator('#panel [data-puzzle]').isVisible()) { await page.tap('#panel button:has-text("later"), #panel button:has-text("Leave")').catch(() => {}); }
+    }
+
+    // The arrow pad can be turned on in Settings, and hides behind cards.
+    if (await page.locator('#panel').isVisible()) await page.keyboard.press('Escape');
     await page.tap('[data-test=menu]');
+    await page.tap('#panel button:has-text("Settings")');
+    await page.tap('#panel .settings [role=group]:last-of-type button:has-text("On")');
+    await page.tap('#panel .actions button');
     await page.waitForTimeout(150);
     if (await page.locator('#touch .act').isVisible()) throw new Error('touch controls still showing over a card');
-    await shot(page, 'touch-menu');
+    await page.tap('#panel button.primary');
+    await page.locator('#touch .act').waitFor({ timeout: 3000 });
+    await shot(page, 'touch-pad');
     if (problems.length) throw new Error(problems.join('\n'));
     console.log('PASS touch');
   } catch (e) {
     failures++;
     console.error('FAIL touch: ' + e.message);
+    await shot(page, 'touch-fail');
   } finally {
     await context.close();
   }
@@ -416,14 +462,18 @@ async function dungeon(lang, tier) {
 }
 
 // SMOKE_ONLY=dungeon runs just the dungeon play-throughs, and SMOKE_ONE=1 only the first of those
-// (faster while fixing a bug there)
+// (faster while fixing a bug there); SMOKE_ONLY=touch runs just the tablet check
 const only = process.env.SMOKE_ONLY;
+if (only === 'touch') {
+  await touchCheck();
+} else {
 if (only !== 'dungeon') {
   await run('en', 'E3');
   await run('fr', 'E2');
   await touchCheck();
 }
 for (const [lang, tier] of (process.env.SMOKE_ONE ? [['en','E2']] : [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']])) await dungeon(lang, tier);
+}
 await browser.close();
 server.close();
 process.exit(failures ? 1 : 0);

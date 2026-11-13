@@ -53,7 +53,8 @@
       "musicVolume": {"en": "Music volume", "fr": "Volume de la musique"},
       "quiet": {"en": "Quiet", "fr": "Bas"},
       "medium": {"en": "Medium", "fr": "Moyen"},
-      "loud": {"en": "Loud", "fr": "Fort"}
+      "loud": {"en": "Loud", "fr": "Fort"},
+      "arrowPad": {"en": "Arrow buttons on screen", "fr": "Flèches à l’écran"}
     },
     "teacher": {
       "title": {"en": "Teacher corner", "fr": "Coin enseignant"},

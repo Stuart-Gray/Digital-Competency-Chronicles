@@ -34,8 +34,9 @@ Sessions are designed for 10 to 15 minutes.
 - **Music** on or off, and **Music volume** (quiet, medium, loud). Music starts after the first
   tap or key press and is on by default at medium volume; turn it off for silent work time.
   The setting is saved on the device, so it stays off for the next player too.
-- Keyboard (arrows or WASD, Space or Enter to talk) and touch (on-screen arrows and an A button)
-  both work everywhere.
+- Keyboard (arrows or WASD, Space or Enter to talk) or tap/click to move: tap a spot and the hero
+  walks there; tap a person or thing to walk up and talk or look. Both work everywhere. On tablets,
+  an on-screen arrow pad can be turned on in Settings.
 
 ## Privacy
 

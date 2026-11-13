@@ -41,7 +41,7 @@ function remove(key) {
 }
 
 // ---------- settings (shared by every slot on this device) ----------
-const DEFAULT_SETTINGS = { lang: null, readAloud: false, textSpeed: 'normal', largeText: false, highContrast: false, music: true, musicVolume: 'medium' };
+const DEFAULT_SETTINGS = { lang: null, readAloud: false, textSpeed: 'normal', largeText: false, highContrast: false, music: true, musicVolume: 'medium', arrowPad: false };
 
 export function loadSettings() {
   return { ...DEFAULT_SETTINGS, ...(read('settings') || {}) };

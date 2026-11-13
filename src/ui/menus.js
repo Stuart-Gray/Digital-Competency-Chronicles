@@ -5,6 +5,7 @@ import { el, showScreen, avatarStyle, showPanel, hidePanel } from './textLayer.j
 import { ui, getLang } from '../systems/i18n.js';
 import * as save from '../systems/save.js';
 import * as speech from '../systems/speech.js';
+import { isTouchDevice } from '../systems/input.js';
 import { state, updateSettings } from '../systems/state.js';
 
 const AVATARS = 4;
@@ -165,6 +166,8 @@ function settingsBody(rerender) {
     seg(ui('settings.textSpeed'), 'textSpeed', [['slow', ui('settings.slow')], ['normal', ui('settings.normal')], ['fast', ui('settings.fast')]]),
     seg(ui('settings.largeText'), 'largeText', [[false, ui('common.off')], [true, ui('common.on')]]),
     seg(ui('settings.highContrast'), 'highContrast', [[false, ui('common.off')], [true, ui('common.on')]]),
+    // Tapping where to go always works; the old arrow pad is an option for players who prefer it.
+    isTouchDevice() ? seg(ui('settings.arrowPad'), 'arrowPad', [[false, ui('common.off')], [true, ui('common.on')]]) : null,
   );
 }
 
