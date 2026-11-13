@@ -222,6 +222,7 @@ export function validateContent(files) {
     // Scenes played when the player comes home after the village has grown
     (data.arrivals || []).forEach((a, i) => {
       if (!a.if || !a.seen || !dialogue[a.node]) errors.push(`${name}.arrivals[${i}]: needs "if", "seen" and a "node" that exists`);
+      if (a.quest && !(data.quests || {})[a.quest]) errors.push(`${name}.arrivals[${i}]: missing quest "${a.quest}"`);
     });
   }
   checkReflections(files, errors, warnings);

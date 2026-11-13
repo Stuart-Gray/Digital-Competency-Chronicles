@@ -205,7 +205,9 @@ saves on a device.
 The village is where students practise the two dimensions at the centre of the Framework by
 helping neighbours: **dimension 1, ethical citizenship** and **dimension 2, technological
 skills**. Each quest takes two to five minutes. Gus and Noor need a hand from the start; the
-others move in as badge pieces come home from the temple. A small speech bubble floats over
+others move in one at a time as badge pieces come home from the temple, and only when fewer
+than two neighbours are still waiting, so students are never met by a crowd of requests. A
+student who skips the side quests can still finish the temple. A small speech bubble floats over
 anyone who needs help, and the village board lists who is asking. The journal keeps a list of
 "People you helped" (never a list of what is left).
 

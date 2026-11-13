@@ -176,6 +176,7 @@ export default class World extends Phaser.Scene {
     window.DCC.debug.marks = () => this.objects.filter((o) => o.mark && o.mark.visible).map((o) => o.name);
     window.DCC.debug.here = () => this.objects.filter((o) => o.active && o.name).map((o) => o.name);
     window.DCC.debug.critters = () => this.critters.filter((c) => c.sprite.visible).length;
+    window.DCC.debug.settled = () => !this.arrivalDue && !this.arriving && !layer.isBusy(); // no arrival scene is on its way
 
     this.onArrive();
   }
@@ -514,6 +515,19 @@ export default class World extends Phaser.Scene {
   onPointerUp() { this.dragging = false; }
 
   tileOfPlayer() { return [Math.floor(this.player.x / T), Math.floor((this.player.y + 4) / T)]; }
+
+  /** If something has just appeared where the player stands (a building, a new neighbour), step aside. */
+  unstick() {
+    const blocked = this.blocker();
+    const [tx, ty] = this.tileOfPlayer();
+    if (!blocked(tx, ty)) return;
+    const free = nearestFree(tx, ty, blocked, 6);
+    if (!free.length) return;
+    const far = ([x, y]) => Math.abs(x - tx) + Math.abs(y - ty);
+    const [fx, fy] = free.sort((m, n) => far(m) - far(n))[0];
+    this.clearPath();
+    this.player.setPosition(fx * T + T / 2, fy * T + T / 2 - 4);
+  }
 
   /** Tiles taken by an object (doors can be wide or tall). */
   objectTiles(o) {

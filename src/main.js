@@ -9,7 +9,7 @@ import Dungeon2 from './scenes/Dungeon2.js';
 import { GAME_W, GAME_H } from './ui/textLayer.js';
 import * as music from './systems/music.js';
 
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';
 
 if (!window.Phaser) {
   // Phaser comes from the CDN; without it the game cannot start.

@@ -629,6 +629,15 @@ async function dungeon(lang, tier) {
     await converse(page, tier, solved, problems);
   };
   const need = async (flag) => { if (!(await flags())[flag]) throw new Error('flag not set: ' + flag); };
+  // Waits until no arrival scene is on its way (someone new may move in after the player helps a neighbour).
+  const settle = async () => {
+    for (let i = 0; i < 60; i++) {
+      if (await page.evaluate(() => window.DCC.debug.settled())) return;
+      await converse(page, tier, solved, problems);
+      await page.waitForTimeout(150);
+    }
+    throw new Error('the village did not settle');
+  };
   try {
     await page.goto(base);
     await page.locator('[data-test=play]').waitFor({ timeout: 15000 });
@@ -732,13 +741,24 @@ async function dungeon(lang, tier) {
     await page.waitForTimeout(800);
     await converse(page, tier, solved, problems);
     await need('saw_village_grow');
-    for (const f of ['saw_grow_1', 'saw_grow_2', 'saw_grow_3', 'saw_grow_4']) await need(f);
-    await go('fixer');
+    await settle();
 
-    // The grown village: everyone has moved in, and each of them needs a hand once.
-    const here = await page.evaluate(() => window.DCC.debug.here());
-    for (const who of ['gus', 'noor', 'zoe', 'fern', 'sami', 'pip', 'bruno']) if (!here.includes(who)) throw new Error(who + ' has not moved in');
-    for (const who of ['gus', 'noor', 'zoe', 'fern', 'sami', 'pip', 'bruno', 'elder']) await go(who);
+    // Coming home with the badge must not flood the village: while three neighbours are still
+    // waiting for help, nobody new moves in.
+    const hereNow = () => page.evaluate(() => window.DCC.debug.here());
+    const marksNow = () => page.evaluate(() => window.DCC.debug.marks());
+    const early = await hereNow();
+    for (const who of ['zoe', 'fern', 'sami', 'pip', 'bruno']) if (early.includes(who)) throw new Error(who + ' moved in while three neighbours were still waiting');
+    if ((await marksNow()).length !== 3) throw new Error('expected 3 "needs a hand" marks on coming home, got: ' + (await marksNow()).join());
+    // Each time the player helps someone, one new neighbour moves in: never more than two waiting.
+    for (const who of ['fixer', 'gus', 'noor', 'zoe', 'fern', 'sami', 'pip', 'bruno', 'elder']) {
+      if (!(await hereNow()).includes(who)) throw new Error(who + ' has not moved in');
+      await go(who);
+      await settle();
+      const waiting = await marksNow();
+      if (waiting.length > 2) throw new Error('too many neighbours waiting at once: ' + waiting.join());
+    }
+    for (const f of ['saw_grow_1', 'saw_grow_2', 'saw_grow_3', 'saw_grow_4', 'saw_grow_5', 'saw_grow_6']) await need(f);
     const home = await page.evaluate(() => window.DCC.debug.slot());
     const undone = Object.keys(hub.quests).filter((q) => !home.quests[q]);
     if (undone.length) throw new Error('side quests not finished: ' + undone.join(', '));

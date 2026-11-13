@@ -40,9 +40,9 @@ Titles checked against the English and French sheets on 6 November 2026.
 
 The Digital Competency Framework names two dimensions as central to all the others: **dimension 1, Exercising ethical citizenship in the digital age** (*Agir en citoyen éthique à l’ère du numérique*) and **dimension 2, Developing and mobilizing technological skills** (*Développer et mobiliser ses habiletés technologiques*). The village is where the player practises both by helping neighbours with everyday problems. Each side quest lists its dimension (`dcf`), its sheet element and its puzzle families in the `quests` block of `hub.json`. Dimension 1 quests use sheet 1 (social and environmental impacts, digital habits); dimension 2 quests use sheets 3 and 4 (hardware, basic features, organization, troubleshooting).
 
-Two villagers need a hand at the start. The others move in, one at a time, each time the player comes home with a new piece of the Dungeon 2 badge, so the village and its problems grow together.
+Two villagers need a hand at the start (three with Théo). The others are unlocked by the Dungeon 2 badge pieces ("Unlocked" below), but they **move in one at a time**: a new neighbour only arrives when fewer than two are still waiting for help (`questsAtOnce` in `hub.json`), either when the player comes home or a moment after the player has helped someone. So a player who finishes the whole temple in one go does not come home to six new requests; the village fills up as the player helps, and there are never more than two speech bubbles after the start. The garden is ready to pick once the player has helped Fern.
 
-| Quest | Title (EN / FR) | Villager | Dimension | Element | Puzzle families | Appears |
+| Quest | Title (EN / FR) | Villager | Dimension | Element | Puzzle families | Unlocked |
 |---|---|---|---|---|---|---|
 | `q_fixit` | Théo's frozen app / L’application gelée de Théo | Théo | D2 Technological skills | 4b | `fixer_steps`, `fixer_first_try` | From the start |
 | `q_sound` | Gus and the silent video / Gus et la vidéo muette | Gus | D2 Technological skills | 3a | `gus_parts`, `gus_volume` | From the start |

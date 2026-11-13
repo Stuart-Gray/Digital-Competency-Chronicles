@@ -290,7 +290,7 @@ dimension 1 (ethical citizenship) and dimension 2 (technological skills).
 | `elements` | The sheet elements the quest's puzzles come from. |
 | `families` | The quest's puzzle families (each must exist in `puzzles`). |
 | `flag` | Story flag set when the quest is finished. Use it in `if` / `ifNot` so the villager says thank you instead of asking again. |
-| `after` | Optional story flag: the quest is only offered once this flag is set (the villager has moved in). Leave it out for quests open from the start. |
+| `after` | Optional flag: the quest is only offered once this flag is set. Use the `seen` flag of the villager's arrival scene (see `arrivals` below), so the quest starts when the villager moves in. Leave it out for quests open from the start. |
 
 How to write one:
 
@@ -298,7 +298,7 @@ How to write one:
 2. In the intro node, a choice opens the first puzzle (`"action": "puzzle:<family>"`). Always offer a "Maybe later" choice.
 3. The last line of the conversation carries `"action": "quest:<id>"`.
 4. Write a Cycle 2 and a Cycle 3 version of each puzzle (same `family`), with the sheet's `application` in both languages and `"dcf"`.
-5. Put the villager on the map (`tools/art/make_hub_map.py`) with `ifFlag` set to the quest's `after` flag.
+5. Add an arrival scene for the villager (`arrivals`, with `"quest"`), and put the villager on the map (`tools/art/make_hub_map.py`) with `ifFlag` set to that scene's `seen` flag, which is also the quest's `after` flag.
 6. Add the quest to `docs/content-mapping.md`, and append its families and reflections to the end of the lists in `content/progress.json` if the teacher view uses that file.
 
 A finished quest is saved as `quests: { "<id>": "<date>" }` in the player's save. The game never
@@ -313,12 +313,21 @@ the teacher layer decides when and how they are shown.
 
 ## Village life (`arrivals`, `labels`)
 
-`arrivals` are short scenes played once, the first time the player comes home after a story flag
-is set (someone has moved in, something was built):
+`arrivals` are short scenes played once, after a story flag is set (someone has moved in,
+something was built). They play when the player comes home, or a moment after the player has
+helped someone:
 
 ```json
-"arrivals": [ { "if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1" } ]
+"questsAtOnce": 2,
+"arrivals": [ { "if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1", "quest": "q_files" } ]
 ```
+
+`if` is the story flag that unlocks the scene, `seen` is the flag it sets when it is over (map
+objects and the quest's `after` use it), `node` is what is said. An arrival with a `quest` is a
+new neighbour who needs a hand, and those are paced so the village never feels crowded: only
+one moves in at a time, and only while fewer than `questsAtOnce` neighbours are still waiting
+for help. Arrivals without a `quest` (the flowers that bloom when a badge comes home) are not
+held back.
 
 `labels` are the names of things for the *Look around* list (and screen readers), used by map
 objects with a `label` property: `"labels": { "duck": { "en": "A duck", "fr": "Un canard" } }`.

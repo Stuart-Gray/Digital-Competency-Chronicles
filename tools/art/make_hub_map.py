@@ -9,14 +9,19 @@ overwrite their work. It exists so the first version is reproducible.
 The village grows with the story. Things that appear later are objects with an
 "ifFlag" property (people, animals, "deco" tiles for buildings and gardens):
 
-    start              Gus and his cat, Noor and the village board, empty lots
-    got_lantern        Zoé moves in with her cart; the bakery starts to go up;
-                       the lantern shows duck tracks to a hidden grove
-    got_piece_traces   Fern and the community garden, chickens
-    got_piece_keys     Sami by the pond, a kite in a tree
-    got_piece_gallery  Pip's mail stand, a pigeon
-    area2_done         the bakery opens (Bruno), the garden is ready to pick,
-                       flowers and butterflies around the plaza, Théo's shop opens
+    start          Gus and his cat, Noor and the village board, empty lots
+    saw_grow_1     Zoé moves in with her cart; the bakery starts to go up
+    saw_grow_2     Fern and the community garden, chickens
+    q_green_done   the garden is ready to pick (after the player helps Fern)
+    saw_grow_3     Sami by the pond, a kite in a tree
+    saw_grow_4     Pip's mail stand, a pigeon
+    saw_grow_5     the bakery opens (Bruno)
+    area2_done     flowers and butterflies around the plaza, Théo's shop opens
+
+The saw_grow_N flags are set by the "arrivals" scenes in content/hub.json: each needs a
+story flag from the dungeon AND room in the village (never more than "questsAtOnce"
+neighbours waiting for help), so people move in one at a time. The lantern shows duck
+tracks to a hidden grove at any time.
 """
 import json
 import os
@@ -203,47 +208,47 @@ obj("cat_nap", "critter", 8, 12, kind=5, move="still", dialogue="cat_asleep", la
 # Noor looks after the village board
 obj("noor", "npc", 18, 10, npc="noor", sheet="villagers", sprite=1)
 
-# Zoé moves in with her cart of files once the lantern is found
-obj("zoe", "npc", 11, 16, npc="zoe", sheet="villagers", sprite=2, ifFlag="got_lantern")
-deco("zoe_cart", 12, 16, CART, "structures", "got_lantern")
+# Zoé moves in with her cart of files (first arrival, after the lantern is found)
+obj("zoe", "npc", 11, 16, npc="zoe", sheet="villagers", sprite=2, ifFlag="saw_grow_1")
+deco("zoe_cart", 12, 16, CART, "structures", "saw_grow_1")
 
-# Fern and the community garden (first badge piece)
+# Fern and the community garden (second arrival)
 PLOT = [(x, y) for y in range(20, 23) for x in range(24, 29)]
 for (x, y) in PLOT:
     g(x, y, TALLGRASS)
-obj("garden_lot", "sign", 23, 20, dialogue="hub_garden_lot", ifNotFlag="got_piece_traces")
-obj("garden_sign", "sign", 23, 20, dialogue="hub_garden_sign", ifFlag="got_piece_traces")
+obj("garden_lot", "sign", 23, 20, dialogue="hub_garden_lot", ifNotFlag="saw_grow_2")
+obj("garden_sign", "sign", 23, 20, dialogue="hub_garden_sign", ifFlag="saw_grow_2")
 s(23, 20, SIGN)
 for i, (x, y) in enumerate(PLOT):
-    deco(f"plot{i}", x, y, SPROUT if (x + y) % 2 else SOIL, "ground", "got_piece_traces")
-deco("scarecrow_tile", 28, 20, SCARECROW, "structures", "got_piece_traces")
-obj("scarecrow", "sign", 28, 20, dialogues="hub_scarecrow,hub_scarecrow_2", label="scarecrow", ifFlag="got_piece_traces")
-obj("fern", "npc", 26, 19, npc="fern", sheet="villagers", sprite=3, ifFlag="got_piece_traces")
-obj("chicken1", "critter", 25, 24, kind=2, move="roam", range=2, dialogue="chicken", label="chicken", ifFlag="got_piece_traces")
-obj("chicken2", "critter", 28, 24, kind=2, move="roam", range=2, dialogue="chicken", label="chicken", ifFlag="got_piece_traces")
+    deco(f"plot{i}", x, y, SPROUT if (x + y) % 2 else SOIL, "ground", "saw_grow_2")
+deco("scarecrow_tile", 28, 20, SCARECROW, "structures", "saw_grow_2")
+obj("scarecrow", "sign", 28, 20, dialogues="hub_scarecrow,hub_scarecrow_2", label="scarecrow", ifFlag="saw_grow_2")
+obj("fern", "npc", 26, 19, npc="fern", sheet="villagers", sprite=3, ifFlag="saw_grow_2")
+obj("chicken1", "critter", 25, 24, kind=2, move="roam", range=2, dialogue="chicken", label="chicken", ifFlag="saw_grow_2")
+obj("chicken2", "critter", 28, 24, kind=2, move="roam", range=2, dialogue="chicken", label="chicken", ifFlag="saw_grow_2")
 for i, (x, y) in enumerate(PLOT):
     if (x, y) != (28, 20):
-        deco(f"veg{i}", x, y, VEGGIES if (x + y) % 2 else SPROUT, "ground", "area2_done")
-deco("pumpkin1", 29, 22, PUMPKIN, "structures", "area2_done")
+        deco(f"veg{i}", x, y, VEGGIES if (x + y) % 2 else SPROUT, "ground", "q_green_done")
+deco("pumpkin1", 29, 22, PUMPKIN, "structures", "q_green_done")
 
 # Sami by the pond (second badge piece), and a kite stuck in a tree
-obj("sami", "npc", 13, 21, npc="sami", sheet="villagers", sprite=5, ifFlag="got_piece_keys")
-deco("kite_tree", 14, 23, KITE_TREE, "structures", "got_piece_keys")
-obj("kite", "sign", 14, 23, dialogue="hub_kite", label="kite", ifFlag="got_piece_keys")
+obj("sami", "npc", 13, 21, npc="sami", sheet="villagers", sprite=5, ifFlag="saw_grow_3")
+deco("kite_tree", 14, 23, KITE_TREE, "structures", "saw_grow_3")
+obj("kite", "sign", 14, 23, dialogue="hub_kite", label="kite", ifFlag="saw_grow_3")
 
 # Pip's mail stand (third badge piece), on a lot that waits for it
 for x in range(35, 37):
     g(x, 16, PATH)
 for x in range(35, 38):
     g(x, 17, LOT)
-obj("mail_lot", "sign", 34, 17, dialogue="hub_mail_lot", ifNotFlag="got_piece_gallery")
+obj("mail_lot", "sign", 34, 17, dialogue="hub_mail_lot", ifNotFlag="saw_grow_4")
 s(34, 17, SIGN)
-obj("mail_sign", "sign", 34, 17, dialogue="hub_mail_sign", ifFlag="got_piece_gallery")
-deco("stall1", 35, 17, STALL, "structures", "got_piece_gallery")
-deco("stall2", 36, 17, STALL, "structures", "got_piece_gallery")
-deco("postbox", 37, 17, POSTBOX, "structures", "got_piece_gallery")
-obj("pip", "npc", 35, 18, npc="pip", sheet="villagers", sprite=4, ifFlag="got_piece_gallery")
-obj("pigeon", "critter", 37, 18, kind=4, move="roam", range=1, dialogue="pigeon", label="pigeon", ifFlag="got_piece_gallery")
+obj("mail_sign", "sign", 34, 17, dialogue="hub_mail_sign", ifFlag="saw_grow_4")
+deco("stall1", 35, 17, STALL, "structures", "saw_grow_4")
+deco("stall2", 36, 17, STALL, "structures", "saw_grow_4")
+deco("postbox", 37, 17, POSTBOX, "structures", "saw_grow_4")
+obj("pip", "npc", 35, 18, npc="pip", sheet="villagers", sprite=4, ifFlag="saw_grow_4")
+obj("pigeon", "critter", 37, 18, kind=4, move="roam", range=1, dialogue="pigeon", label="pigeon", ifFlag="saw_grow_4")
 
 # The bakery: an empty lot, then a frame going up (lantern), then open (badge)
 for y in (21, 22):
@@ -253,21 +258,21 @@ for y in range(16, 24):
     g(31, y, PATH)
 for x in range(29, 35):
     g(x, 23, PATH)
-obj("bakery_lot", "sign", 34, 22, dialogue="hub_bakery_lot", ifNotFlag="got_lantern")
-obj("bakery_site", "sign", 34, 22, dialogue="hub_bakery_site", ifFlag="got_lantern", ifNotFlag="area2_done")
-obj("bakery_sign", "sign", 34, 22, dialogue="hub_bakery_sign", ifFlag="area2_done")
+obj("bakery_lot", "sign", 34, 22, dialogue="hub_bakery_lot", ifNotFlag="saw_grow_1")
+obj("bakery_site", "sign", 34, 22, dialogue="hub_bakery_site", ifFlag="saw_grow_1", ifNotFlag="saw_grow_5")
+obj("bakery_sign", "sign", 34, 22, dialogue="hub_bakery_sign", ifFlag="saw_grow_5")
 s(34, 22, SIGN)
 for x in range(29, 34):
-    deco(f"frame_top{x}", x, 21, SCAFFOLD_TOP, "structures", "got_lantern")
-    deco(f"frame{x}", x, 22, SCAFFOLD, "structures", "got_lantern")
+    deco(f"frame_top{x}", x, 21, SCAFFOLD_TOP, "structures", "saw_grow_1")
+    deco(f"frame{x}", x, 22, SCAFFOLD, "structures", "saw_grow_1")
 for x in range(29, 34):
-    deco(f"bakery_r1_{x}", x, 19, ROOFO_CHIMNEY if x == 32 else ROOFO, "structures", "area2_done")
-    deco(f"bakery_r2_{x}", x, 20, ROOFO, "structures", "area2_done")
-    deco(f"bakery_e_{x}", x, 21, ROOFO_EAVE, "structures", "area2_done")
-    deco(f"bakery_w_{x}", x, 22, {30: BAKERY_WINDOW, 31: BAKERY_DOOR, 32: BAKERY_WINDOW}.get(x, WALL), "structures", "area2_done")
-obj("bakery_door", "sign", 31, 22, dialogue="hub_bakery_door", label="bakery", ifFlag="area2_done")
-deco("sacks", 34, 23, SACKS, "structures", "area2_done")
-obj("bruno", "npc", 33, 24, npc="bruno", sheet="villagers", sprite=6, ifFlag="area2_done")
+    deco(f"bakery_r1_{x}", x, 19, ROOFO_CHIMNEY if x == 32 else ROOFO, "structures", "saw_grow_5")
+    deco(f"bakery_r2_{x}", x, 20, ROOFO, "structures", "saw_grow_5")
+    deco(f"bakery_e_{x}", x, 21, ROOFO_EAVE, "structures", "saw_grow_5")
+    deco(f"bakery_w_{x}", x, 22, {30: BAKERY_WINDOW, 31: BAKERY_DOOR, 32: BAKERY_WINDOW}.get(x, WALL), "structures", "saw_grow_5")
+obj("bakery_door", "sign", 31, 22, dialogue="hub_bakery_door", label="bakery", ifFlag="saw_grow_5")
+deco("sacks", 34, 23, SACKS, "structures", "saw_grow_5")
+obj("bruno", "npc", 33, 24, npc="bruno", sheet="villagers", sprite=6, ifFlag="saw_grow_5")
 
 # A hidden grove in the south-west corner. The way in is through very tall grass;
 # with the lantern, glowing duck tracks lead there from the pond.

@@ -31,7 +31,7 @@
       "name": {"en": "Rosa", "fr": "Rosa"},
       "dialogue": [
         {"if": "q_voice_done", "node": "rosa_voice_thanks"},
-        {"if": "area2_done", "node": "rosa_voice_intro"},
+        {"if": "saw_grow_6", "node": "rosa_voice_intro"},
         {"if": "d2_photo_done", "node": "elder_photo"},
         {"node": "elder_pond"}
       ]
@@ -358,9 +358,6 @@
     "village_grew": [
       {
         "text": {"en": "As you walk back into the village, flowers bloom all around the plaza!", "fr": "Quand tu reviens au village, des fleurs éclosent tout autour de la place!"}
-      },
-      {
-        "text": {"en": "And what is that smell? Fresh bread! A bakery has opened on the south road.", "fr": "Et quelle est cette odeur? Du pain frais! Une boulangerie a ouvert sur le chemin du sud."}
       },
       {
         "text": {"en": "From the east, you hear Théo: \"My shop is open! Come and see!\"", "fr": "De l’est, tu entends Théo : « Ma boutique est ouverte! Viens voir! »"},
@@ -975,32 +972,32 @@
         "text": {"en": "\"Help wanted to sort online comments. I am right beside this board. - Noor\"", "fr": "« Aide demandée pour trier des commentaires en ligne. Je suis juste à côté du babillard. - Noor »"}
       },
       {
-        "if": "got_lantern",
+        "if": "saw_grow_1",
         "ifNot": "q_files_done",
         "text": {"en": "\"Lost: one poster. It is somewhere on my tablet. I am west of the plaza. - Zoé\"", "fr": "« Perdue : une affiche. Elle est quelque part dans ma tablette. Je suis à l’ouest de la place. - Zoé »"}
       },
       {
-        "if": "got_piece_traces",
+        "if": "saw_grow_2",
         "ifNot": "q_green_done",
         "text": {"en": "\"Found in the garden: one tablet. It is not a vegetable. - Fern\"", "fr": "« Trouvée au jardin : une tablette. Ce n’est pas un légume. - Fern »"}
       },
       {
-        "if": "got_piece_keys",
+        "if": "saw_grow_3",
         "ifNot": "q_real_done",
         "text": {"en": "\"GIANT DUCK!!! Come to the pond! - Sami\"", "fr": "« CANARD GÉANT!!! Viens à l’étang! - Sami »"}
       },
       {
-        "if": "got_piece_gallery",
+        "if": "saw_grow_4",
         "ifNot": "q_wifi_done",
         "text": {"en": "\"A mail carrier whose email is stuck! Mail stand, east road. - Pip\"", "fr": "« Un facteur dont le courriel est coincé! Kiosque postal, chemin de l’est. - Pip »"}
       },
       {
-        "if": "area2_done",
+        "if": "saw_grow_5",
         "ifNot": "q_ding_done",
         "text": {"en": "\"DING! Sorry. Help. DING! The bakery, south road. - Bruno\"", "fr": "« DING! Désolé. À l’aide. DING! La boulangerie, chemin du sud. - Bruno »"}
       },
       {
-        "if": "area2_done",
+        "if": "saw_grow_6",
         "ifNot": "q_voice_done",
         "text": {"en": "\"The letters on my tablet are too small. I am by the pond. - Rosa\"", "fr": "« Les lettres de ma tablette sont trop petites. Je suis près de l’étang. - Rosa »"}
       }
@@ -1160,6 +1157,19 @@
     "grow_4": [
       {
         "text": {"en": "A mail stand has opened on the east road. A pigeon is watching it closely.", "fr": "Un kiosque postal a ouvert sur le chemin de l’est. Un pigeon le surveille de près."}
+      }
+    ],
+    "grow_5": [
+      {
+        "text": {"en": "What is that smell? Fresh bread! The bakery on the south road is open.", "fr": "Quelle est cette odeur? Du pain frais! La boulangerie du chemin du sud est ouverte."}
+      },
+      {
+        "text": {"en": "From inside, you hear: DING! ... DING! ... \"Oh no, my buns!\"", "fr": "De l’intérieur, tu entends : DING! ... DING! ... « Oh non, mes brioches! »"}
+      }
+    ],
+    "grow_6": [
+      {
+        "text": {"en": "By the pond, Rosa holds her tablet far away. Then very close. Then far away again.", "fr": "Près de l’étang, Rosa tient sa tablette très loin. Puis tout près. Puis très loin encore."}
       }
     ]
   },
@@ -2285,12 +2295,15 @@
       "desc": {"en": "A gift from the ducks. It does nothing, but it is very shiny.", "fr": "Un cadeau des canards. Elle ne sert à rien, mais elle brille beaucoup."}
     }
   },
+  "questsAtOnce": 2,
   "arrivals": [
-    {"if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1"},
-    {"if": "got_piece_traces", "seen": "saw_grow_2", "node": "grow_2"},
-    {"if": "got_piece_keys", "seen": "saw_grow_3", "node": "grow_3"},
-    {"if": "got_piece_gallery", "seen": "saw_grow_4", "node": "grow_4"},
-    {"if": "area2_done", "seen": "saw_village_grow", "node": "village_grew"}
+    {"if": "area2_done", "seen": "saw_village_grow", "node": "village_grew"},
+    {"if": "got_lantern", "seen": "saw_grow_1", "node": "grow_1", "quest": "q_files"},
+    {"if": "got_piece_traces", "seen": "saw_grow_2", "node": "grow_2", "quest": "q_green"},
+    {"if": "got_piece_keys", "seen": "saw_grow_3", "node": "grow_3", "quest": "q_real"},
+    {"if": "got_piece_gallery", "seen": "saw_grow_4", "node": "grow_4", "quest": "q_wifi"},
+    {"if": "area2_done", "seen": "saw_grow_5", "node": "grow_5", "quest": "q_ding"},
+    {"if": "area2_done", "seen": "saw_grow_6", "node": "grow_6", "quest": "q_voice"}
   ],
   "quests": {
     "q_fixit": {
@@ -2324,7 +2337,7 @@
       "elements": ["4a"],
       "families": ["zoe_files"],
       "flag": "q_files_done",
-      "after": "got_lantern"
+      "after": "saw_grow_1"
     },
     "q_green": {
       "title": {"en": "Fern's garden sign", "fr": "L’affiche du jardin de Fern"},
@@ -2333,7 +2346,7 @@
       "elements": ["1b"],
       "families": ["fern_energy"],
       "flag": "q_green_done",
-      "after": "got_piece_traces"
+      "after": "saw_grow_2"
     },
     "q_real": {
       "title": {"en": "Sami and the giant duck", "fr": "Sami et le canard géant"},
@@ -2342,7 +2355,7 @@
       "elements": ["1a"],
       "families": ["sami_image", "sami_share"],
       "flag": "q_real_done",
-      "after": "got_piece_keys"
+      "after": "saw_grow_3"
     },
     "q_wifi": {
       "title": {"en": "Pip's stuck email", "fr": "Le courriel coincé de Pip"},
@@ -2351,7 +2364,7 @@
       "elements": ["3a"],
       "families": ["pip_network"],
       "flag": "q_wifi_done",
-      "after": "got_piece_gallery"
+      "after": "saw_grow_4"
     },
     "q_ding": {
       "title": {"en": "Bruno and the dinging game", "fr": "Bruno et le jeu qui sonne"},
@@ -2360,7 +2373,7 @@
       "elements": ["1c"],
       "families": ["bruno_notify"],
       "flag": "q_ding_done",
-      "after": "area2_done"
+      "after": "saw_grow_5"
     },
     "q_voice": {
       "title": {"en": "Rosa's talking tablet", "fr": "La tablette parlante de Rosa"},
@@ -2369,7 +2382,7 @@
       "elements": ["3b"],
       "families": ["rosa_voice"],
       "flag": "q_voice_done",
-      "after": "area2_done"
+      "after": "saw_grow_6"
     }
   },
   "reflections": [

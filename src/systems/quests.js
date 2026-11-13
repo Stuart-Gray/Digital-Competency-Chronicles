@@ -21,7 +21,7 @@ export function isDone(slot, id) {
   return !!(q && slot.flags[q.flag]);
 }
 
-/** Has this quest started to be on offer? ("after" is the story flag that brings it.) */
+/** Has this quest started to be on offer? ("after" is the flag that brings it: usually the "seen" flag of the arrival scene in which the villager moves in.) */
 export function isOffered(slot, id) {
   const q = defs()[id];
   return !!q && (!q.after || !!slot.flags[q.after]);
@@ -36,7 +36,25 @@ export function openFor(slot, npcId) {
 }
 
 export function anyOpen(slot) {
-  return Object.keys(defs()).some((id) => isOffered(slot, id) && !isDone(slot, id));
+  return openCount(slot) > 0;
+}
+
+/** How many villagers are waiting for help right now. */
+export function openCount(slot) {
+  return Object.keys(defs()).filter((id) => isOffered(slot, id) && !isDone(slot, id)).length;
+}
+
+/**
+ * The village stays calm: a new neighbour only moves in while fewer than this many are
+ * waiting for help ("questsAtOnce" in the content file, 2 if it is not set).
+ */
+export function atOnce() {
+  const data = content.get(FILE);
+  return (data && data.questsAtOnce) || 2;
+}
+
+export function hasRoom(slot) {
+  return openCount(slot) < atOnce();
 }
 
 /** Marks a quest done (once). Returns true if it was not done before. */
