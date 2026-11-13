@@ -86,6 +86,13 @@ voices instead.)
 - **Focus** is always visible and stays on the option just chosen in Settings. Arrow keys move
   between buttons in menus and cards. Escape closes cards.
 - **Touch targets** are at least 44 by 44 CSS pixels.
+- **The avatar maker** works with keyboard, touch and screen readers. Every colour and style is a
+  button with a spoken name ("Hair colour: Blue"), the chosen one has a **✓** and its name is
+  written beside the row, so colour is never the only clue. Focus starts on *Looks good!* (Enter is
+  the quick way through) and stays on the choice just made. Each ready-made hero is described in
+  words. The big hero walks on the spot and turns, and stands still when motion is reduced. The
+  jokes are read to screen readers. Heroes include eight skin tones, a wheelchair, a hijab, a
+  turban and glasses; *Mix it up!* never adds or removes a wheelchair, hijab or turban.
 - **No flashing.** Nothing flashes more than once a second.
 - **No sound-only information.** The game has music but no sound effects; everything that matters
   is shown as text. (If sound effects are added later, each needs a caption.)

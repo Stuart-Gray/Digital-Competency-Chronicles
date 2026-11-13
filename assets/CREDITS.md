@@ -8,6 +8,7 @@ Add a line here whenever an asset is added or replaced.
 | `tiles/village.png` | Drawn for this project by `tools/art/make_placeholder_art.py` (placeholder art, 2026) | CC0 1.0 (public domain) |
 | `sprites/hero.png` | Drawn for this project by `tools/art/make_placeholder_art.py` | CC0 1.0 |
 | `sprites/npcs.png` | Drawn for this project by `tools/art/make_placeholder_art.py` | CC0 1.0 |
+| `sprites/hero_parts.png` (the avatar maker's parts: head, six outfits, wheelchair, eight hairstyles, five hats and head coverings, glasses; drawn in marker colours that the game swaps for the player's colours) | Drawn for this project by `tools/art/make_hero_parts.py` | CC0 1.0 |
 | `../maps/hub.tmj` | Built for this project by `tools/art/make_hub_map.py`; editable in Tiled | CC0 1.0 |
 | `tiles/dungeon.png` | Drawn for this project by `tools/art/make_dungeon_art.py` | CC0 1.0 |
 | `sprites/fx.png` (traces, lantern, badge pieces) | Drawn for this project by `tools/art/make_dungeon_art.py` | CC0 1.0 |

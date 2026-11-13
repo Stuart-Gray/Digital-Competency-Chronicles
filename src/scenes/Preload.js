@@ -3,6 +3,7 @@
 import * as content from '../systems/content.js';
 import { setUiStrings } from '../systems/i18n.js';
 import * as music from '../systems/music.js';
+import * as avatar from '../systems/avatar.js';
 
 const NPC_ROWS = 9; // rows in assets/sprites/npcs.png
 
@@ -30,18 +31,21 @@ export default class Preload extends Phaser.Scene {
     this.load.spritesheet('fx', file('assets/sprites/fx.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('hero', file('assets/sprites/hero.png'), { frameWidth: 16, frameHeight: 16 });
     this.load.spritesheet('npcs', file('assets/sprites/npcs.png'), { frameWidth: 16, frameHeight: 16 });
+    this.load.image('hero-parts', file('assets/sprites/hero_parts.png')); // the avatar maker's parts (src/systems/avatar.js)
   }
 
   create() {
     content.init(this.cache);
     setUiStrings(content.get('ui'));
     music.setSongs(content.get('music'));
+    avatar.init(this.textures.get('hero-parts').getSourceImage(), content.get('avatar'));
     this.makeAnimations();
     this.scene.start('Title');
   }
 
   makeAnimations() {
     const dirs = ['down', 'up', 'left', 'right'];
+    // The four first heroes (hero.png). The player's own hero is painted by src/systems/avatar.js.
     for (let a = 0; a < 4; a++) {
       dirs.forEach((d, di) => {
         const base = a * 12 + di * 3;

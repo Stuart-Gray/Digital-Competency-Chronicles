@@ -4,6 +4,8 @@
 // console error. Then plays all of Dungeon 2 (the Temple of Traces) for each cycle and
 // language: every puzzle (one wrong try each), the hidden door, the key stones, the chests,
 // the final room, a save-and-resume in the middle, and the trip home.
+// Also checks the avatar maker: old saves, ready-made heroes, colours, Mix it up, keyboard use,
+// and changing the look from the pause menu.
 //
 //   npm install --no-save playwright   (once)
 //   node tests/smoke.mjs               (SHOTS=dir to save screenshots)
@@ -86,6 +88,7 @@ async function run(lang, tier) {
     await page.click('[data-test=play]');
     await page.click('[data-test=slot-0]');
     await page.click('[data-test=avatar-1]');
+    await page.click('[data-test=look-done]');
     if (lang === 'en') await page.fill('[data-test=name]', 'Sam9!');
     await shot(page, `${lang}-2-name`);
     if (lang === 'en') {
@@ -188,6 +191,7 @@ async function touchCheck() {
     await page.tap('[data-test=play]');
     await page.tap('[data-test=slot-0]');
     await page.tap('[data-test=avatar-2]');
+    await page.tap('[data-test=look-done]');
     await page.tap('[data-test=skip-name]');
     await page.tap('[data-test=cycle-E2]');
     await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub');
@@ -315,6 +319,7 @@ async function a11yCheck() {
     await page.click('[data-test=play]');
     await page.click('[data-test=slot-0]');
     await page.click('[data-test=avatar-0]');
+    await page.click('[data-test=look-done]');
     await page.click('[data-test=skip-name]');
     await page.click('[data-test=cycle-E2]');
     await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
@@ -356,6 +361,144 @@ async function a11yCheck() {
     console.error('FAIL a11y: ' + e.message);
     if (problems.length) console.error(problems.join('\n'));
     await shot(page, 'a11y-fail');
+  } finally {
+    await context.close();
+  }
+}
+
+// ---------- the avatar maker ----------
+async function avatarCheck() {
+  const { context, page, problems } = await newPage('en');
+  // A save from before the avatar maker: it only knows "avatar: 2" (the third ready-made hero).
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('old-save')) return;
+    sessionStorage.setItem('old-save', '1');
+    const now = new Date().toISOString();
+    localStorage.setItem('dcc.v1.slot1', JSON.stringify({ v: 1, name: 'Old', avatar: 2, tier: 'E2', lang: 'en', created: now, updated: now, sessions: [now],
+      location: { scene: 'Hub', x: null, y: null, facing: 'down' }, flags: {}, puzzles: {}, hints: {}, achievements: {}, items: [] }));
+  });
+  const step = (s) => console.log(`  [avatar] ${s}`);
+  const pressed = (test) => page.getAttribute(`[data-test=${test}]`, 'aria-pressed');
+  const expectPressed = async (test) => { if ((await pressed(test)) !== 'true') throw new Error(test + ' should be chosen'); };
+  const inked = (sel) => page.evaluate((q) => {
+    const c = document.querySelector(q);
+    const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+    let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++;
+    return n;
+  }, sel);
+  const slotLook = (i) => page.evaluate((n) => (JSON.parse(localStorage.getItem('dcc.v1.slot' + n)) || {}).look, i);
+  try {
+    await page.goto(base);
+    await page.locator('[data-test=play]').waitFor({ timeout: 15000 });
+    await page.click('[data-test=play]');
+
+    // The old save still shows its hero, and "Change look" opens the maker on that same hero.
+    if ((await inked('[data-test=slot-1] canvas')) < 60) throw new Error('old save has no hero picture');
+    await page.click('[data-test=change-look-1]');
+    await page.click('[data-test=look-tab-hair]');
+    await expectPressed('look-hair-short');
+    await expectPressed('look-hairColor-blonde');
+    await page.click('[data-test=look-hairColor-blue]');
+    await page.click('[data-test=look-done]');
+    const old = await slotLook(1);
+    if (!old || old.hairColor !== 'blue' || old.top !== 'green') throw new Error('old save was not upgraded: ' + JSON.stringify(old));
+    step('a save from before the maker keeps its hero and can be restyled');
+
+    // New adventurer: twelve ready-made heroes, each with a spoken description.
+    await page.click('[data-test=slot-0]');
+    const heroes = await page.$$eval('.hero-grid button', (list) => list.map((b) => b.getAttribute('aria-label') || ''));
+    if (heroes.length !== 12 || heroes.some((l) => l.length < 20)) throw new Error('hero grid: ' + JSON.stringify(heroes));
+    await shot(page, 'avatar-1-heroes');
+
+    // Surprise me: a look by chance and a joke. Back returns to the heroes.
+    await page.click('[data-test=avatar-surprise]');
+    if (!(await page.textContent('[data-test=look-quip]')).trim()) throw new Error('no joke after Surprise me');
+    await page.click('[data-test=look-back]');
+    step('twelve heroes, Surprise me tells a joke');
+
+    // The hero who uses a wheelchair. Focus starts on "Looks good!" so Enter is the quick way through.
+    await page.click('[data-test=avatar-8]');
+    const focus = await page.evaluate(() => new Promise((r) => setTimeout(() => r(document.activeElement && document.activeElement.getAttribute('data-test')), 120)));
+    if (focus !== 'look-done') throw new Error('focus should start on Looks good!, not ' + focus);
+    await expectPressed('look-body-chair');
+    if ((await inked('[data-test=look-preview]')) < 60) throw new Error('the big hero was not drawn');
+
+    // Every choice has a spoken label, and each row has exactly one choice marked.
+    for (const tab of ['body', 'hair', 'clothes', 'extras']) {
+      await page.click(`[data-test=look-tab-${tab}]`);
+      const rows = await page.$$eval('.maker-row .swatches', (groups) => groups.map((g) => ({
+        named: !!g.getAttribute('aria-labelledby'),
+        labels: [...g.querySelectorAll('button')].every((b) => (b.getAttribute('aria-label') || '').includes(':')),
+        chosen: g.querySelectorAll('button[aria-pressed="true"]').length,
+      })));
+      if (!rows.length || rows.some((r) => !r.named || !r.labels || r.chosen !== 1)) throw new Error(`${tab} tab: ${JSON.stringify(rows)}`);
+    }
+    step('all four tabs: labels and one choice per row');
+
+    // Keyboard: Enter on a swatch chooses it and the focus stays on it.
+    await page.click('[data-test=look-tab-clothes]');
+    await page.focus('[data-test=look-top-pink]');
+    await page.keyboard.press('Enter');
+    await expectPressed('look-top-pink');
+    if ((await page.evaluate(() => document.activeElement.getAttribute('data-test'))) !== 'look-top-pink') throw new Error('focus left the swatch');
+    await page.keyboard.press('ArrowRight');
+    if ((await page.evaluate(() => document.activeElement.getAttribute('data-test'))) !== 'look-top-white') throw new Error('arrow keys do not move along the swatches');
+    step('keyboard choosing keeps its place');
+
+    // Hijab: the hair tab explains itself, and Mix it up never takes away a hijab or a wheelchair.
+    await page.click('[data-test=look-tab-extras]');
+    await page.click('[data-test=look-hat-hijab]');
+    await page.click('[data-test=look-tab-hair]');
+    await page.locator('[data-test=look-note]').waitFor();
+    const jokes = new Set();
+    for (let i = 0; i < 6; i++) {
+      await page.click('[data-test=look-mix]');
+      jokes.add(await page.textContent('[data-test=look-quip]'));
+    }
+    if (jokes.size < 2) throw new Error('Mix it up keeps telling the same joke');
+    await page.click('[data-test=look-tab-extras]');
+    await expectPressed('look-hat-hijab');
+    await page.click('[data-test=look-tab-body]');
+    await expectPressed('look-body-chair');
+    await shot(page, 'avatar-2-maker');
+    step('Mix it up changes the look, tells jokes, keeps hijab and wheelchair');
+
+    await page.click('[data-test=look-tab-clothes]');
+    await page.click('[data-test=look-top-teal]');
+    await page.click('[data-test=look-done]');
+    await page.click('[data-test=skip-name]');
+    await page.click('[data-test=cycle-E3]');
+    await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
+    const saved = await slotLook(0);
+    const KINDS = ['body', 'eyes', 'glasses', 'hair', 'hairColor', 'hat', 'hatColor', 'outfit', 'skin', 'top', 'bottom'].sort();
+    if (JSON.stringify(Object.keys(saved || {}).sort()) !== JSON.stringify(KINDS)) throw new Error('saved look has unexpected fields: ' + JSON.stringify(saved));
+    if (saved.body !== 'chair' || saved.hat !== 'hijab' || saved.top !== 'teal') throw new Error('look not saved: ' + JSON.stringify(saved));
+    if (!(await page.evaluate(() => window.DCC.game.textures.exists('hero-player')))) throw new Error('the hero was not painted for the game');
+    step('the look is saved (ids only) and painted in the village');
+
+    // Change the look from the pause menu while playing.
+    await page.locator('#dialogue').waitFor({ timeout: 5000 });
+    await talkThrough(page);
+    await page.waitForTimeout(200);
+    await page.keyboard.press('Escape');
+    await page.click('[data-test=change-look]');
+    await page.click('[data-test=look-tab-clothes]');
+    await page.click('[data-test=look-outfit-jersey]');
+    await page.click('[data-test=look-done]');
+    await page.locator('[data-test=change-look]').waitFor();
+    if ((await slotLook(0)).outfit !== 'jersey') throw new Error('look from the pause menu was not saved');
+    await page.click('#panel button.primary');
+    await page.waitForTimeout(200);
+    await shot(page, 'avatar-3-village');
+    step('pause menu: change my look');
+
+    if (problems.length) throw new Error(problems.join('\n'));
+    console.log('PASS avatar');
+  } catch (e) {
+    failures++;
+    console.error('FAIL avatar: ' + e.message);
+    if (problems.length) console.error(problems.join('\n'));
+    await shot(page, 'avatar-fail');
   } finally {
     await context.close();
   }
@@ -448,6 +591,7 @@ async function dungeon(lang, tier) {
     await page.click('[data-test=play]');
     await page.click('[data-test=slot-0]');
     await page.click('[data-test=avatar-3]');
+    await page.click('[data-test=look-done]');
     await page.click('[data-test=skip-name]');
     await page.click(`[data-test=cycle-${tier}]`);
     await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
@@ -567,18 +711,21 @@ async function dungeon(lang, tier) {
 
 // SMOKE_ONLY=dungeon runs just the dungeon play-throughs, and SMOKE_ONE=1 only the first of those
 // (faster while fixing a bug there); SMOKE_ONLY=touch runs just the tablet check, SMOKE_ONLY=a11y
-// just the accessibility options
+// just the accessibility options, SMOKE_ONLY=avatar just the avatar maker
 const only = process.env.SMOKE_ONLY;
 if (only === 'touch') {
   await touchCheck();
 } else if (only === 'a11y') {
   await a11yCheck();
+} else if (only === 'avatar') {
+  await avatarCheck();
 } else {
 if (only !== 'dungeon') {
   await run('en', 'E3');
   await run('fr', 'E2');
   await touchCheck();
   await a11yCheck();
+  await avatarCheck();
 }
 for (const [lang, tier] of (process.env.SMOKE_ONE ? [['en','E2']] : [['en', 'E2'], ['en', 'E3'], ['fr', 'E2'], ['fr', 'E3']])) await dungeon(lang, tier);
 }

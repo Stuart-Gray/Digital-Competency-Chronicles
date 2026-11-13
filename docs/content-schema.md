@@ -15,6 +15,7 @@ After any change, check your work: open `tools/validate.html` on the live site (
 | `area2.json` | Dungeon 2, the Temple of Traces (sheet 2: digital identity) |
 | `area1.json`, `area3.json` … `area7.json` | One per content area, added dungeon by dungeon |
 | `music.json` | Background music: the notes of each song (see [Music](#music-musicjson)) |
+| `avatar.json` | The avatar maker: its words, colours, styles, ready-made heroes and jokes (see [Avatar maker](#avatar-maker-avatarjson)) |
 
 Every file starts with `"schemaVersion": 1`.
 
@@ -325,6 +326,34 @@ Music is on by default at a medium volume. Players turn it off or change the vol
 Settings; the choice is saved on the device. It starts after the first tap or key press
 (browsers, and iPads especially, don't allow sound before that), pauses when the tab is hidden,
 and gets quieter while Read aloud is speaking.
+
+## Avatar maker (`avatar.json`)
+
+Players pick a ready-made hero, then change it: skin, eyes, hairstyle and hair colour, outfit and
+its colours, something for the head, glasses, and walking or using a wheelchair.
+
+| Key | What it holds |
+|---|---|
+| `strings` | The maker's words (titles, tab and row names, buttons) |
+| `skin`, `hairColor`, `eyes`, `top`, `bottom`, `hatColor` | Colour lists. Each entry: `id`, `hex` (the colour) and `name` (read aloud and shown beside the row) |
+| `body`, `hair`, `outfit`, `hat`, `glasses` | Style lists. Each entry: `id` and `name`. The `id` must match a part drawn by `tools/art/make_hero_parts.py` (or `none`) |
+| `presets` | The ready-made heroes on the *Choose your hero* screen: one id for each of the lists above |
+| `quips` | The jokes shown after *Mix it up!* and *Surprise me!* |
+
+```json
+{"id": "teal", "hex": "#2a9d8f", "name": {"en": "Teal", "fr": "Turquoise"}}
+{"id": "hijab", "name": {"en": "Hijab", "fr": "Hijab"}, "keep": true}
+```
+
+- **Adding or changing a colour** needs only a new line here: no art and no code.
+- **Adding a style** (a new hairstyle or hat) needs a new part in `tools/art/make_hero_parts.py` too.
+- **`"keep": true`** marks a choice that is part of who a player is (wheelchair, hijab, turban).
+  *Mix it up!* never adds one and never takes one away.
+- **Order matters for old saves:** the first four `presets` are the four heroes from before the
+  maker. Add new heroes at the end.
+- Skin tones are named *Tone 1* to *Tone 8* on purpose (no comparisons to food or objects).
+- A save keeps only the ids (`"look": {"hair": "curly", "top": "teal", ...}`): no personal data.
+- Keep the jokes kind. They are about pixels, frogs and chickens, never about how someone looks.
 
 ## Maps
 

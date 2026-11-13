@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "about": "The avatar maker: its words, the colours and styles players can pick, the ready-made heroes and the jokes. Every text needs both en and fr. See docs/content-schema.md.",
+  "strings": {
+    "pickHelp": {"en": "Pick a hero to start. You can change everything on the next screen.", "fr": "Choisis un personnage pour commencer. Tu pourras tout changer à l’écran suivant."},
+    "heroN": {"en": "Hero {n}", "fr": "Personnage {n}"},
+    "surprise": {"en": "Surprise me!", "fr": "Surprends-moi!"},
+    "makeTitle": {"en": "Make it yours", "fr": "Crée ton style"},
+    "mix": {"en": "Mix it up!", "fr": "Mélange tout!"},
+    "mixHelp": {"en": "Changes the colours and styles by chance", "fr": "Change les couleurs et les styles au hasard"},
+    "done": {"en": "Looks good!", "fr": "C’est parfait!"},
+    "changeLook": {"en": "Change look", "fr": "Changer de style"},
+    "changeMyLook": {"en": "Change my look", "fr": "Changer mon style"},
+    "preview": {"en": "Your hero", "fr": "Ton personnage"},
+    "option": {"en": "{row}: {name}", "fr": "{row} : {name}"},
+    "hairCovered": {"en": "Your hair is covered right now. You can change that in Extras.", "fr": "Tes cheveux sont couverts en ce moment. Tu peux changer ça dans Accessoires."},
+    "tabs": {
+      "body": {"en": "Body", "fr": "Corps"},
+      "hair": {"en": "Hair", "fr": "Cheveux"},
+      "clothes": {"en": "Clothes", "fr": "Vêtements"},
+      "extras": {"en": "Extras", "fr": "Accessoires"}
+    },
+    "rows": {
+      "skin": {"en": "Skin", "fr": "Peau"},
+      "eyes": {"en": "Eyes", "fr": "Yeux"},
+      "body": {"en": "Getting around", "fr": "Déplacements"},
+      "hair": {"en": "Hairstyle", "fr": "Coiffure"},
+      "hairColor": {"en": "Hair colour", "fr": "Couleur des cheveux"},
+      "outfit": {"en": "Outfit", "fr": "Tenue"},
+      "top": {"en": "Top colour", "fr": "Couleur du haut"},
+      "bottom": {"en": "Bottoms colour", "fr": "Couleur du bas"},
+      "hat": {"en": "On your head", "fr": "Sur la tête"},
+      "hatColor": {"en": "Its colour", "fr": "Sa couleur"},
+      "glasses": {"en": "Glasses", "fr": "Lunettes"}
+    }
+  },
+  "skin": [
+    {"id": "s1", "hex": "#f6d6b8", "name": {"en": "Tone 1", "fr": "Teinte 1"}},
+    {"id": "s2", "hex": "#f2c8a0", "name": {"en": "Tone 2", "fr": "Teinte 2"}},
+    {"id": "s3", "hex": "#e0ac7e", "name": {"en": "Tone 3", "fr": "Teinte 3"}},
+    {"id": "s4", "hex": "#c68c5e", "name": {"en": "Tone 4", "fr": "Teinte 4"}},
+    {"id": "s5", "hex": "#a86a44", "name": {"en": "Tone 5", "fr": "Teinte 5"}},
+    {"id": "s6", "hex": "#8d5a3a", "name": {"en": "Tone 6", "fr": "Teinte 6"}},
+    {"id": "s7", "hex": "#6f4429", "name": {"en": "Tone 7", "fr": "Teinte 7"}},
+    {"id": "s8", "hex": "#4f3020", "name": {"en": "Tone 8", "fr": "Teinte 8"}}
+  ],
+  "hairColor": [
+    {"id": "black", "hex": "#1d1b26", "name": {"en": "Black", "fr": "Noir"}},
+    {"id": "darkbrown", "hex": "#3b2416", "name": {"en": "Dark brown", "fr": "Brun foncé"}},
+    {"id": "brown", "hex": "#5a3a20", "name": {"en": "Brown", "fr": "Brun"}},
+    {"id": "auburn", "hex": "#8a3b22", "name": {"en": "Reddish brown", "fr": "Brun-roux"}},
+    {"id": "ginger", "hex": "#d0662a", "name": {"en": "Red", "fr": "Roux"}},
+    {"id": "blonde", "hex": "#e0b440", "name": {"en": "Blond", "fr": "Blond"}},
+    {"id": "white", "hex": "#f2f0e6", "name": {"en": "White", "fr": "Blanc"}},
+    {"id": "grey", "hex": "#8d8f99", "name": {"en": "Grey", "fr": "Gris"}},
+    {"id": "blue", "hex": "#3a7bd8", "name": {"en": "Blue", "fr": "Bleu"}},
+    {"id": "pink", "hex": "#f27aa8", "name": {"en": "Pink", "fr": "Rose"}},
+    {"id": "purple", "hex": "#7a3a8a", "name": {"en": "Purple", "fr": "Mauve"}},
+    {"id": "green", "hex": "#3f9a4a", "name": {"en": "Green", "fr": "Vert"}}
+  ],
+  "eyes": [
+    {"id": "dark", "hex": "#1d1b26", "name": {"en": "Dark brown", "fr": "Brun foncé"}},
+    {"id": "brown", "hex": "#6b3f1d", "name": {"en": "Brown", "fr": "Brun"}},
+    {"id": "hazel", "hex": "#8a6a2a", "name": {"en": "Hazel", "fr": "Noisette"}},
+    {"id": "green", "hex": "#2f8a4a", "name": {"en": "Green", "fr": "Vert"}},
+    {"id": "blue", "hex": "#2f6fd0", "name": {"en": "Blue", "fr": "Bleu"}},
+    {"id": "grey", "hex": "#6e7a8a", "name": {"en": "Grey", "fr": "Gris"}}
+  ],
+  "top": [
+    {"id": "blue", "hex": "#3a64b8", "name": {"en": "Blue", "fr": "Bleu"}},
+    {"id": "red", "hex": "#c0453b", "name": {"en": "Red", "fr": "Rouge"}},
+    {"id": "green", "hex": "#3f8a37", "name": {"en": "Green", "fr": "Vert"}},
+    {"id": "orange", "hex": "#e8a33a", "name": {"en": "Orange", "fr": "Orange"}},
+    {"id": "yellow", "hex": "#f2d03a", "name": {"en": "Yellow", "fr": "Jaune"}},
+    {"id": "teal", "hex": "#2a9d8f", "name": {"en": "Teal", "fr": "Turquoise"}},
+    {"id": "purple", "hex": "#7a3a8a", "name": {"en": "Purple", "fr": "Mauve"}},
+    {"id": "pink", "hex": "#f27aa8", "name": {"en": "Pink", "fr": "Rose"}},
+    {"id": "white", "hex": "#f4f4f8", "name": {"en": "White", "fr": "Blanc"}},
+    {"id": "black", "hex": "#34343f", "name": {"en": "Black", "fr": "Noir"}}
+  ],
+  "bottom": [
+    {"id": "grey", "hex": "#4a4a5a", "name": {"en": "Grey", "fr": "Gris"}},
+    {"id": "denim", "hex": "#3a5a9a", "name": {"en": "Jean blue", "fr": "Bleu jean"}},
+    {"id": "black", "hex": "#3a3a4a", "name": {"en": "Black", "fr": "Noir"}},
+    {"id": "brown", "hex": "#5a4a3a", "name": {"en": "Brown", "fr": "Brun"}},
+    {"id": "sand", "hex": "#b8a070", "name": {"en": "Beige", "fr": "Beige"}},
+    {"id": "green", "hex": "#3f6f3a", "name": {"en": "Green", "fr": "Vert"}},
+    {"id": "red", "hex": "#9a3030", "name": {"en": "Dark red", "fr": "Rouge foncé"}},
+    {"id": "purple", "hex": "#5a3a7a", "name": {"en": "Purple", "fr": "Mauve"}}
+  ],
+  "hatColor": [
+    {"id": "blue", "hex": "#3a64b8", "name": {"en": "Blue", "fr": "Bleu"}},
+    {"id": "red", "hex": "#c0453b", "name": {"en": "Red", "fr": "Rouge"}},
+    {"id": "green", "hex": "#3f8a37", "name": {"en": "Green", "fr": "Vert"}},
+    {"id": "orange", "hex": "#e8a33a", "name": {"en": "Orange", "fr": "Orange"}},
+    {"id": "yellow", "hex": "#f2d03a", "name": {"en": "Yellow", "fr": "Jaune"}},
+    {"id": "teal", "hex": "#2a9d8f", "name": {"en": "Teal", "fr": "Turquoise"}},
+    {"id": "purple", "hex": "#7a3a8a", "name": {"en": "Purple", "fr": "Mauve"}},
+    {"id": "pink", "hex": "#f27aa8", "name": {"en": "Pink", "fr": "Rose"}},
+    {"id": "white", "hex": "#f4f4f8", "name": {"en": "White", "fr": "Blanc"}},
+    {"id": "black", "hex": "#34343f", "name": {"en": "Black", "fr": "Noir"}}
+  ],
+  "body": [
+    {"id": "walk", "name": {"en": "On foot", "fr": "À pied"}},
+    {"id": "chair", "name": {"en": "Wheelchair", "fr": "Fauteuil roulant"}, "keep": true}
+  ],
+  "hair": [
+    {"id": "none", "name": {"en": "No hair", "fr": "Sans cheveux"}},
+    {"id": "short", "name": {"en": "Short", "fr": "Courts"}},
+    {"id": "long", "name": {"en": "Long", "fr": "Longs"}},
+    {"id": "curly", "name": {"en": "Curly", "fr": "Frisés"}},
+    {"id": "ponytail", "name": {"en": "Ponytail", "fr": "Queue de cheval"}},
+    {"id": "pigtails", "name": {"en": "Pigtails", "fr": "Lulus"}},
+    {"id": "bun", "name": {"en": "Bun", "fr": "Chignon"}},
+    {"id": "spiky", "name": {"en": "Spiky", "fr": "En pics"}},
+    {"id": "mohawk", "name": {"en": "Mohawk", "fr": "Mohawk"}}
+  ],
+  "outfit": [
+    {"id": "tee", "name": {"en": "T-shirt", "fr": "T-shirt"}},
+    {"id": "hoodie", "name": {"en": "Hoodie", "fr": "Chandail à capuchon"}},
+    {"id": "stripes", "name": {"en": "Stripes and shorts", "fr": "Rayures et short"}},
+    {"id": "overalls", "name": {"en": "Overalls", "fr": "Salopette"}},
+    {"id": "dress", "name": {"en": "Dress", "fr": "Robe"}},
+    {"id": "jersey", "name": {"en": "Sports jersey", "fr": "Chandail de sport"}}
+  ],
+  "hat": [
+    {"id": "none", "name": {"en": "Nothing", "fr": "Rien"}},
+    {"id": "toque", "name": {"en": "Toque", "fr": "Tuque"}},
+    {"id": "cap", "name": {"en": "Cap", "fr": "Casquette"}},
+    {"id": "headphones", "name": {"en": "Headphones", "fr": "Casque d’écoute"}},
+    {"id": "hijab", "name": {"en": "Hijab", "fr": "Hijab"}, "keep": true},
+    {"id": "turban", "name": {"en": "Turban", "fr": "Turban"}, "keep": true}
+  ],
+  "glasses": [
+    {"id": "none", "name": {"en": "No glasses", "fr": "Sans lunettes"}},
+    {"id": "glasses", "name": {"en": "Glasses", "fr": "Lunettes"}},
+    {"id": "sunglasses", "name": {"en": "Sunglasses", "fr": "Lunettes de soleil"}}
+  ],
+  "presets": [
+    {"body": "walk", "skin": "s2", "eyes": "dark", "hair": "short", "hairColor": "brown", "outfit": "tee", "top": "blue", "bottom": "grey", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s4", "eyes": "dark", "hair": "short", "hairColor": "black", "outfit": "tee", "top": "red", "bottom": "black", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s1", "eyes": "dark", "hair": "short", "hairColor": "blonde", "outfit": "tee", "top": "green", "bottom": "brown", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s6", "eyes": "dark", "hair": "short", "hairColor": "purple", "outfit": "tee", "top": "orange", "bottom": "black", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s7", "eyes": "brown", "hair": "curly", "hairColor": "black", "outfit": "hoodie", "top": "teal", "bottom": "denim", "hat": "headphones", "hatColor": "yellow", "glasses": "none"},
+    {"body": "walk", "skin": "s3", "eyes": "hazel", "hair": "long", "hairColor": "darkbrown", "outfit": "dress", "top": "pink", "bottom": "purple", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s5", "eyes": "brown", "hair": "short", "hairColor": "black", "outfit": "tee", "top": "yellow", "bottom": "denim", "hat": "hijab", "hatColor": "purple", "glasses": "none"},
+    {"body": "walk", "skin": "s1", "eyes": "green", "hair": "pigtails", "hairColor": "ginger", "outfit": "overalls", "top": "yellow", "bottom": "denim", "hat": "none", "hatColor": "red", "glasses": "glasses"},
+    {"body": "chair", "skin": "s3", "eyes": "blue", "hair": "spiky", "hairColor": "brown", "outfit": "jersey", "top": "red", "bottom": "denim", "hat": "none", "hatColor": "red", "glasses": "none"},
+    {"body": "walk", "skin": "s2", "eyes": "dark", "hair": "mohawk", "hairColor": "green", "outfit": "hoodie", "top": "black", "bottom": "red", "hat": "none", "hatColor": "red", "glasses": "sunglasses"},
+    {"body": "walk", "skin": "s8", "eyes": "dark", "hair": "bun", "hairColor": "black", "outfit": "stripes", "top": "orange", "bottom": "sand", "hat": "none", "hatColor": "red", "glasses": "glasses"},
+    {"body": "walk", "skin": "s5", "eyes": "dark", "hair": "short", "hairColor": "black", "outfit": "hoodie", "top": "orange", "bottom": "grey", "hat": "turban", "hatColor": "blue", "glasses": "none"}
+  ],
+  "quips": [
+    {"en": "Whoa! The village has never seen style like this.", "fr": "Wow! Le village n’a jamais vu un style pareil."},
+    {"en": "Bold choice. The pond frogs are impressed.", "fr": "Choix audacieux. Les grenouilles de l’étang sont impressionnées."},
+    {"en": "New look, same hero. Mostly.", "fr": "Nouveau style, même personnage. Ou presque."},
+    {"en": "Is that what the cool pixels are wearing now?", "fr": "C’est ça que portent les pixels à la mode?"},
+    {"en": "The mirror says: yes!", "fr": "Le miroir dit : oui!"},
+    {"en": "Off to adventure. And to picture day.", "fr": "En route pour l’aventure. Et pour la photo d’école!"},
+    {"en": "No pixels were hurt in this makeover.", "fr": "Aucun pixel n’a été blessé pendant cette transformation."},
+    {"en": "Even the Wi-Fi got stronger just now.", "fr": "Même le Wi-Fi est plus fort tout d’un coup."},
+    {"en": "That outfit could open a secret door.", "fr": "Cette tenue pourrait ouvrir une porte secrète."},
+    {"en": "Somewhere, a chicken just clapped.", "fr": "Quelque part, une poule vient d’applaudir."}
+  ]
+}

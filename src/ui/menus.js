@@ -1,15 +1,16 @@
-// Title-screen menus: title, save slots, new adventurer, cycle choice, settings, teacher corner.
+// Title-screen menus: title, save slots, new adventurer (with the avatar maker), cycle choice, settings, teacher corner.
 // All words come from content/ui.json through ui().
 
-import { el, showScreen, avatarStyle, showPanel, hidePanel } from './textLayer.js';
+import { el, showScreen, showPanel, hidePanel } from './textLayer.js';
 import { ui, getLang } from '../systems/i18n.js';
 import * as save from '../systems/save.js';
 import * as speech from '../systems/speech.js';
 import { isTouchDevice } from '../systems/input.js';
 import { state, updateSettings } from '../systems/state.js';
 import * as a11y from '../systems/a11y.js';
+import * as avatar from '../systems/avatar.js';
+import { pickHero, makeLook } from './avatarMaker.js';
 
-const AVATARS = 4;
 const NAME_MAX = 12;
 
 function fmtDate(iso) {
@@ -68,16 +69,21 @@ export function slotsScreen(go) {
   slots.forEach((s, i) => {
     if (s) {
       const card = el('button', { class: 'slot', 'data-test': 'slot-' + i, onclick: () => go.start(i, s) },
-        el('span', { class: 'avatar big', style: avatarStyle(s.avatar, 0, 24) }),
+        avatar.node(avatar.lookOf(s), { size: 'big' }),
         el('span', { class: 'who' }, s.name || ui('slots.defaultName')),
         el('span', { class: 'meta' }, cycleLabel(s.tier)),
         el('span', { class: 'meta' }, ui('slots.lastPlayed', { date: fmtDate(s.updated) })));
       const change = el('button', { class: 'small', onclick: () => cycleScreen(s.tier, (tier) => { s.tier = tier; save.saveSlot(i, s); slotsScreen(go); }, () => slotsScreen(go)) }, ui('slots.changeCycle'));
-      grid.appendChild(el('div', { class: 'slot-wrap' }, card, change));
+      const restyle = el('button', { class: 'small', 'data-test': 'change-look-' + i, onclick: () => makeLook({
+        look: avatar.lookOf(s),
+        onDone: (look) => { s.look = look; save.saveSlot(i, s); slotsScreen(go); },
+        onBack: () => slotsScreen(go),
+      }) }, avatar.text('changeLook'));
+      grid.appendChild(el('div', { class: 'slot-wrap' }, card, restyle, change));
     } else {
       grid.appendChild(el('div', { class: 'slot-wrap' },
         el('button', { class: 'slot empty', 'data-test': 'slot-' + i, onclick: () => newAdventurer(i, go) },
-          el('span', { class: 'avatar big', style: { opacity: 0.25, ...avatarStyle(i % AVATARS, 0, 24) } }),
+          el('span', { class: 'ghost' }, avatar.node(avatar.preset(i), { size: 'big' })),
           el('span', { class: 'who' }, ui('slots.new')))));
     }
   });
@@ -88,21 +94,23 @@ export function slotsScreen(go) {
   );
 }
 
-// ---------- new adventurer: avatar -> name -> cycle ----------
+// ---------- new adventurer: hero -> make it yours -> name -> cycle ----------
 function newAdventurer(index, go) {
-  const draft = { avatar: index % AVATARS, name: '' };
+  const draft = { avatar: -1, look: null, name: '' };
 
-  const pickAvatar = () => {
-    const row = el('div', { class: 'row', role: 'group', 'aria-label': ui('newSlot.avatar') });
-    for (let a = 0; a < AVATARS; a++) {
-      row.appendChild(el('button', {
-        class: 'avatar-pick', 'aria-pressed': String(draft.avatar === a), 'aria-label': ui('newSlot.avatarN', { n: a + 1 }),
-        'data-test': 'avatar-' + a,
-        onclick: () => { draft.avatar = a; pickName(); },
-      }, el('span', { class: 'avatar big', style: avatarStyle(a, 0, 24) })));
-    }
-    showScreen(el('h2', {}, ui('newSlot.avatar')), row, el('button', { onclick: () => slotsScreen(go) }, ui('common.back')));
-  };
+  // The avatar maker is in avatarMaker.js; the choices and their names are in content/avatar.json.
+  const pickAvatar = () => pickHero({
+    selected: draft.avatar,
+    onPick: (look, i, surprise) => { draft.look = look; draft.avatar = surprise ? -1 : i; editLook(surprise); },
+    onBack: () => slotsScreen(go),
+  });
+
+  const editLook = (joke) => makeLook({
+    look: draft.look,
+    joke,
+    onDone: (look) => { draft.look = look; pickName(); },
+    onBack: pickAvatar,
+  });
 
   const pickName = () => {
     const input = el('input', { type: 'text', maxlength: String(NAME_MAX), autocomplete: 'off', autocapitalize: 'words', spellcheck: 'false', 'aria-label': ui('newSlot.name'), 'data-test': 'name' });
@@ -112,24 +120,29 @@ function newAdventurer(index, go) {
     input.addEventListener('keydown', (e) => { if (e.code === 'Enter') next(); });
     showScreen(
       el('h2', {}, ui('newSlot.name')),
-      el('span', { class: 'avatar big', style: avatarStyle(draft.avatar, 0, 24) }),
+      avatar.node(draft.look, { size: 'big' }),
       input,
       el('p', {}, ui('newSlot.nameHelp')),
       el('div', { class: 'row' },
         el('button', { 'data-test': 'skip-name', onclick: () => { draft.name = ''; pickCycle(); } }, ui('newSlot.skip')),
         el('button', { class: 'primary', onclick: next }, ui('common.next'))),
-      el('button', { class: 'link', onclick: pickAvatar }, ui('common.back')),
+      el('button', { class: 'link', onclick: () => editLook(false) }, ui('common.back')),
     );
     setTimeout(() => input.focus(), 50);
   };
 
   const pickCycle = () => cycleScreen(null, (tier) => {
-    const slot = save.newSlot({ name: draft.name, avatar: draft.avatar, tier, lang: getLang() });
+    const slot = save.newSlot({ name: draft.name, avatar: Math.max(0, draft.avatar), look: draft.look, tier, lang: getLang() });
     save.saveSlot(index, slot);
     go.start(index, slot);
   }, pickName);
 
   pickAvatar();
+}
+
+/** The avatar maker on its own (from the pause menu while playing). */
+export function lookScreen(look, onDone, onBack) {
+  makeLook({ look, onDone, onBack });
 }
 
 export function cycleScreen(current, onPick, onBack) {

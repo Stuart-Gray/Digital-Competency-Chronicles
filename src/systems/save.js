@@ -68,11 +68,12 @@ export function loadSettings() {
 export function saveSettings(s) { write('settings', s); }
 
 // ---------- save slots ----------
-export function newSlot({ name = '', avatar = 0, tier = 'E2', lang = 'en' }) {
+export function newSlot({ name = '', avatar = 0, look = null, tier = 'E2', lang = 'en' }) {
   const now = new Date().toISOString();
   return {
     v: 1,
     name, avatar, tier, lang,
+    look,                       // the hero's styles and colours (ids from content/avatar.json); avatar = the ready-made hero it began as
     created: now,
     updated: now,
     sessions: [now],            // when play sessions started (for the teacher view)

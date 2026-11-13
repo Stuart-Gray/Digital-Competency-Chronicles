@@ -140,6 +140,41 @@ button.link { background: none; border: 0; box-shadow: none; text-decoration: un
 .avatar-pick { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 1); }
 .avatar-pick[aria-pressed="true"] { background: var(--gold); }
 
+/* ---------- the avatar maker (src/ui/avatarMaker.js): heroes are small canvases painted by src/systems/avatar.js ---------- */
+.avatar-c { display: inline-block; width: calc(var(--u) * 16); height: calc(var(--u) * 16); image-rendering: pixelated; image-rendering: crisp-edges; flex: none; }
+.avatar-c.big { width: calc(var(--u) * 24); height: calc(var(--u) * 24); }
+.avatar-c.huge { width: calc(var(--u) * 56); height: calc(var(--u) * 56); }
+.avatar-c.head { width: calc(var(--u) * 18); height: calc(var(--u) * 18); }
+.ghost { display: flex; opacity: .3; }
+.hero-grid { display: grid; grid-template-columns: repeat(6, auto); gap: calc(var(--u) * 2.5); justify-content: center; }
+.hero-grid .avatar-pick { padding: calc(var(--u) * 2); }
+.maker { display: flex; gap: calc(var(--u) * 5); align-items: flex-start; justify-content: center; width: 100%; text-align: left; }
+.maker-side { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 2.5); width: calc(var(--u) * 78); flex: none; text-align: center; }
+.maker-side .avatar-c { background: rgba(255, 255, 255, .14); border-radius: calc(var(--u) * 3); padding: calc(var(--u) * 3); box-sizing: content-box; }
+.maker-quip { margin: 0; min-height: 2.8em; font-size: .85em; font-style: italic; }
+.maker-main { display: flex; flex-direction: column; gap: calc(var(--u) * 3); flex: 1; min-width: 0; max-width: calc(var(--u) * 205); }
+.maker-tabs { display: flex; gap: calc(var(--u) * 1.5); flex-wrap: wrap; }
+.maker-rows { display: flex; flex-direction: column; gap: calc(var(--u) * 2.5); min-height: calc(var(--u) * 66); }
+.maker-row .label { display: block; font-weight: 700; font-size: .85em; margin-bottom: calc(var(--u) * 1); }
+.maker-row .chosen { font-weight: 400; }
+.maker-note { margin: 0; }
+.swatches { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1.5); }
+.swatch { position: relative; padding: 0; width: calc(var(--u) * 13); height: calc(var(--u) * 13); min-width: 40px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+.swatch:hover { filter: brightness(1.12); }
+.swatch.style { width: calc(var(--u) * 22); height: calc(var(--u) * 22); background: var(--paper-2); color: var(--ink); }
+.swatch.style:hover { background: #fff; filter: none; }
+.swatch[aria-pressed="true"] { outline: calc(var(--u) * 1) solid var(--gold); outline-offset: calc(var(--u) * .5); border-color: #fff; }
+.swatch[aria-pressed="true"]::after { content: "✓"; font-weight: 700; font-size: 1.05em; line-height: 1; }
+.swatch.style[aria-pressed="true"] { background: var(--gold); }
+.swatch.style[aria-pressed="true"]::after { position: absolute; right: calc(var(--u) * .6); top: calc(var(--u) * .4); font-size: .7em; }
+.swatch:focus-visible { outline: calc(var(--u) * 1) solid var(--focus); outline-offset: calc(var(--u) * 1.5); }
+@media (max-width: 700px) {
+  .hero-grid { grid-template-columns: repeat(4, auto); }
+  .maker { flex-direction: column; align-items: center; }
+  .maker-side { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .maker-side .avatar-c.huge { width: calc(var(--u) * 40); height: calc(var(--u) * 40); }
+}
+
 input[type="text"] {
   font: inherit; font-size: 1.1em; padding: calc(var(--u) * 2) calc(var(--u) * 3);
   border: calc(var(--u) * 1) solid var(--ink); border-radius: calc(var(--u) * 2);
@@ -360,4 +395,10 @@ body.hc #bubble { background: #fff; border-color: #000; border-width: calc(var(-
 body.hc #marker::after { color: #ffe600; font-size: calc(var(--u) * 10); text-shadow: -2px 0 #000, 2px 0 #000, 0 -2px #000, 0 2px #000, 0 calc(var(--u) * 1) 0 #000; }
 body.hc #touch .dpad button, body.hc #touch .act { opacity: 1; }
 body.hc .slot, body.hc .slot.empty { background: #fff; color: #000; }
+body.hc .swatch { border-color: #fff; outline: calc(var(--u) * .5) solid #000; }
+body.hc .swatch.style { background: #fff; }
+body.hc .swatch[aria-pressed="true"] { outline: calc(var(--u) * 1.2) solid #ffe600; outline-offset: calc(var(--u) * .8); border-color: #000; }
+body.hc .swatch.style[aria-pressed="true"] { background: #ffe600; }
+body.hc .maker-side .avatar-c { background: #fff; outline: calc(var(--u) * .8) solid #ffe600; }
+body.hc .ghost { opacity: .55; }
 body.hc input[type="text"] { border-width: calc(var(--u) * 1.2); }

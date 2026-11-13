@@ -31,6 +31,7 @@ import { t, ui, forTier, getTier } from '../systems/i18n.js';
 import { state, saveNow, playerName } from '../systems/state.js';
 import * as music from '../systems/music.js';
 import * as a11y from '../systems/a11y.js';
+import * as avatar from '../systems/avatar.js';
 
 const SPEED = 72;
 const FACING = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -83,9 +84,11 @@ export default class World extends Phaser.Scene {
     if (this.arrival.spawn) start = objects.find((o) => o.type === 'spawn' && o.name === this.arrival.spawn);
     if (!start && loc.scene === this.scene.key && loc.x != null) start = { x: loc.x, y: loc.y, props: { facing: loc.facing } };
     if (!start) start = objects.find((o) => o.type === 'spawn');
-    this.avatar = slot.avatar || 0;
+    // The hero is painted from the player's own look (src/systems/avatar.js).
+    this.avatar = avatar.ANIM;
+    avatar.applyTexture(this, avatar.lookOf(slot));
     this.facing = (start.props && start.props.facing) || loc.facing || 'down';
-    this.player = this.physics.add.sprite(start.x, start.y, 'hero', this.avatar * 12);
+    this.player = this.physics.add.sprite(start.x, start.y, avatar.TEXTURE, 0);
     this.player.body.setSize(10, 7).setOffset(3, 9);
     this.player.setCollideWorldBounds(true);
     this.player.anims.play(`hero${this.avatar}-idle-${this.facing}`);
@@ -867,11 +870,25 @@ export default class World extends Phaser.Scene {
       layer.el('div', { class: 'menu' },
         layer.el('button', { class: 'primary', onclick: close }, ui('pause.resume')),
         layer.el('button', { 'data-test': 'journal', onclick: () => this.openJournal() }, ui('journal.title')),
+        layer.el('button', { 'data-test': 'change-look', onclick: () => this.changeLook() }, avatar.text('changeMyLook')),
         layer.el('button', { onclick: () => menus.settingsPanel(() => { this.buildHud(); this.applyTouch(); this.openPausePanelAgain(); }) }, ui('title.settings')),
         layer.el('button', { 'data-test': 'quit', onclick: () => this.quitToTitle() }, ui('pause.quit')))), { onCancel: close });
   }
 
   openPausePanelAgain() { layer.hidePanel(); this.openPause(); }
+
+  /** The avatar maker, from the pause menu. The hero changes on the spot. */
+  changeLook() {
+    const slot = state.slot;
+    const back = () => { layer.hideScreen(); this.openPause(); };
+    layer.hidePanel();
+    menus.lookScreen(avatar.lookOf(slot), (look) => {
+      slot.look = look;
+      saveNow();
+      avatar.applyTexture(this, look);
+      back();
+    }, back);
+  }
 
   openJournal() {
     const slot = state.slot;
@@ -881,7 +898,7 @@ export default class World extends Phaser.Scene {
     layer.showPanel(layer.el('section', { class: 'card journal', 'aria-label': ui('journal.title') },
       layer.el('h2', {}, ui('journal.title')),
       layer.el('div', { class: 'row', style: { justifyContent: 'flex-start' } },
-        layer.el('span', { class: 'avatar', style: layer.avatarStyle(slot.avatar) }),
+        avatar.node(avatar.lookOf(slot)),
         layer.el('strong', {}, playerName()),
         layer.el('span', {}, slot.tier === 'E3' ? ui('cycle.c3') : ui('cycle.c2'))),
       items.length ? [

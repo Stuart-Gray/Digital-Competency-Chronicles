@@ -127,7 +127,8 @@ export function isBusy() {
 }
 
 function focusFirst(root) {
-  const f = root.querySelector('[autofocus], button:not([disabled]), input');
+  // An element marked autofocus wins, wherever it is; otherwise the first button or box.
+  const f = root.querySelector('[autofocus]') || root.querySelector('button:not([disabled]), input');
   if (f) setTimeout(() => f.focus({ preventScroll: true }), 30);
 }
 
@@ -262,7 +263,11 @@ export function showTouch(labels) {
 }
 export function hideTouch() { touchEl.hidden = true; }
 
-/** Sprite position for an avatar in the hero sheet (CSS background). */
+/**
+ * Sprite position for one of the four first heroes in assets/sprites/hero.png (CSS background).
+ * Kept for older code only: heroes are now painted from the player's look, so use
+ * avatar.node(avatar.lookOf(slot)) from src/systems/avatar.js instead.
+ */
 export function avatarStyle(avatar, frame = 0, size = 16) {
   return { backgroundPosition: `calc(var(--u) * ${-frame * size}) calc(var(--u) * ${-avatar * size})` };
 }
