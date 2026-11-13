@@ -1,6 +1,8 @@
 // Saves live in this browser's localStorage only. No accounts, nothing sent anywhere.
 // Keys are versioned (dcc.v1.*) so a later version can migrate old saves.
 
+import { newSid } from './progress.js';
+
 const PREFIX = 'dcc.v1.';
 export const SLOT_COUNT = 5;
 
@@ -56,6 +58,8 @@ const DEFAULT_SETTINGS = {
   // moving
   walkMode: 'hold',           // hold a direction to walk, or toggle: tap once to start, again to stop
   arrowPad: false,
+  // teacher corner
+  reflections: true,          // thinking-time questions after a wing or a village task
 };
 
 export function loadSettings() {
@@ -72,6 +76,7 @@ export function newSlot({ name = '', avatar = 0, look = null, tier = 'E2', lang 
   const now = new Date().toISOString();
   return {
     v: 1,
+    sid: newSid(),              // a random number so the teacher dashboard can tell saves apart; not personal
     name, avatar, tier, lang,
     look,                       // the hero's styles and colours (ids from content/avatar.json); avatar = the ready-made hero it began as
     created: now,
@@ -80,6 +85,8 @@ export function newSlot({ name = '', avatar = 0, look = null, tier = 'E2', lang 
     location: { scene: 'Hub', x: null, y: null, facing: 'down' },
     flags: {},                  // story flags, e.g. "met_guide"
     puzzles: {},                // puzzleId -> { done, hints, at }
+    started: {},                // puzzleId -> { hints, at } for puzzles opened and left for later
+    reflections: {},            // reflection family -> { choice, feel, at } (thinking-time answers)
     hints: {},                  // element code -> hints used (never shown as a score)
     achievements: {},           // achievementId -> date unlocked
     items: [],

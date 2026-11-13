@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "about": "Reference names from the Ministry documents: the 7 content areas (sheets) and their 15 elements, and the 12 dimensions of the Digital Competency Framework (2026 update). Used by the teacher layer. The sheets name the elements but do not number them; the codes (1a, 1b...) are ours, in sheet order. 'short' dimension names are the labels on the official Framework poster. Checked against the English and French PDFs on 13 November 2026. Do not reword these; follow the Ministry documents.",
+  "areas": {
+    "1": {
+      "title": {"en": "Understanding the effects of using technology", "fr": "Comprendre des effets de l’usage du numérique"},
+      "dcf": ["D1", "D11"],
+      "elements": {
+        "1a": {"en": "Recognize the social impacts of digital technology", "fr": "Reconnaître des répercussions sociales du numérique"},
+        "1b": {"en": "Recognize the environmental impacts of digital technology", "fr": "Reconnaître des répercussions environnementales du numérique"},
+        "1c": {"en": "Understand the factors that influence digital habits", "fr": "Comprendre des facteurs influençant les habitudes numériques"}
+      }
+    },
+    "2": {
+      "title": {"en": "Understanding digital identity", "fr": "Comprendre l’identité numérique"},
+      "dcf": ["D1", "D11"],
+      "elements": {
+        "2a": {"en": "Understand digital identity", "fr": "Comprendre l’identité numérique"},
+        "2b": {"en": "Understand personal information", "fr": "Comprendre les renseignements personnels"},
+        "2c": {"en": "Understand online privacy protection", "fr": "Comprendre la protection de la vie privée en ligne"}
+      }
+    },
+    "3": {
+      "title": {"en": "Understanding one’s digital environment", "fr": "Comprendre son environnement numérique"},
+      "dcf": ["D2", "D3", "D8"],
+      "elements": {
+        "3a": {"en": "Understand digital tools and hardware components", "fr": "Comprendre les outils numériques et les composantes matérielles"},
+        "3b": {"en": "Understand the basic features of digital tools", "fr": "Comprendre les fonctionnalités de base d’outils numériques"}
+      }
+    },
+    "4": {
+      "title": {"en": "Getting organized with digital technology", "fr": "S’organiser à l’aide du numérique"},
+      "dcf": ["D2", "D9"],
+      "elements": {
+        "4a": {"en": "Develop organizational skills", "fr": "Développer des habiletés liées à l’organisation"},
+        "4b": {"en": "Apply troubleshooting strategies", "fr": "Appliquer des stratégies de dépannage"}
+      }
+    },
+    "5": {
+      "title": {"en": "Learning to collaborate using digital technology", "fr": "S’initier à la collaboration à l’aide du numérique"},
+      "dcf": ["D5"],
+      "elements": {
+        "5a": {"en": "Use a digital tool to interact and co-create", "fr": "Utiliser un outil numérique afin d’interagir et de cocréer"}
+      }
+    },
+    "6": {
+      "title": {"en": "Communicating using digital technology", "fr": "Communiquer à l’aide du numérique"},
+      "dcf": ["D6"],
+      "elements": {
+        "6a": {"en": "Explore digital communication channels for interaction", "fr": "Explorer des canaux de communication numérique pour interagir"},
+        "6b": {"en": "Understand the impact of digital behaviours", "fr": "Comprendre l’impact des comportements numériques"}
+      }
+    },
+    "7": {
+      "title": {"en": "Using available digital resources", "fr": "Utiliser des ressources numériques proposées"},
+      "dcf": ["D7", "D10", "D12"],
+      "elements": {
+        "7a": {"en": "Integrate various multimodal elements into a production", "fr": "Intégrer différents éléments modaux dans une production"},
+        "7b": {"en": "Get started with computational thinking", "fr": "Initier à la pensée informatique"}
+      }
+    }
+  },
+  "dimensions": {
+    "D1": {
+      "short": {"en": "Ethical citizenship", "fr": "Citoyen éthique"},
+      "name": {"en": "Exercising ethical citizenship in the digital age", "fr": "Agir en citoyen éthique à l’ère du numérique"},
+      "core": true
+    },
+    "D2": {
+      "short": {"en": "Technological skills", "fr": "Habiletés technologiques"},
+      "name": {"en": "Developing and mobilizing technological skills", "fr": "Développer et mobiliser ses habiletés technologiques"},
+      "core": true
+    },
+    "D3": {
+      "short": {"en": "Digital resources for learning", "fr": "Numérique pour l’apprentissage"},
+      "name": {"en": "Harnessing the potential of digital resources for learning", "fr": "Exploiter le potentiel du numérique pour l’apprentissage"}
+    },
+    "D4": {
+      "short": {"en": "Information literacy", "fr": "Culture informationnelle"},
+      "name": {"en": "Developing and mobilizing information literacy in the digital age", "fr": "Développer et mobiliser sa culture informationnelle"}
+    },
+    "D5": {
+      "short": {"en": "Collaboration", "fr": "Collaboration"},
+      "name": {"en": "Collaborating using digital technology", "fr": "Collaborer à l’aide du numérique"}
+    },
+    "D6": {
+      "short": {"en": "Communication", "fr": "Communication"},
+      "name": {"en": "Communicating using digital technology", "fr": "Communiquer à l’aide du numérique"}
+    },
+    "D7": {
+      "short": {"en": "Content production", "fr": "Production de contenu"},
+      "name": {"en": "Producing content using digital technology", "fr": "Produire du contenu avec le numérique"}
+    },
+    "D8": {
+      "short": {"en": "Diverse needs", "fr": "Besoins diversifiés"},
+      "name": {"en": "Using digital tools to address diverse needs", "fr": "Mettre à profit le numérique pour répondre à des besoins diversifiés"}
+    },
+    "D9": {
+      "short": {"en": "Personal and professional empowerment", "fr": "Développement de la personne"},
+      "name": {"en": "Mobilizing digital technology for personal and professional empowerment", "fr": "Adopter une perspective de développement personnel et professionnel avec le numérique"}
+    },
+    "D10": {
+      "short": {"en": "Problem solving", "fr": "Résolution de problèmes"},
+      "name": {"en": "Solving various problems using digital technology", "fr": "Résoudre une variété de problèmes avec le numérique"}
+    },
+    "D11": {
+      "short": {"en": "Critical thinking", "fr": "Pensée critique"},
+      "name": {"en": "Developing critical thinking with regard to the use of digital technology", "fr": "Développer sa pensée critique à l’égard du numérique"}
+    },
+    "D12": {
+      "short": {"en": "Creativity and innovation", "fr": "Créativité et innovation"},
+      "name": {"en": "Adopting a creative and innovative approach to the use of digital technology", "fr": "Faire preuve de créativité et innover avec le numérique"}
+    }
+  }
+}

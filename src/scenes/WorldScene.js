@@ -35,6 +35,9 @@ import * as music from '../systems/music.js';
 import * as a11y from '../systems/a11y.js';
 import * as avatar from '../systems/avatar.js';
 import * as quests from '../systems/quests.js';
+import * as progress from '../systems/progress.js';
+import * as reflect from '../systems/reflect.js';
+import { journalExtras } from '../ui/teacherLayer.js';
 
 const SPEED = 72;
 const FACING = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -430,6 +433,8 @@ export default class World extends Phaser.Scene {
     this.updateCritters(time);
     const talking = layer.isBusy(); // quest bubbles step aside for speech bubbles and cards
     for (const o of this.objects) if (o.mark) o.mark.setVisible(!talking);
+    // Thinking time: a reflection question opens once the game has been calm for a moment.
+    reflect.tick(time, { slot: state.slot, enabled: state.settings.reflections !== false, busy: layer.isBusy() || this.travelling, save: saveNow, after: () => this.buildHud() });
     if (layer.isBusy() || this.travelling) {
       p.setVelocity(0, 0);
       p.anims.play(`hero${this.avatar}-idle-${this.facing}`, true);
@@ -871,17 +876,14 @@ export default class World extends Phaser.Scene {
     const p = this.findPuzzle(ref);
     if (!p) { console.error('No puzzle for', ref, getTier()); return null; }
     const result = await puzzle.open(p);
+    // Keeps the result on the save (and the hints, quietly, for the teacher view).
+    progress.recordPuzzle(slot, p, result);
     if (result.solved) {
-      const prev = slot.puzzles[p.id];
-      slot.puzzles[p.id] = { done: true, hints: (prev ? prev.hints : 0) + result.hints, at: new Date().toISOString() };
-      slot.hints[p.element] = (slot.hints[p.element] || 0) + result.hints;
       if (p.flag) slot.flags[p.flag] = true;
       if (p.achievement) achievements.unlock(slot, p.achievement);
       saveNow();
       this.refresh();
-    } else if (result.hints) {
-      // Hints used before leaving still count quietly for the teacher view.
-      slot.hints[p.element] = (slot.hints[p.element] || 0) + result.hints;
+    } else {
       saveNow();
     }
     return result;
@@ -1045,6 +1047,7 @@ export default class World extends Phaser.Scene {
       got.length
         ? layer.el('ul', { class: 'list' }, got.map((a) => layer.el('li', {}, layer.el('strong', {}, t(a.name)), ' · ', t(a.desc))))
         : layer.el('p', {}, ui('journal.empty')),
+      journalExtras({ slot, save: saveNow, reopen: () => this.openJournal() }),
       layer.el('div', { class: 'actions' }, layer.el('button', { class: 'primary', onclick: back }, ui('common.back')))), { onCancel: back });
   }
 

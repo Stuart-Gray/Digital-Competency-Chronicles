@@ -311,6 +311,12 @@ Cycle 2 sees fewer items per puzzle, more pictures, and scenarios set at school 
 
 ## 7. Teacher layer and dashboard
 
+> **Built on 13 November 2026.** Thinking-time reflections, progress codes with QR, the teacher corner and
+> `teacher.html` are in the game. How they work for teachers is in `teacher-guide.md`; the content format
+> is in `content-schema.md` (Teacher layer). What changed from the proposal below: reflections are tapped,
+> not typed (no free text leaves the device), the dashboard has two more views (*Conversations* and
+> *Prompts and look-fors*), and a class can be saved to and opened from a backup file.
+
 Goal: teachers can see progress and areas of strength and growth for their class, and print or export it, while the game keeps no accounts and sends nothing anywhere.
 
 **Proposal: progress codes and a teacher page.**

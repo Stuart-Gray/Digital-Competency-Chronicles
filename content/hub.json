@@ -2374,21 +2374,23 @@
   },
   "reflections": [
     {
-      "id": "r_hub_fixit",
-      "element": "4b",
-      "after": "fixer_done",
-      "speaker": "fixer",
-      "prompt": {"en": "When something stops working on a device, what do you usually do first?", "fr": "Quand quelque chose ne fonctionne plus sur un appareil, que fais-tu d’habitude en premier?"},
+      "id": "r_hub_fixit_c2", "family": "r_hub_fixit", "tiers": ["E2"], "element": "4b", "after": "fixer_done", "speaker": "fixer",
+      "prompt": {"en": "My tablet works again! Which step do you think will help you the most next time something stops working?", "fr": "Ma tablette fonctionne de nouveau! Selon toi, quelle étape t’aidera le plus la prochaine fois que quelque chose cessera de fonctionner?"},
       "options": [
-        {
-          "id": "a",
-          "text": {"en": "I try to fix it myself.", "fr": "J’essaie de régler le problème par moi-même."}
-        },
-        {
-          "id": "b",
-          "text": {"en": "I look for help in the app.", "fr": "Je cherche de l’aide dans l’application."}
-        },
-        {"id": "c", "text": {"en": "I ask someone.", "fr": "Je demande à quelqu’un."}}
+        {"id": "a", "text": {"en": "Trying to find the problem by myself.", "fr": "Essayer de trouver le problème par moi-même."}},
+        {"id": "b", "text": {"en": "Looking in the Help section.", "fr": "Regarder dans la section « Aide »."}},
+        {"id": "c", "text": {"en": "Asking a classmate.", "fr": "Demander à un ou une camarade."}},
+        {"id": "d", "text": {"en": "Asking my teacher when nothing else works.", "fr": "Demander à mon enseignant ou à mon enseignante quand rien d’autre ne fonctionne."}}
+      ]
+    },
+    {
+      "id": "r_hub_fixit_c3", "family": "r_hub_fixit", "tiers": ["E3"], "element": "4b", "after": "fixer_done", "speaker": "fixer",
+      "prompt": {"en": "You followed a plan to fix my app. When a tool stops working for you, which part of the plan is the hardest to remember?", "fr": "Tu as suivi un plan pour réparer mon application. Quand un outil cesse de fonctionner, quelle partie du plan est la plus difficile à retenir pour toi?"},
+      "options": [
+        {"id": "a", "text": {"en": "Trying on my own before I ask someone.", "fr": "Essayer par moi-même avant de demander à quelqu’un."}},
+        {"id": "b", "text": {"en": "Checking the Help section.", "fr": "Consulter la section « Aide »."}},
+        {"id": "c", "text": {"en": "Asking a classmate before the teacher.", "fr": "Demander à un ou une camarade avant l’enseignant ou l’enseignante."}},
+        {"id": "d", "text": {"en": "I already use all of these steps.", "fr": "J’utilise déjà toutes ces étapes."}}
       ]
     },
     {

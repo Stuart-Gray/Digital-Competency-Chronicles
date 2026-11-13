@@ -10,6 +10,7 @@ import { state, updateSettings } from '../systems/state.js';
 import * as a11y from '../systems/a11y.js';
 import * as avatar from '../systems/avatar.js';
 import { pickHero, makeLook } from './avatarMaker.js';
+import * as corner from './teacherLayer.js';
 
 const NAME_MAX = 12;
 
@@ -252,32 +253,10 @@ export function settingsPanel(back) {
   render();
 }
 
-// ---------- teacher corner (milestone 1: manage saves on this device) ----------
+// ---------- teacher corner: saves on this device, progress codes, the dashboard link ----------
+// The screen itself is in teacherLayer.js with the rest of the teacher layer.
 export function teacherScreen(go) {
-  const slots = save.listSlots();
-  const confirmBtn = (label, onConfirm) => {
-    let armed = false;
-    const b = el('button', { class: 'small', onclick: () => {
-      if (!armed) { armed = true; b.textContent = ui('teacher.confirm'); return; }
-      onConfirm();
-    } }, label);
-    return b;
-  };
-  const list = el('ul', { class: 'list', style: { textAlign: 'left' } });
-  slots.forEach((s, i) => {
-    if (!s) return;
-    list.appendChild(el('li', {}, el('div', { class: 'row', style: { justifyContent: 'space-between' } },
-      el('span', {}, `${s.name || ui('slots.defaultName')} · ${cycleLabel(s.tier)} · ${ui('slots.lastPlayed', { date: fmtDate(s.updated) })}`),
-      confirmBtn(ui('teacher.clear'), () => { save.clearSlot(i); teacherScreen(go); }))));
-  });
-  showScreen(
-    el('h2', {}, ui('teacher.title')),
-    el('p', {}, ui('teacher.intro')),
-    list.children.length ? list : el('p', {}, ui('teacher.noSlots')),
-    el('div', { class: 'row' },
-      list.children.length ? confirmBtn(ui('teacher.clearAll'), () => { save.clearAll(); teacherScreen(go); }) : null,
-      el('button', { class: 'primary', onclick: () => go.title() }, ui('common.back'))),
-  );
+  corner.teacherScreen(go, { cycleLabel, fmtDate });
 }
 
 export { hidePanel };

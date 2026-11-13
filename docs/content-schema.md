@@ -15,6 +15,9 @@ After any change, check your work: open `tools/validate.html` on the live site (
 | `area2.json` | Dungeon 2, the Temple of Traces (sheet 2: digital identity) |
 | `area1.json`, `area3.json` … `area7.json` | One per content area, added dungeon by dungeon |
 | `music.json` | Background music: the notes of each song (see [Music](#music-musicjson)) |
+| `teacher.json` | Words for the teacher layer: thinking-time cards, progress codes, the teacher corner and the teacher dashboard (see [Teacher layer](#teacher-layer)) |
+| `progress.json` | The order that progress codes use. **Add at the end only** (see [Progress codes](#progress-codes-progressjson)) |
+| `framework.json` | Reference: the seven sheets with their elements, and the 12 dimensions of the Digital Competency Framework, in the Ministry's words. Not player text |
 | `avatar.json` | The avatar maker: its words, colours, styles, ready-made heroes and jokes (see [Avatar maker](#avatar-maker-avatarjson)) |
 
 Every file starts with `"schemaVersion": 1`.
@@ -325,6 +328,96 @@ objects with a `label` property: `"labels": { "duck": { "en": "A duck", "fr": "U
 Each area file has `teacher.before` and `teacher.after` (reflection prompts) and
 `teacher.lookFors` (what to watch and listen for, by element). They are for the teacher corner
 and the teacher guide, and are never shown to students as a checklist.
+
+The teacher dashboard shows these in its *Prompts and look-fors* view, with each puzzle's
+`teacherNote`. A puzzle can name the Framework dimensions it serves with `"dcf": ["D1"]`;
+without it, the dashboard uses its quest's `dcf`, then the dimensions of its sheet
+(`framework.json`).
+
+## Teacher layer
+
+### Thinking time (`reflections`)
+
+A reflection is one short question a student answers by tapping, shown once, a moment after a
+story flag is set. Any content file can have a `reflections` list:
+
+```json
+"reflections": [
+  {
+    "id": "r_2a_c2", "family": "r_2a", "tiers": ["E2"],
+    "element": "2a",
+    "after": "got_piece_traces",
+    "speaker": "lumi",
+    "prompt": { "en": "What will you do before you post something?", "fr": "Que feras-tu avant de publier quelque chose?" },
+    "options": [
+      { "id": "a", "text": { "en": "Think about who could see it.", "fr": "Penser à qui pourrait le voir." } },
+      { "id": "b", "text": { "en": "Ask an adult I trust when I'm not sure.", "fr": "Demander à un adulte de confiance si j’ai un doute." } }
+    ]
+  }
+]
+```
+
+| Field | What it is |
+|---|---|
+| `id` | Unique. End it with `_c2` or `_c3` when there is one version per cycle |
+| `family` | The same for both cycle versions. This is the name the progress code and the dashboard use |
+| `tiers` | Which cycles see it (left out = both) |
+| `element` | The element the question is about. Leave it out for a whole-sheet question (the file's `area` is used) |
+| `after` | The story flag that makes the question appear |
+| `speaker` | Optional: the id of the person who asks (from `npcs`) |
+| `prompt` | The question. One idea, in the student's words, tied to what they just did |
+| `options` | 2 to 4 answers with ids `a` to `d`. **Every option must be a good answer**: there is no right or wrong, and nothing is counted |
+
+Rules: keep the question and the answers short and at the cycle's reading level; write the answers
+from the sheet's wording for that element; always offer one "I'm still thinking about it" kind of
+answer; never change the order of the options once students have played (the code stores the
+position). The second step (*How do you feel about this now?*) is the same for every question and
+lives in `teacher.json` (`reflect.feel`).
+
+### Village quests (`quests`)
+
+`hub.json` can list side quests so the dashboard can show "villagers helped":
+
+```json
+"quests": { "q_gus": { "title": { "en": "…", "fr": "…" }, "giver": "gus", "dcf": ["D2"], "elements": ["3a"], "families": ["gus_parts", "gus_volume"], "flag": "gus_done" } }
+```
+
+A quest is done when all the puzzles in `families` are done.
+
+### Progress codes (`progress.json`)
+
+A progress code packs a save into a short line of text (`DCC1-…`) that a teacher adds to the
+dashboard. To keep it short, the code stores positions in four lists instead of names:
+
+```json
+"order": {
+  "puzzles": ["fixer_steps", "…"],
+  "reflections": ["r_hub_fixit", "…"],
+  "items": ["lantern", "…"],
+  "achievements": ["first_steps", "…"]
+}
+```
+
+- Puzzles and reflections are listed by `family` (or by `id` when there is no family).
+- **Only ever add at the end.** Never remove, rename or reorder an entry: codes that students have
+  already shared would then show the wrong activity.
+- The checker fails when a puzzle, reflection, item or achievement is missing from its list, so a
+  new one cannot be forgotten.
+
+What a code holds: the first name, cycle, language, day last played, number of play sessions, each
+puzzle's state (not yet, started, done, with the number of hints), each reflection's chosen option
+and feeling, and the items and achievements. It has check digits, so a mistyped code is refused.
+The code is made and read by `src/systems/progress.js`.
+
+### Words (`teacher.json`) and reference (`framework.json`)
+
+`teacher.json` holds every word of the teacher layer under `strings` (`reflect`, `share`,
+`corner`, `dash`), and `links.guide` (where the dashboard's *Teacher guide* link goes).
+Student-facing French uses *tu*; teacher-facing French uses *vous*. Progress is always described
+with the four phrases under `state`; do not add totals, percentages or levels.
+
+`framework.json` lists the sheets, elements and dimensions in the Ministry's wording. Change it
+only to match the Ministry documents.
 
 ## Achievements (`ui.json`)
 

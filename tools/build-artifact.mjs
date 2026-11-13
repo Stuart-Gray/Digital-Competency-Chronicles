@@ -3,6 +3,9 @@
 //
 //   node tools/build-artifact.mjs [output.html]        (default: dist/artifact.html)
 //
+// Also writes teacher.html next to it: the teacher dashboard as one file, published beside the game
+// so the "Open the teacher dashboard" link in the teacher corner works in the preview too.
+//
 // Bundles src/ with esbuild (fetched by npx, or set ESBUILD=/path/to/esbuild), inlines the CSS,
 // and embeds the content JSON, map, art and fonts so the page needs nothing but Phaser from the CDN.
 // The output has no <html>/<head>/<body> tags because the Artifact host adds them.
@@ -19,14 +22,18 @@ const dataUri = (rel) => `data:${MIME[extname(rel)]};base64,${readFileSync(join(
 
 // 1. JavaScript bundle
 const esbuild = process.env.ESBUILD;
-const args = ['src/main.js', '--bundle', '--format=iife', '--minify', '--target=es2020', '--legal-comments=none'];
-const js = esbuild
-  ? execFileSync(esbuild, args, { cwd: root, encoding: 'utf8' })
-  : execFileSync('npx', ['--yes', 'esbuild@0.24.0', ...args], { cwd: root, encoding: 'utf8' });
+const big = { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 };
+function bundle(entry) {
+  const args = [entry, '--bundle', '--format=iife', '--minify', '--target=es2020', '--legal-comments=none', '--log-level=error'];
+  return esbuild ? execFileSync(esbuild, args, big) : execFileSync('npx', ['--yes', 'esbuild@0.24.0', ...args], big);
+}
+const inlineScript = (code) => code.replace(/<\/script/gi, '<\\/script');
+const inlineJson = (value) => JSON.stringify(value).replace(/</g, '\\u003c');
+const inlineFonts = (text) => text.replace(/url\("\.\.\/\.\.\/(assets\/[^"]+)"\)/g, (m, rel) => `url("${dataUri(rel)}")`);
+const js = bundle('src/main.js');
 
 // 2. CSS with fonts and the avatar sheet inlined
-let css = readFileSync(join(root, 'src/ui/style.css'), 'utf8');
-css = css.replace(/url\("\.\.\/\.\.\/(assets\/[^"]+)"\)/g, (m, rel) => `url("${dataUri(rel)}")`);
+const css = inlineFonts(readFileSync(join(root, 'src/ui/style.css'), 'utf8') + '\n' + readFileSync(join(root, 'src/ui/teacher-layer.css'), 'utf8'));
 
 // 3. Content, map and art
 const files = {};
@@ -56,10 +63,25 @@ const page = `<title>Digital Competency Chronicles</title>
 ${css}
 </style>
 ${body}
-<script>window.DCC_INLINE = ${JSON.stringify({ files }).replace(/</g, '\\u003c')};</script>
+<script>window.DCC_INLINE = ${inlineJson({ files })};</script>
 <script src="${phaser}"></script>
-<script>${js.replace(/<\/script/gi, '<\\/script')}</script>
+<script>${inlineScript(js)}</script>
 `;
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, page);
 console.log(`wrote ${out} (${Math.round(page.length / 1024)} KB)`);
+
+// 5. The teacher dashboard as one complete page: its own CSS, the content it reads and the QR reader
+const shell = readFileSync(join(root, 'teacher.html'), 'utf8');
+const dashFiles = Object.fromEntries(Object.entries(files).filter(([name]) => name.startsWith('content/')));
+const teacherPage = shell
+  .replace('<link rel="stylesheet" href="./src/teacher/teacher.css">', () => `<style>\n${inlineFonts(readFileSync(join(root, 'src/teacher/teacher.css'), 'utf8'))}\n</style>`)
+  .replace('<script type="module" src="./src/teacher/main.js"></script>', () => [
+    `<script>window.DCC_INLINE = ${inlineJson({ files: dashFiles })};</script>`,
+    `<script>${inlineScript(readFileSync(join(root, 'src/vendor/jsQR.js'), 'utf8'))}</script>`,
+    `<script>${inlineScript(bundle('src/teacher/main.js'))}</script>`,
+  ].join('\n  '));
+if (!teacherPage.includes('window.DCC_INLINE')) throw new Error('teacher.html has changed: update tools/build-artifact.mjs');
+const teacherOut = join(dirname(out), 'teacher.html');
+writeFileSync(teacherOut, teacherPage);
+console.log(`wrote ${teacherOut} (${Math.round(teacherPage.length / 1024)} KB)`);

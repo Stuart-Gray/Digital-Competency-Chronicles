@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Teacher dashboard for The Digital Competency Chronicles: class progress in words, reflections, look-fors. No accounts, nothing sent anywhere.">
+  <meta name="robots" content="noindex">
+  <title>Teacher dashboard · The Digital Competency Chronicles</title>
+  <link rel="stylesheet" href="./src/teacher/teacher.css">
+</head>
+<body>
+  <!--
+    The teacher dashboard. A static page: no account, no server, no tracking.
+    Students share a progress code from the game; the teacher adds the codes here.
+    Class lists stay in this browser (localStorage). All words come from content/teacher.json.
+  -->
+  <div id="app"></div>
+  <dialog id="dialog"></dialog>
+  <input type="file" id="restore-file" accept=".json,application/json" hidden>
+  <noscript>This page needs JavaScript. / Cette page a besoin de JavaScript.</noscript>
+  <div id="load-error" hidden>
+    <p lang="en">The dashboard could not load. Check the Internet connection and try again.</p>
+    <p lang="fr">Le tableau de bord n’a pas pu se charger. Vérifiez la connexion Internet et réessayez.</p>
+  </div>
+  <script type="module" src="./src/teacher/main.js"></script>
+</body>
+</html>

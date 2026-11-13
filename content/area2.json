@@ -1912,5 +1912,87 @@
         {"en": "Notices when a camera or microphone is on and decides whether to turn it off.", "fr": "Remarque quand une caméra ou un micro est ouvert et décide s’il faut le fermer."}
       ]
     }
-  }
+  },
+  "reflections": [
+    {
+      "id": "r_2a_c2", "family": "r_2a", "tiers": ["E2"], "element": "2a", "after": "got_piece_traces",
+      "prompt": {"en": "You saw how traces show things about a person. What will you do before you post something?", "fr": "Tu as vu que les traces montrent des choses sur une personne. Que feras-tu avant de publier quelque chose?"},
+      "options": [
+        {"id": "a", "text": {"en": "Think about who could see it.", "fr": "Penser à qui pourrait le voir."}},
+        {"id": "b", "text": {"en": "Ask myself: what does this show about me?", "fr": "Me demander : qu’est-ce que ça montre sur moi?"}},
+        {"id": "c", "text": {"en": "Ask an adult I trust when I'm not sure.", "fr": "Demander à un adulte de confiance si j’ai un doute."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_2a_c3", "family": "r_2a", "tiers": ["E3"], "element": "2a", "after": "got_piece_traces",
+      "prompt": {"en": "Your traces shape your digital identity, even after you delete a post. What will you keep in mind the next time you post, like or comment?", "fr": "Tes traces façonnent ton identité numérique, même après avoir effacé une publication. À quoi penseras-tu la prochaine fois que tu publieras, aimeras ou commenteras quelque chose?"},
+      "options": [
+        {"id": "a", "text": {"en": "A post can be copied or shared before I delete it.", "fr": "Une publication peut être copiée ou partagée avant que je l’efface."}},
+        {"id": "b", "text": {"en": "My traces show people who I am online.", "fr": "Mes traces montrent aux autres qui je suis en ligne."}},
+        {"id": "c", "text": {"en": "I can choose a picture or an avatar that doesn't show my face.", "fr": "Je peux choisir une image ou un avatar qui ne montre pas mon visage."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_2b_c2", "family": "r_2b", "tiers": ["E2"], "element": "2b", "after": "got_piece_keys",
+      "prompt": {"en": "Someone online asks for your name or your address. What will you do?", "fr": "Quelqu’un en ligne te demande ton nom ou ton adresse. Que feras-tu?"},
+      "options": [
+        {"id": "a", "text": {"en": "Stop, and not answer right away.", "fr": "M’arrêter et ne pas répondre tout de suite."}},
+        {"id": "b", "text": {"en": "Tell an adult I trust.", "fr": "Le dire à un adulte de confiance."}},
+        {"id": "c", "text": {"en": "Ask myself if I really know this person.", "fr": "Me demander si je connais vraiment cette personne."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_2b_c3", "family": "r_2b", "tiers": ["E3"], "element": "2b", "after": "got_piece_keys",
+      "prompt": {"en": "You sorted personal information, spotted a request for it and compared passwords. Which habit matters most to you right now?", "fr": "Tu as classé des renseignements personnels, repéré une demande de renseignements et comparé des mots de passe. Quelle habitude compte le plus pour toi en ce moment?"},
+      "options": [
+        {"id": "a", "text": {"en": "Keeping my personal information to myself unless I know it is safe to share.", "fr": "Garder mes renseignements personnels pour moi, sauf si je sais que je peux les partager sans danger."}},
+        {"id": "b", "text": {"en": "Using passwords that are hard to guess, and keeping them secret.", "fr": "Utiliser des mots de passe difficiles à deviner et les garder secrets."}},
+        {"id": "c", "text": {"en": "Asking a friend before I share information about them.", "fr": "Demander à un ami ou à une amie avant de partager des renseignements à son sujet."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_2c_c2", "family": "r_2c", "tiers": ["E2"], "element": "2c", "after": "got_piece_gallery",
+      "prompt": {"en": "Photos, cameras and apps can show more than we think. What will you check from now on?", "fr": "Les photos, les caméras et les applications peuvent en montrer plus qu’on pense. Que vérifieras-tu à partir de maintenant?"},
+      "options": [
+        {"id": "a", "text": {"en": "What is in the background of a photo before I share it.", "fr": "Ce qu’on voit à l’arrière-plan d’une photo avant de la partager."}},
+        {"id": "b", "text": {"en": "If the camera or the microphone is on.", "fr": "Si la caméra ou le micro est ouvert."}},
+        {"id": "c", "text": {"en": "With an adult, before I let an app use the camera or know where I am.", "fr": "Avec un adulte, avant de laisser une application utiliser la caméra ou savoir où je suis."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_2c_c3", "family": "r_2c", "tiers": ["E3"], "element": "2c", "after": "got_piece_gallery",
+      "prompt": {"en": "Protecting your privacy online takes a few habits. Which one will you use first?", "fr": "Protéger sa vie privée en ligne demande quelques habitudes. Laquelle utiliseras-tu en premier?"},
+      "options": [
+        {"id": "a", "text": {"en": "Looking for clues in a photo, even one changed by AI, before I share it.", "fr": "Chercher les indices dans une photo, même modifiée par l’IA, avant de la partager."}},
+        {"id": "b", "text": {"en": "Deciding if an app really needs the access it asks for, or asking for help.", "fr": "Décider si une application a vraiment besoin de l’accès qu’elle demande, ou demander de l’aide."}},
+        {"id": "c", "text": {"en": "Turning off the camera and the microphone when a call is over.", "fr": "Fermer la caméra et le micro quand un appel est terminé."}},
+        {"id": "d", "text": {"en": "I'm still thinking about it.", "fr": "J’y réfléchis encore."}}
+      ]
+    },
+    {
+      "id": "r_area2_c2", "family": "r_area2", "tiers": ["E2"], "after": "area2_done",
+      "prompt": {"en": "You earned the Digital Identity Badge! What would you tell a friend who is new online?", "fr": "Tu as gagné l’insigne de l’identité numérique! Que dirais-tu à un ami ou à une amie qui commence à aller en ligne?"},
+      "options": [
+        {"id": "a", "text": {"en": "Think before you post.", "fr": "Réfléchis avant de publier."}},
+        {"id": "b", "text": {"en": "Keep your personal information safe.", "fr": "Protège tes renseignements personnels."}},
+        {"id": "c", "text": {"en": "Look closely at a photo before you share it.", "fr": "Regarde bien une photo avant de la partager."}},
+        {"id": "d", "text": {"en": "Ask an adult you trust when you are not sure.", "fr": "Demande à un adulte de confiance quand tu as un doute."}}
+      ]
+    },
+    {
+      "id": "r_area2_c3", "family": "r_area2", "tiers": ["E3"], "after": "area2_done",
+      "prompt": {"en": "You earned the Digital Identity Badge! Which idea will you take with you outside the game?", "fr": "Tu as gagné l’insigne de l’identité numérique! Quelle idée garderas-tu avec toi en dehors du jeu?"},
+      "options": [
+        {"id": "a", "text": {"en": "What I do online leaves traces, and they build my digital identity.", "fr": "Ce que je fais en ligne laisse des traces, et elles construisent mon identité numérique."}},
+        {"id": "b", "text": {"en": "I protect my personal information, and my friends' too.", "fr": "Je protège mes renseignements personnels, et aussi ceux de mes amis."}},
+        {"id": "c", "text": {"en": "Photos, cameras and apps can reveal more than I mean to share.", "fr": "Les photos, les caméras et les applications peuvent en révéler plus que je le veux."}},
+        {"id": "d", "text": {"en": "When in doubt, I can ask someone I trust.", "fr": "En cas de doute, je peux demander à quelqu’un en qui j’ai confiance."}}
+      ]
+    }
+  ]
 }

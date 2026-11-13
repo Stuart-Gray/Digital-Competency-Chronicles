@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "about": "The order of things inside a progress code (see docs/content-schema.md, 'Progress codes'). A code stores one small value per position in the lists under 'order', so those lists are APPEND-ONLY: add new entries at the end, never reorder, rename or remove one (old codes would then be read wrongly). 'puzzles' and 'reflections' list the family (or the id, when there is no family). The content checker reports anything in the content files that is missing here.",
+  "order": {
+    "puzzles": [
+      "fixer_steps", "fixer_first_try",
+      "d2_traces", "d2_vanishing", "d2_profile",
+      "d2_personal", "d2_request", "d2_password",
+      "d2_photo", "d2_access", "d2_camera",
+      "d2_boss1", "d2_boss2", "d2_boss3",
+      "gus_parts", "gus_volume", "noor_board", "zoe_files", "fern_energy",
+      "sami_image", "sami_share", "pip_network", "bruno_notify", "rosa_voice"
+    ],
+    "reflections": [
+      "r_hub_fixit",
+      "r_2a", "r_2b", "r_2c", "r_area2",
+      "r_hub_sound", "r_hub_kind", "r_hub_files", "r_hub_green",
+      "r_hub_real", "r_hub_wifi", "r_hub_ding", "r_hub_voice"
+    ],
+    "items": [
+      "lantern", "piece_traces", "piece_keys", "piece_gallery", "badge_2",
+      "golden_feather"
+    ],
+    "achievements": [
+      "first_steps", "first_fix", "meet_everyone", "lantern_lit", "secret_door",
+      "wing_traces", "wing_keys", "wing_gallery", "clear_thinker", "area2_badge",
+      "deep_thinker",
+      "good_helper", "village_friend", "duck_friend", "lantern_secret", "cat_nap"
+    ]
+  }
+}

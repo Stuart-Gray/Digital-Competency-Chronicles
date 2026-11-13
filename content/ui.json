@@ -262,6 +262,10 @@
       "name": {"en": "Clear thinker", "fr": "Esprit clair"},
       "desc": {"en": "You finished a wing without using a hint.", "fr": "Tu as terminé une aile sans utiliser d’indice."}
     },
+    "deep_thinker": {
+      "name": {"en": "Thinking cap", "fr": "Tête pensante"},
+      "desc": {"en": "You stopped to think about what you learned.", "fr": "Tu as pris le temps de réfléchir à ce que tu as appris."}
+    },
     "area2_badge": {
       "name": {"en": "Digital Identity Badge", "fr": "Insigne de l’identité numérique"},
       "desc": {"en": "You saw through all of the Mask Merchant's tricks.", "fr": "Tu as déjoué toutes les ruses du marchand de masques."}

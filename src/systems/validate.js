@@ -224,6 +224,9 @@ export function validateContent(files) {
       if (!a.if || !a.seen || !dialogue[a.node]) errors.push(`${name}.arrivals[${i}]: needs "if", "seen" and a "node" that exists`);
     });
   }
+  checkReflections(files, errors, warnings);
+  checkRegistry(files, errors, warnings);
+
   // Items and achievements named in dialogue must exist somewhere.
   const items = new Set(Object.values(files).flatMap((d) => Object.keys((d && d.items) || {})));
   const achievements = new Set(Object.keys((files.ui && files.ui.achievements) || {}));
@@ -246,4 +249,78 @@ function checkAction(action, where, puzzleIds, dialogue, errors, quests) {
   else if (kind === 'goto' && !dialogue[arg]) errors.push(`${where}: action goes to missing node "${arg}"`);
   else if (kind === 'quest' && !(quests || {})[arg]) errors.push(`${where}: action finishes missing quest "${arg}"`);
   else if (!['puzzle', 'goto', 'set', 'unset', 'give', 'achieve', 'travel', 'quest'].includes(kind)) errors.push(`${where}: unknown action "${action}"`);
+}
+
+// ---------- teacher layer: reflections and the progress-code registry ----------
+
+/** Thinking-time questions ("reflections" in a content file). Every answer is a good answer. */
+function checkReflections(files, errors, warnings) {
+  const seen = new Set();
+  for (const [name, data] of Object.entries(files)) {
+    const list = (data && data.reflections) || [];
+    if (!Array.isArray(list)) { errors.push(`${name}.reflections: must be a list`); continue; }
+    list.forEach((r, i) => {
+      const where = `${name}.reflections[${i}]${r.id ? ' (' + r.id + ')' : ''}`;
+      if (!r.id) errors.push(`${where}: needs an "id"`);
+      if (seen.has(r.id)) errors.push(`${where}: duplicate reflection id`);
+      seen.add(r.id);
+      if (r.element !== undefined && !ELEMENTS.includes(r.element)) errors.push(`${where}: unknown element "${r.element}"`);
+      if (r.element === undefined && data.area === undefined) errors.push(`${where}: needs an "element" (or put it in an area file to make it about the whole area)`);
+      if (!r.after || typeof r.after !== 'string') errors.push(`${where}: needs "after" (the story flag that makes it show)`);
+      if (!isText(r.prompt)) errors.push(`${where}: "prompt" is required`);
+      if (r.speaker && data.npcs && !data.npcs[r.speaker]) errors.push(`${where}: unknown speaker "${r.speaker}"`);
+      checkTiers(r, where, errors);
+      if (!Array.isArray(r.options) || r.options.length < 2 || r.options.length > 4) errors.push(`${where}: needs 2 to 4 "options"`);
+      else {
+        const ids = new Set();
+        r.options.forEach((o, j) => {
+          if (!o.id || !isText(o.text)) errors.push(`${where}.options[${j}]: needs "id" and "text"`);
+          if (ids.has(o.id)) errors.push(`${where}.options[${j}]: duplicate option id "${o.id}"`);
+          ids.add(o.id);
+          if (o.correct !== undefined || o.hint !== undefined) errors.push(`${where}.options[${j}]: a reflection has no right or wrong answer (remove "correct" and "hint")`);
+        });
+      }
+    });
+    const families = new Set(list.filter((r) => r.family).map((r) => r.family));
+    for (const fam of families) {
+      const members = list.filter((r) => r.family === fam);
+      for (const tier of ['E2', 'E3']) {
+        const n = members.filter((r) => !r.tiers || r.tiers.includes(tier)).length;
+        if (n === 0) warnings.push(`${name}: reflection family "${fam}" has no version for ${tier}`);
+        if (n > 1) errors.push(`${name}: reflection family "${fam}" has ${n} versions for ${tier}`);
+      }
+      if (new Set(members.map((r) => r.options && r.options.length)).size > 1) warnings.push(`${name}: the versions of reflection "${fam}" have different numbers of options`);
+    }
+  }
+}
+
+/**
+ * content/progress.json lists, in a fixed order, everything a progress code stores.
+ * Anything missing from it would be invisible to teachers, so that is an error.
+ */
+function checkRegistry(files, errors, warnings) {
+  const reg = files.progress && files.progress.order;
+  if (!reg) return;
+  const all = Object.entries(files).filter(([, d]) => d && typeof d === 'object');
+  const inContent = {
+    puzzles: all.flatMap(([, d]) => (d.puzzles || []).map((p) => p.family || p.id)),
+    reflections: all.flatMap(([, d]) => (Array.isArray(d.reflections) ? d.reflections : []).map((r) => r.family || r.id)),
+    items: all.flatMap(([, d]) => Object.keys(d.items || {})),
+    achievements: Object.keys((files.ui && files.ui.achievements) || {}),
+  };
+  // Files that are not loaded (the game does not load every file in every place) cannot be checked for leftovers.
+  const complete = { puzzles: true, reflections: true, items: true, achievements: !!files.ui };
+  for (const kind of Object.keys(inContent)) {
+    const list = reg[kind];
+    if (!Array.isArray(list)) { errors.push(`progress.order.${kind}: must be a list`); continue; }
+    if (list.length > 250) errors.push(`progress.order.${kind}: too long for a progress code (250 at most)`);
+    const dup = list.filter((x, i) => list.indexOf(x) !== i);
+    if (dup.length) errors.push(`progress.order.${kind}: listed twice: ${[...new Set(dup)].join(', ')}`);
+    const missing = [...new Set(inContent[kind])].filter((x) => x && !list.includes(x));
+    if (missing.length) errors.push(`progress.order.${kind}: add at the END of the list (never reorder it): ${missing.join(', ')}`);
+    if (complete[kind]) {
+      const gone = list.filter((x) => !inContent[kind].includes(x));
+      if (gone.length) warnings.push(`progress.order.${kind}: no longer in the content (leave them in the list, old codes still use their place): ${gone.join(', ')}`);
+    }
+  }
 }

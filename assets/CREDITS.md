@@ -22,6 +22,8 @@ Add a line here whenever an asset is added or replaced.
 | `fonts/press-start-2p-*.woff2` | Press Start 2P by CodeMan38, via Fontsource (`@fontsource/press-start-2p` 5.3.0) | SIL OFL 1.1 (`fonts/OFL-PressStart2P.txt`) |
 | `fonts/opendyslexic-latin-*-normal.woff2` (Dyslexia-friendly letter style) | OpenDyslexic by Abbie Gonzalez, via Fontsource (`@fontsource/opendyslexic` 5.3.0) | SIL OFL 1.1 (`fonts/OFL-OpenDyslexic.txt`) |
 | Phaser 3.90.0 (loaded from jsDelivr, not stored here) | https://phaser.io | MIT |
+| `../src/vendor/qrcode.js` (draws the QR picture of a progress code) | qrcode-generator 1.4.4 by Kazuhiko Arase, https://github.com/kazuhikoarase/qrcode-generator (one line added so it loads as a module) | MIT |
+| `../src/vendor/jsQR.js` (reads QR codes on the teacher dashboard, on the device) | jsQR 1.4.0 by Cosmo Wolfe, https://github.com/cozmo/jsQR | Apache 2.0 (`../src/vendor/LICENSE-jsQR.txt`) |
 
 Why our own placeholder art: the plan suggested Kenney's CC0 packs, but drawing a small
 set of tiles in code keeps the licence question simple (no third-party art at all) and lets

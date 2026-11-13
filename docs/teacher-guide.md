@@ -1,7 +1,13 @@
-# Teacher guide (draft skeleton)
+# Teacher guide
 
-This guide grows with the game. The full English and French guide for the Dungeon 2 slice is
-planned for milestone 3.
+This guide grows with the game. It covers playing, the accessibility settings, the thinking-time
+questions, and the teacher dashboard that shows where each student is. A French version of this
+guide is planned; the game and the dashboard themselves are already in English and French.
+
+**In short:** students play at their own pace. When you ask, they press **Share with my teacher**
+and give you a short progress code. You add the codes to the **teacher dashboard** and see, in
+words, where each student is, what they said about their own learning, and who might like a chat.
+No accounts, no marks, nothing sent anywhere.
 
 ## What the game is (and is not)
 
@@ -69,11 +75,120 @@ are shared). Full details, and how the game meets game accessibility standards, 
   there. Escape or **Menu** pauses at any time.
 - Colour is never the only clue: hints, correct answers and choices also show a symbol.
 
+## Thinking time: the student's own reflections
+
+After each part of the game, a villager asks one short question about what the student just did,
+for example *"What will you keep in mind the next time you post, like or comment?"*
+
+- The student taps one of the answers. **Every answer is a good one**: they are different true
+  things a student might take away, written from the Ministry sheet for that element.
+- Then they tap how they feel about it now: **I could explain it to a friend** 💬, **I understand
+  it, and I'm still practising** 🌱, or **I would like some help with this** ✋.
+- **Read it to me** reads the question and the answers out loud. Nothing is typed.
+- **Later** sets the question aside. It waits in the student's **Journal** (Menu → Journal →
+  *My thinking*), where they can also change an answer at any time.
+- The words change with the cycle, like the rest of the game.
+
+You can turn these questions off for a device in the **Teacher corner** (*Thinking-time
+questions: On / Off*), for example for a first free-play session.
+
+## Seeing where students are: progress codes
+
+The game has no accounts and no server, so progress travels in a **progress code**: a short line
+of letters and numbers that starts with `DCC1-`, also shown as a QR code.
+
+**What the student does**
+
+1. **Menu → Journal → Share with my teacher.**
+2. Show the screen to you, press **Copy the code** and paste it where you asked (a class form, a
+   shared document, a message in your class platform), or press **Save as a file**.
+
+**What is inside a code:** the first name the student typed (if any), their cycle and language,
+the day they last played, how many times they played, which activities they started or completed
+and how many hints they used, the reflection answers they tapped, and the items and achievements
+they collected. Nothing else. The code is only a way to carry this from the student's device to
+yours; it is never sent anywhere by the game.
+
+You can also get a code yourself: on the title screen, press and hold **Teacher corner**, then
+press **Progress code** next to a save.
+
+## The teacher dashboard
+
+Open it from the **Teacher corner** (*Open the teacher dashboard*) or directly:
+https://stuart-gray.github.io/Digital-Competency-Chronicles/teacher.html
+
+**To try it in two minutes:** press **Try a sample class**. Ten made-up students show
+what every view looks like. Delete the sample class when you are done.
+
+**To set up your class**
+
+1. Press **Make my class** and give it a name (for example, *Group 401*). You can keep several
+   classes.
+2. Press **+ Add codes** and use whichever way suits your classroom:
+   - **Paste codes**: paste one code or a whole column of them, copied from a form or document.
+     Extra words around the codes are ignored.
+   - **Scan QR codes with the camera**: hold each student's screen up to your camera, one after
+     the other.
+   - **Open files or screenshots**: the text files students saved, or pictures of their QR codes.
+   - **Add the saves on this device**: for a shared classroom computer or tablet where students
+     played.
+3. If two students share a first name, select the name and add a **last initial**. That is the
+   only thing you ever type about a student.
+
+**Add new codes any time.** A later code from the same student updates their row, and the
+dashboard keeps the earlier one so you can see their growth. A mistyped or cut-off code is
+noticed and refused, so it can never show the wrong progress.
+
+**The six views**
+
+| View | What it shows | Good for |
+|---|---|---|
+| **Class** | One row per student, one column per element of the Ministry sheets, with badges and the day last played | A quick look before or after a session |
+| **By sheet** | For each element, the names of students who are *not yet there*, *exploring*, *completed* or *completed without hints* | Forming small groups; pairing a student who can explain with one who is exploring |
+| **By dimension** | The same, for the 12 dimensions of the Digital Competency Framework, with the two central dimensions (ethical citizenship, technological skills) first | Seeing how the sheets build the Framework's dimensions |
+| **Over time** | What changed each time students shared a code | Noticing growth; a positive word to a student or family |
+| **Conversations** | Students who said they would like help, who used several hints, who left an activity for later, or who said they could explain it to a friend | Choosing who to talk with today, and which student could help a classmate |
+| **Prompts and look-fors** | For each sheet: questions to ask before and after, what to look for by element (in the Ministry's words), and every activity in the game with its discussion question, for Cycle 2 or Cycle 3 | Planning a session; projecting a question for a class discussion |
+
+Select a student's name anywhere to see their page: each element in words, their reflections **in
+their own words**, ideas for a conversation, the villagers they helped, and their journey from
+code to code. Every view prints cleanly (**More → Print this page**).
+
+**What the dashboard never does**
+
+- It gives **no marks, scores, percentages or rankings**, and never adds anything up. The
+  Ministry's content is not evaluated. Progress is described in four plain phrases: *Not yet*,
+  *Exploring*, *Completed*, *Completed without hints*.
+- "Used several hints" is not a weakness. Hints are how the game teaches. It is shown only as a
+  good moment to ask a student to explain their thinking out loud.
+- It does not replace what you observe. It is a starting point for the observation, spontaneous
+  questions and brief discussions the Ministry recommends.
+
+**Keeping and moving your class list (More menu)**
+
+- **Save a backup file of this class** and **Open a backup file** move a class to another
+  computer or browser.
+- **Save as a spreadsheet (CSV)** gives the same words as the Class view, for your own notes.
+- **Delete this class** removes it from the browser.
+
 ## Privacy
 
-No accounts, no tracking, nothing sent anywhere. Progress is saved only in the browser on the
-device. The only personal information is an optional first name. **Teacher corner** (press and
-hold the button on the title screen) lets you clear one save or all saves on the device.
+No accounts, no tracking, nothing sent anywhere.
+
+- **In the game**, progress is saved only in the browser on the student's device. The only
+  personal information is an optional first name.
+- **A progress code** holds that first name and the student's progress in the game (see above).
+  It goes only where the student or you put it. If students paste codes into a form or document,
+  use one your school already approves for student work.
+- **On the dashboard**, class lists stay in your browser, on your device, until you delete them.
+  The page does not send them anywhere, and reading a QR code from the camera or a picture
+  happens on your device. A backup file contains the same first names and progress, so keep it
+  where you keep other class notes.
+- Clearing the browser's site data erases the saves or the class lists on that device. Use the
+  backup file if you want to keep a class.
+
+**Teacher corner** (press and hold the button on the title screen) lets you clear one save or all
+saves on a device.
 
 ## What is in the game so far
 
@@ -106,6 +221,20 @@ anyone who needs help, and the village board lists who is asking. The journal ke
 | Rosa (pond, after the badge) | D2, 3b Understand the basic features of digital tools | Match what Rosa wants to do with the right helper: text-to-speech, voice dictation, bigger text | Which helpers on our class devices have you tried? When could they help you? |
 
 Each wing fits a 10 to 15 minute session and ends with a badge piece; the game saves and resumes
-inside the temple. The discussion questions and look-fors for area 2 are in `content/area2.json`
-(`teacher`) and on each puzzle (`teacherNote`). They will appear in the teacher corner in
-milestone 3, with the class progress view.
+inside the temple. After each wing, and after each villager is helped, the student gets one
+thinking-time question about that element.
+
+The same discussion questions, the before and after prompts for each sheet, and the look-fors by
+element are in the dashboard's **Prompts and look-fors** view, in English and French, for Cycle 2
+and Cycle 3. As new villagers and temples are added to the game, they appear in the dashboard by
+themselves.
+
+## A simple classroom routine
+
+1. **Before**: open *Prompts and look-fors*, choose the sheet, and ask one of the *Before*
+   questions to the class.
+2. **During**: students play one part (10 to 15 minutes) at their own pace. Walk around; the
+   look-fors tell you what to watch and listen for.
+3. **Share**: students press **Share with my teacher**. Collect the codes your usual way.
+4. **After**: add the codes, open *Conversations*, and have two or three short chats. Close with
+   one of the *After* questions as a class.

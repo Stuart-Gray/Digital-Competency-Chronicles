@@ -125,6 +125,18 @@ voices instead.)
 | Remap controls | GAG intermediate, XAG 107 | Partly: two key sets (arrows and WASD; Space, Enter or E). Full remapping is not built; ask if a student needs it |
 | Brightness / dark areas | GAG intermediate | Partly: high contrast lightens the temple's darkness |
 
+## Thinking time and the teacher pages
+
+- Thinking-time cards are real HTML like every other card: buttons with a visible focus, a
+  **Read it to me** button, no timer, and **Later** always there. Answers are tapped, never typed.
+  The three feelings each have a symbol as well as words.
+- The share screen shows the progress code as text (selectable, read by screen readers) as well
+  as a QR picture, with **Copy the code** and **Save as a file**, so no single way is required.
+- The teacher dashboard (`teacher.html`) uses headings, real tables with row and column headers,
+  buttons and native dialogs; every state has a symbol, a colour and its words (the words are
+  always in the page for screen readers); it follows the device's light or dark setting and
+  prints in black and white.
+
 ## For developers
 
 - `src/systems/a11y.js`: `reducedMotion()` and `highContrast()` for scene code. Anything new that

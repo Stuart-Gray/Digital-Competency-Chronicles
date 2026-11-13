@@ -11,6 +11,7 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 ## Play it
 
 - **Live game:** https://stuart-gray.github.io/Digital-Competency-Chronicles/
+- **Teacher dashboard:** https://stuart-gray.github.io/Digital-Competency-Chronicles/teacher.html (press *Try a sample class* to look around; see the [teacher guide](docs/teacher-guide.md))
 - **Content checker:** https://stuart-gray.github.io/Digital-Competency-Chronicles/tools/validate.html
 
 **Status (6 Nov 2026): milestone 2, the Dungeon 2 slice.** Title → village → Dungeon 2 is playable from start to finish in English and French, for Cycle 2 and Cycle 3.
@@ -19,16 +20,17 @@ A browser-based, top-down retro adventure game (Zelda-style) that guides Quebec 
 - **Dungeon 2, the Temple of Traces** (sheet 2: 2a, 2b, 2c): Lumi gives the **Lantern of Traces**, which lights the dark temple and reveals hidden traces. Three wings (Hall of Traces, Vault of Keys, Window Gallery), each with three puzzles from the sheet's student applications, a world puzzle (a hidden door, three key stones) and a chest with a badge piece; then the Mask Merchant's three tricks in the final room. Every puzzle is written twice, for Cycle 2 and Cycle 3. See [docs/content-mapping.md](docs/content-mapping.md).
 - **Puzzle types:** choice, sequence, sort, match, spot (find clues in a picture) and predict (watch a scene, choose what happens next). No scores: a wrong try gives a hint, and hints are counted quietly for the teacher view.
 - **Avatar maker:** twelve ready-made heroes, then quick changes to skin, eyes, hair, clothes and extras (eight skin tones, wheelchair, hijab, turban, glasses), a *Mix it up!* button with jokes, and *Change my look* in the pause menu. Choices are in `content/avatar.json`.
+- **Teacher layer:** short *Thinking time* questions after each part (tap an answer, then say how you feel about it; read-aloud; kept in the Journal), **progress codes** (a short code and QR picture from *Share with my teacher*; no account, no server), and the **teacher dashboard** (`teacher.html`): add many codes by pasting, camera or file, then see the class by element, by sheet, by Framework dimension and over time, each student's reflections in their own words, ideas for conversations, and the prompts and look-fors. Words only: no marks, totals or rankings. Class lists stay in the teacher's browser.
 - **Engine:** cycle choice, five save slots, saves and resumes anywhere (including inside the dungeon), journal with items, badge pieces and achievements, keyboard plus tap-or-click to move (walks around obstacles; tap a person to talk; optional on-screen arrow pad), real HTML text for Read&Write and screen readers.
 
-Next is milestone 3: the teacher corner and dashboard, the teacher guide for area 2, and testing on Chromebooks, Windows and iPads. The full plan is in [docs/build-plan.md](docs/build-plan.md).
+Still to do in milestone 3: the French teacher guide and testing on Chromebooks, Windows and iPads. The full plan is in [docs/build-plan.md](docs/build-plan.md).
 
 ### For developers and content editors
 
 - No build step. Serve the folder with any static server (for example `npx http-server .` or `python3 -m http.server`) and open `http://localhost:8080/`. Opening `index.html` straight from disk does not work because browsers block loading the JSON files that way.
 - Words, dialogue and puzzles live in [`content/`](content/). The format is explained in [docs/content-schema.md](docs/content-schema.md).
 - Check content: `node tools/validate.mjs` (also runs on every push before GitHub Pages publishes) or open `tools/validate.html`.
-- Smoke test: `npm install --no-save playwright` once, then `node tests/smoke.mjs`.
+- Smoke test: `npm install --no-save playwright` once, then `node tests/smoke.mjs` (the game) and `node tests/teacher.mjs` (progress codes, thinking time and the teacher dashboard).
 - Single-file preview build (used for the Claude Artifact copy): `node tools/build-artifact.mjs`.
 - Placeholder art is drawn by `tools/art/make_placeholder_art.py` (village base tiles, characters), `tools/art/make_village_art.py` (village landmarks, villagers, animals), `tools/art/make_hero_parts.py` (the avatar maker's parts) and `tools/art/make_dungeon_art.py` (dungeon tiles, icons, puzzle pictures). Maps are Tiled files in `maps/` (`hub.tmj`, `area2.tmj`), first built by `tools/art/make_hub_map.py` and `tools/art/make_area2_map.py`. Asset sources: [assets/CREDITS.md](assets/CREDITS.md).
 - Licences: code under MIT ([LICENSE](LICENSE)); content and docs under CC BY 4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)).

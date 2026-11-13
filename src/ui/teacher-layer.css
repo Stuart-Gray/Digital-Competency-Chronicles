@@ -1,0 +1,47 @@
+/* Teacher layer inside the game: thinking-time cards, "Share with my teacher", and the
+   teacher corner. Uses the game's units (--u is one game pixel) and colours from style.css. */
+
+/* ---------- thinking time ---------- */
+.reflect { border-color: var(--accent); }
+.reflect h2 { color: var(--accent); }
+.reflect .body { display: flex; flex-direction: column; gap: calc(var(--u) * 2.5); }
+.reflect .who { margin: 0; font-size: .85em; font-weight: 700; color: var(--edge); }
+.reflect .picked { margin: 0; background: var(--paper-2); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 1.5) calc(var(--u) * 3); }
+.reflect .options button[aria-pressed="true"] { background: var(--gold); }
+.reflect .emo { font-size: 1.3em; line-height: 1; }
+.journal .thinking { list-style: none; padding-left: 0; }
+.journal .thinking li { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 1); background: var(--paper-2); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 2) calc(var(--u) * 3); }
+.journal .thinking .q { font-weight: 700; font-size: .9em; }
+.journal .thinking .a { font-size: .9em; }
+
+/* ---------- share with my teacher ---------- */
+.share .share-box { display: grid; grid-template-columns: calc(var(--u) * 62) 1fr; gap: calc(var(--u) * 5); align-items: center; }
+.share .qr { width: 100%; height: auto; border: calc(var(--u) * 1) solid var(--ink); border-radius: calc(var(--u) * 2); background: #fff; }
+.share .share-side { display: flex; flex-direction: column; gap: calc(var(--u) * 2.5); min-width: 0; }
+.share .code {
+  display: block; font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace; font-weight: 700;
+  font-size: 1.05em; letter-spacing: .04em; line-height: 1.5; word-break: break-word;
+  background: #fff; color: #000; border: calc(var(--u) * .75) dashed var(--edge); border-radius: calc(var(--u) * 2);
+  padding: calc(var(--u) * 2) calc(var(--u) * 3); user-select: all; -webkit-user-select: all;
+}
+
+/* ---------- teacher corner ---------- */
+#screen .btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+#screen .btn.primary { background: var(--accent); color: var(--accent-ink); }
+#screen .saves { list-style: none; padding: 0; width: 100%; display: flex; flex-direction: column; gap: calc(var(--u) * 2); text-align: left; }
+#screen .saves li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: calc(var(--u) * 2) calc(var(--u) * 4); background: var(--paper); color: var(--ink); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 2) calc(var(--u) * 3); }
+#screen .saves .row { gap: calc(var(--u) * 2); }
+#screen .chips { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1.5); }
+#screen .chip { background: var(--paper-2); border-radius: calc(var(--u) * 6); padding: 0 calc(var(--u) * 2.5); font-size: .85em; font-weight: 700; white-space: nowrap; }
+#screen .legend { font-size: .8em; opacity: .9; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 calc(var(--u) * 4); }
+#screen .half { display: inline-block; width: .72em; height: .72em; border-radius: 50%; border: .12em solid currentColor; background: linear-gradient(90deg, currentColor 50%, transparent 50%); vertical-align: -.05em; box-sizing: border-box; }
+
+#screen .seg .label { color: #fff; font-weight: 700; }
+
+body.hc .reflect { border-color: #000; }
+body.hc .reflect h2 { color: #000; }
+body.hc .reflect .picked, body.hc .journal .thinking li { background: #fff; border: calc(var(--u) * .75) solid #000; }
+body.hc .reflect .options button[aria-pressed="true"] { background: #ffe600; color: #000; outline: calc(var(--u) * .8) solid #000; }
+body.hc .share .code { border: calc(var(--u) * 1) solid #000; }
+body.hc #screen .saves li, body.hc #screen .chip { background: #fff; color: #000; border: calc(var(--u) * .75) solid #000; }
+body.hc #screen .btn.primary { background: #000; color: #ffe600; border-color: #ffe600; }

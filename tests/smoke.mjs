@@ -53,7 +53,9 @@ async function newPage(lang, opts = {}) {
   await page.addInitScript((l) => {
     if (!sessionStorage.getItem('smoke')) {
       localStorage.clear();
-      localStorage.setItem('dcc.v1.settings', JSON.stringify({ lang: l, textSpeed: 'fast' }));
+      // Thinking-time cards are off here so they cannot open in the middle of a scripted walk;
+      // tests/teacher.mjs tests them.
+      localStorage.setItem('dcc.v1.settings', JSON.stringify({ lang: l, textSpeed: 'fast', reflections: false }));
       sessionStorage.setItem('smoke', '1');
     }
   }, lang);

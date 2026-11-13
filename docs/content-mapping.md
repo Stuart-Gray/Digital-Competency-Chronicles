@@ -125,6 +125,29 @@ Notes on the Dungeon 2 puzzles:
 
 World puzzles (no element, for pacing): the hidden door in the Hall of Traces (only the lantern shows it, after Juno's traces are matched) and the three key stones in the Vault of Keys (the lantern shows one, two and three footprints beside them).
 
+## Thinking-time questions (reflections)
+
+One short question after each part, answered by tapping (see `content-schema.md`, Thinking time).
+Every option is a valid answer taken from the sheet's ideas for that element; none is "the right
+one". The student then says how they feel about it (could explain it, still practising, would like
+help). Both go to the Journal and, in a progress code, to the teacher dashboard.
+
+| Family | File | Appears after | Element | Cycle 2 question | Cycle 3 question |
+|---|---|---|---|---|---|
+| `r_hub_fixit` | `hub.json` | Théo's Fix-it shop is done | 4b | My tablet works again! Which step do you think will help you the most next time something stops working? | You followed a plan to fix my app. When a tool stops working for you, which part of the plan is the hardest to remember? |
+| `r_hub_sound` | `hub.json` | Gus is helped | 3a | Which part of a device would you like to understand better? | (same) |
+| `r_hub_kind` | `hub.json` | Noor is helped | 1a | Before you send a message, what helps you choose your words? | (same) |
+| `r_hub_files` | `hub.json` | Zoé is helped | 4a | How do you find your work on a device? | (same) |
+| `r_hub_green` | `hub.json` | Fern is helped | 1b | Which habit could you try this week? | (same) |
+| `r_hub_real` | `hub.json` | Sami is helped | 1a | When you see a surprising picture online, what could you do first? | (same) |
+| `r_hub_wifi` | `hub.json` | Pip is helped | 3a | What do you check when something will not load? | (same) |
+| `r_hub_ding` | `hub.json` | Bruno is helped | 1c | What pulls you back to a screen most often? | (same) |
+| `r_hub_voice` | `hub.json` | Rosa is helped | 3b | Which helper would you like to try? | (same) |
+| `r_2a` | `area2.json` | Hall of Traces chest (piece 1) | 2a | You saw how traces show things about a person. What will you do before you post something? | Your traces shape your digital identity, even after you delete a post. What will you keep in mind the next time you post, like or comment? |
+| `r_2b` | `area2.json` | Vault of Keys chest (piece 2) | 2b | Someone online asks for your name or your address. What will you do? | You sorted personal information, spotted a request for it and compared passwords. Which habit matters most to you right now? |
+| `r_2c` | `area2.json` | Window Gallery chest (piece 3) | 2c | Photos, cameras and apps can show more than we think. What will you check from now on? | Protecting your privacy online takes a few habits. Which one will you use first? |
+| `r_area2` | `area2.json` | The Digital Identity Badge | Sheet 2 (2a, 2b, 2c) | You earned the Digital Identity Badge! What would you tell a friend who is new online? | You earned the Digital Identity Badge! Which idea will you take with you outside the game? |
+
 ## Flavour lines that are not puzzles
 
 Some village dialogue touches sheet themes without being a puzzle, so it does not claim to cover an element:
