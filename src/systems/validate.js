@@ -227,6 +227,7 @@ export function validateContent(files) {
   }
   checkReflections(files, errors, warnings);
   checkRegistry(files, errors, warnings);
+  checkLengths(files, warnings);
 
   // Items and achievements named in dialogue must exist somewhere.
   const items = new Set(Object.values(files).flatMap((d) => Object.keys((d && d.items) || {})));
@@ -242,6 +243,65 @@ export function validateContent(files) {
     }
   }
   return { errors, warnings };
+}
+
+/**
+ * Question cards are laid out to fit one screen without scrolling (src/ui/cardFit.js).
+ * These limits are a little above the longest texts that are known to fit; anything longer
+ * gets a warning here. The real check is `node tests/cards.mjs`, which opens every card.
+ */
+export const FIT_LIMITS = {
+  prompt: 185, success: 210, hint: 140, why: 120,
+  option: 100, optionCount: 4,
+  sceneLine: 100, sceneCount: 4, question: 70,
+  sortItem: 90, sortCount: 6, binCount: 3,
+  matchSide: 95, pairCount: 5,
+  step: 80, stepCount: 5,
+  clueWhy: 120, clueCount: 3,
+};
+
+function checkLengths(files, warnings) {
+  const L = FIT_LIMITS;
+  const tell = (where, what) => warnings.push(`${where}: ${what}. The card may need scrolling: check with "node tests/cards.mjs"`);
+  const long = (where, what, text, max) => {
+    if (!isText(text)) return;
+    for (const l of LANGS) if (typeof text[l] === 'string' && text[l].length > max) tell(where, `${what} (${l}) is ${text[l].length} characters, more than ${max}`);
+  };
+  const many = (where, what, list, max) => { if (Array.isArray(list) && list.length > max) tell(where, `${list.length} ${what}, more than ${max}`); };
+  for (const [name, data] of Object.entries(files)) {
+    if (!data) continue;
+    for (const p of data.puzzles || []) {
+      const where = `${name}: puzzle ${p.id}`;
+      long(where, 'prompt', p.prompt, L.prompt);
+      long(where, 'success', p.success, L.success);
+      long(where, 'hint', p.hint, L.hint);
+      long(where, 'question', p.question, L.question);
+      many(where, 'answers', p.options, L.optionCount);
+      for (const o of p.options || []) { long(where, 'answer', o.text, L.option); long(where, 'hint', o.hint, L.hint); }
+      many(where, 'scene lines', p.scene, L.sceneCount);
+      for (const f of p.scene || []) long(where, 'scene line', f.text, L.sceneLine);
+      many(where, 'items to sort', p.items, L.sortCount);
+      many(where, 'boxes', p.bins, L.binCount);
+      for (const it of p.items || []) { long(where, 'item', it.text, L.sortItem); long(where, 'hint', it.hint, L.hint); long(where, 'note', it.why, L.why); }
+      many(where, 'pairs', p.pairs, L.pairCount);
+      for (const pr of p.pairs || []) {
+        long(where, 'left side', pr.left && pr.left.text, L.matchSide);
+        long(where, 'right side', pr.right && pr.right.text, L.matchSide);
+        long(where, 'hint', pr.hint, L.hint);
+        long(where, 'note', pr.why, L.why);
+      }
+      many(where, 'steps', p.steps, L.stepCount);
+      for (const st of p.steps || []) { long(where, 'step', st.text, L.step); long(where, 'hint', st.hint, L.hint); }
+      many(where, 'clues', (p.spots || []).filter((x) => x.clue), L.clueCount);
+      for (const sp of p.spots || []) { long(where, 'clue note', sp.why, L.clueWhy); long(where, 'hint', sp.hint, L.hint); }
+    }
+    for (const r of data.reflections || []) {
+      const where = `${name}: reflection ${r.id}`;
+      long(where, 'question', r.prompt, L.prompt);
+      many(where, 'answers', r.options, L.optionCount);
+      for (const o of r.options || []) long(where, 'answer', o.text, L.option);
+    }
+  }
 }
 
 function checkAction(action, where, puzzleIds, dialogue, errors, quests) {

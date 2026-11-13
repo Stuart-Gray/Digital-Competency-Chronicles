@@ -163,6 +163,30 @@ There is no score and no fail state. A wrong try shows a hint and the player tri
 Hints used are counted quietly for the teacher view, by element, and never shown as a mark.
 Players can always leave a puzzle and come back.
 
+### Keeping a card on one screen
+
+A student should see the whole question, every answer and the hint without scrolling. The game
+lays each card out to fit (and makes a very full card a little smaller), but only short text can
+fit. As a guide, in either language:
+
+| Text | Keep it under |
+|---|---|
+| `prompt` (the question) | 185 characters |
+| An answer (`options[].text`), at most 4 answers | 100 characters |
+| A hint (`hint`) | 140 characters |
+| `success` | 210 characters |
+| A scene line (`predict`), at most 4 lines | 100 characters |
+| An item to sort, at most 6 items and 3 boxes | 90 characters |
+| One side of a pair (`match`), at most 5 pairs | 95 characters |
+| A step (`sequence`), at most 5 steps | 80 characters |
+| A clue's `why` (`spot`), at most 3 clues | 120 characters |
+
+French runs about a fifth longer than English, so write the French first when a card is full.
+`node tools/validate.mjs` warns when a text is over these limits. The real check is
+`node tests/cards.mjs` (needs Playwright): it opens every card in a browser and fails if one
+needs scrolling at the normal text size. A card that truly cannot fit can be listed, with the
+reason, in `tests/cards-allow.json`.
+
 ### Types built so far
 
 **`sequence`**: put steps in order. Tap a step to add it; tap it again to take it back. When the

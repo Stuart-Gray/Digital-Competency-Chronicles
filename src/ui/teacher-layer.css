@@ -4,7 +4,7 @@
 /* ---------- thinking time ---------- */
 .reflect { border-color: var(--accent); }
 .reflect h2 { color: var(--accent); }
-.reflect .body { display: flex; flex-direction: column; gap: calc(var(--u) * 2.5); }
+.reflect .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 calc(var(--u) * 4); padding-right: calc(var(--u) * 8); }
 .reflect .who { margin: 0; font-size: .85em; font-weight: 700; color: var(--edge); }
 .reflect .picked { margin: 0; background: var(--paper-2); border-radius: calc(var(--u) * 2); padding: calc(var(--u) * 1.5) calc(var(--u) * 3); }
 .reflect .options button[aria-pressed="true"] { background: var(--gold); }

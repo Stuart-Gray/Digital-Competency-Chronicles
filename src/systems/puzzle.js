@@ -4,6 +4,11 @@
 //
 // Built: choice, sequence, sort, match, spot, predict. Still to come: cocreate (Area 5).
 // See docs/content-schema.md for the data each type needs.
+//
+// Every card is laid out to fit one screen without scrolling (src/ui/cardFit.js). For that to
+// work a card says, when it opens, how full it can get: each type lists its hints and notes with
+// api.reserve(), and builds the parts that only show later with the class "later" (or
+// "later-end" for the finished state). Those are measured but not shown.
 
 import * as layer from '../ui/textLayer.js';
 import { t, ui } from './i18n.js';
@@ -25,44 +30,60 @@ export function open(p) {
       return;
     }
     let hints = 0;
-    const card = el('section', { class: 'card', 'aria-labelledby': 'pz-prompt', 'data-puzzle': p.id, 'data-element': p.element, 'data-type': p.type });
+    const card = el('section', { class: 'card pz', 'aria-labelledby': 'pz-prompt', 'data-puzzle': p.id, 'data-element': p.element, 'data-type': p.type });
     card.appendChild(el('span', { class: 'tag', title: ui('puzzle.elementTag') }, p.element));
     card.appendChild(el('p', { class: 'prompt', id: 'pz-prompt' }, t(p.prompt)));
     const body = el('div', { class: 'body' });
+    // The bottom row: on the left the "how to play" line, which makes way for hints and notes;
+    // on the right the buttons.
+    const help = el('p', { class: 'help', hidden: true });
     const feedback = el('p', { class: 'feedback', role: 'status', hidden: true });
+    const talk = el('div', { class: 'talk' }, help, feedback);
     const actions = el('div', { class: 'actions' });
-    card.append(body, feedback, actions);
+    card.append(body, el('div', { class: 'foot' }, talk, actions));
+    const hintText = (text) => ui('puzzle.tryAgain') + ' ' + text;
+    const show = (cls, text) => {
+      feedback.className = cls;
+      feedback.textContent = text;
+      feedback.hidden = false;
+      help.hidden = true;
+      layer.announce(text);
+    };
 
     const api = {
-      body, actions,
+      card, body, actions,
+      /** The short "how to play" line. It waits in the bottom row until a hint needs the space. */
+      help(text) { help.textContent = text; help.hidden = !text || !feedback.hidden; },
+      /**
+       * Tells the card how much room its messages can need, so it can be sized once, when it
+       * opens (src/ui/cardFit.js). kind is 'hint' or 'note'. The words are measured, never shown.
+       */
+      reserve(kind, ...texts) {
+        for (const text of texts.flat()) {
+          if (!text) continue;
+          talk.appendChild(el('p', { class: 'sizer', 'aria-hidden': 'true' }, kind === 'hint' ? hintText(text) : text));
+        }
+      },
+      /** The ways this card can be full, for sizing (see the "later-end" class in style.css). */
+      phases(...names) { card.dataset.phases = names.join(' '); },
       hint(text) {
         hints++;
-        feedback.className = 'feedback';
-        feedback.textContent = ui('puzzle.tryAgain') + ' ' + text;
-        feedback.hidden = false;
-        layer.announce(feedback.textContent);
+        show('feedback', hintText(text));
       },
-      clearFeedback() { feedback.hidden = true; },
+      clearFeedback() { feedback.hidden = true; help.hidden = !help.textContent; },
       /** A friendly note that is not a hint (an explanation, or "pick one first"). */
-      note(text) {
-        feedback.className = 'feedback note';
-        feedback.textContent = text;
-        feedback.hidden = false;
-        layer.announce(text);
-      },
+      note(text) { show('feedback note', text); },
       solved() {
         body.querySelectorAll('button').forEach((b) => { b.disabled = true; });
         card.classList.add('solved');
-        feedback.className = 'feedback good';
-        feedback.textContent = t(p.success);
-        feedback.hidden = false;
-        layer.announce(feedback.textContent);
+        show('feedback good', t(p.success));
         actions.innerHTML = '';
         const btn = el('button', { class: 'primary', 'data-test': 'puzzle-continue', onclick: () => { layer.hidePanel(); resolve({ solved: true, hints }); } }, ui('puzzle.continue'));
         actions.appendChild(btn);
         setTimeout(() => btn.focus(), 30);
       },
     };
+    api.reserve('good', t(p.success));
     render(p, api);
     // Leaving is always allowed: nothing is lost, the puzzle waits for next time.
     const leave = () => { layer.hidePanel(); resolve({ solved: false, hints }); };
@@ -104,6 +125,7 @@ function label(l) {
 function choiceOptions(p, api, list) {
   const box = el('div', { class: 'options', role: 'group' });
   const options = p.shuffle === false ? list : shuffle(list);
+  api.reserve('hint', options.map((o) => t(o.hint)));
   for (const o of options) {
     const b = el('button', {
       'data-correct': o.correct ? 'true' : null,
@@ -121,7 +143,7 @@ function choiceOptions(p, api, list) {
 
 register('choice', (p, api) => {
   const pic = picture(p);
-  if (pic) api.body.appendChild(pic);
+  if (pic) { api.body.classList.add('with-picture'); api.body.appendChild(pic); }
   api.body.appendChild(choiceOptions(p, api, p.options));
 });
 
@@ -131,18 +153,25 @@ register('predict', (p, api) => {
   const pic = picture(p);
   // With a picture, the picture sits beside the scene so the question stays in view.
   api.body.appendChild(pic ? el('div', { class: 'predict-top' }, pic, strip) : strip);
+  // The whole scene, the question and the answers are built now and shown bit by bit ("later"
+  // parts are measured but not shown), so the card is sized once and does not jump.
+  const rows = p.scene.map((f) => el('li', { class: 'later' }, icon(f.icon), el('span', {}, t(f.text))));
+  strip.append(...rows);
   let i = 0;
   const next = el('button', { class: 'primary', 'data-test': 'predict-next', onclick: () => show() }, ui('puzzle.predict.next'));
-  const question = el('p', { class: 'prompt' }, t(p.question));
+  const question = el('p', { class: 'prompt later' }, t(p.question));
+  const options = choiceOptions(p, api, p.options);
+  options.classList.add('later');
+  api.body.append(question, options);
   function show() {
-    const f = p.scene[i++];
-    const li = el('li', {}, icon(f.icon), el('span', {}, t(f.text)));
-    strip.appendChild(li);
+    const f = p.scene[i];
+    rows[i++].classList.remove('later');
     layer.announce(t(f.text));
     if (i >= p.scene.length) {
       next.remove();
-      api.body.append(question, choiceOptions(p, api, p.options));
-      setTimeout(() => { const b = api.body.querySelector('.options button'); if (b) b.focus(); }, 30);
+      question.classList.remove('later');
+      options.classList.remove('later');
+      setTimeout(() => { const b = options.querySelector('button'); if (b) b.focus(); }, 30);
     } else {
       setTimeout(() => next.focus(), 30);
     }
@@ -161,7 +190,11 @@ register('sort', (p, api) => {
   const left = new Set(items);
   const accepts = (item, binId) => (Array.isArray(item.bin) ? item.bin : [item.bin]).includes(binId);
 
-  const help = el('p', { class: 'help' }, ui('puzzle.sort.help'));
+  api.help(ui('puzzle.sort.help'));
+  api.reserve('hint', items.map((it) => t(it.hint)));
+  api.reserve('note', ui('puzzle.sort.pickFirst'), items.map((it) => t(it.why)));
+  // Sized for the start (every item waiting) and for the end (every item in a box).
+  api.phases('', 'end');
   for (const it of items) {
     it._btn = el('button', {
       class: 'sort-item', 'data-item': it.id, 'aria-pressed': 'false',
@@ -169,19 +202,21 @@ register('sort', (p, api) => {
     }, icon(it.icon), el('span', {}, t(it.text)));
     pool.appendChild(it._btn);
   }
+  const sorted = (it) => el('li', {}, icon(it.icon), t(it.text));
   for (const b of p.bins) {
     binLists[b.id] = el('ul', { class: 'bin-list' });
+    for (const it of items) if (accepts(it, b.id) && (Array.isArray(it.bin) ? it.bin[0] : it.bin) === b.id) { it._ghost = sorted(it); it._ghost.className = 'later-end'; it._ghost.setAttribute('aria-hidden', 'true'); binLists[b.id].appendChild(it._ghost); }
     binsBox.appendChild(el('div', { class: 'bin' },
       el('button', { class: 'bin-btn', 'data-bin': b.id, onclick: () => drop(b) }, icon(b.icon), el('span', {}, t(b.text))),
       binLists[b.id]));
   }
-  api.body.append(help, pool, binsBox);
+  api.body.append(pool, binsBox);
 
   function select(it) {
     selected = selected === it ? null : it;
     for (const x of left) x._btn.setAttribute('aria-pressed', String(x === selected));
     api.clearFeedback();
-    if (selected) setTimeout(() => binsBox.querySelector('button').focus(), 20);
+    if (selected) setTimeout(() => { const b = binsBox.querySelector('button'); if (b) b.focus(); }, 20);
   }
   function drop(bin) {
     if (!selected) { api.note(ui('puzzle.sort.pickFirst')); return; }
@@ -190,11 +225,12 @@ register('sort', (p, api) => {
     if (accepts(it, bin.id)) {
       left.delete(it);
       it._btn.remove();
-      binLists[bin.id].appendChild(el('li', {}, icon(it.icon), t(it.text)));
+      if (it._ghost) it._ghost.remove();
+      binLists[bin.id].appendChild(sorted(it));
       api.clearFeedback();
       if (it.why) api.note(t(it.why));
-      if (!left.size) { help.remove(); api.solved(); return; }
-      setTimeout(() => pool.querySelector('button').focus(), 20);
+      if (!left.size) { api.help(''); api.solved(); return; }
+      setTimeout(() => { const b = pool.querySelector('button'); if (b) b.focus(); }, 20);
     } else {
       it._btn.setAttribute('aria-pressed', 'false');
       api.hint(t(it.hint));
@@ -210,21 +246,26 @@ register('match', (p, api) => {
   let picked = null;
   let done = 0;
   const lefts = shuffle(p.pairs), rights = shuffle(p.pairs, lefts);
+  // Room for the number each card gets once it is paired (measured, not shown).
+  const numberRoom = () => el('span', { class: 'n later', 'aria-hidden': 'true' }, '0');
   for (const pr of lefts) {
-    pr._l = el('button', { class: 'match-l', 'data-left': pr.id, 'aria-pressed': 'false', onclick: () => pick(pr) }, icon(pr.left.icon), el('span', {}, t(pr.left.text)));
+    pr._l = el('button', { class: 'match-l', 'data-left': pr.id, 'aria-pressed': 'false', onclick: () => pick(pr) }, numberRoom(), icon(pr.left.icon), el('span', {}, t(pr.left.text)));
     leftCol.appendChild(pr._l);
   }
   for (const pr of rights) {
-    pr._r = el('button', { class: 'match-r', 'data-right': pr.id, onclick: () => pair(pr) }, icon(pr.right.icon), el('span', {}, t(pr.right.text)));
+    pr._r = el('button', { class: 'match-r', 'data-right': pr.id, onclick: () => pair(pr) }, numberRoom(), icon(pr.right.icon), el('span', {}, t(pr.right.text)));
     rightCol.appendChild(pr._r);
   }
-  api.body.append(el('p', { class: 'help' }, ui('puzzle.match.help')), el('div', { class: 'match' }, leftCol, rightCol));
+  api.help(ui('puzzle.match.help'));
+  api.reserve('hint', p.pairs.map((pr) => t(pr.hint)));
+  api.reserve('note', ui('puzzle.match.pickFirst'), p.pairs.map((pr) => t(pr.why)));
+  api.body.append(el('div', { class: 'match' }, leftCol, rightCol));
 
   function pick(pr) {
     picked = picked === pr ? null : pr;
     for (const x of p.pairs) if (!x._done) x._l.setAttribute('aria-pressed', String(x === picked));
     api.clearFeedback();
-    if (picked) setTimeout(() => rightCol.querySelector('button:not([disabled])').focus(), 20);
+    if (picked) setTimeout(() => { const b = rightCol.querySelector('button:not([disabled])'); if (b) b.focus(); }, 20);
   }
   function pair(pr) {
     if (!picked) { api.note(ui('puzzle.match.pickFirst')); return; }
@@ -235,10 +276,10 @@ register('match', (p, api) => {
       pr._done = true;
       done++;
       const n = String(done);
-      for (const b of [pr._l, pr._r]) { b.disabled = true; b.classList.add('paired'); b.prepend(el('span', { class: 'n' }, n)); }
+      for (const b of [pr._l, pr._r]) { b.disabled = true; b.classList.add('paired'); b.querySelector('.n.later').remove(); b.prepend(el('span', { class: 'n' }, n)); }
       if (pr.why) api.note(t(pr.why)); else api.clearFeedback();
       if (done === p.pairs.length) { api.solved(); return; }
-      setTimeout(() => leftCol.querySelector('button:not([disabled])').focus(), 20);
+      setTimeout(() => { const b = leftCol.querySelector('button:not([disabled])'); if (b) b.focus(); }, 20);
     } else {
       api.hint(t(l.hint));
       setTimeout(() => l._l.focus(), 20);
@@ -252,8 +293,12 @@ register('spot', (p, api) => {
   const clues = p.spots.filter((s) => s.clue);
   const found = new Set();
   const list = el('ul', { class: 'list found' });
-  const counter = el('p', { class: 'help' });
+  const counter = el('p', { class: 'count' });
   const update = () => { counter.textContent = ui('puzzle.spot.found', { n: found.size, total: clues.length }); };
+  // One line per clue, built now and shown when the clue is found ("later" = measured, not shown).
+  for (const s of clues) { s._li = el('li', { class: 'later' }, el('strong', {}, t(s.name)), ' · ', t(s.why)); list.appendChild(s._li); }
+  api.help(p.help ? t(p.help) : ui('puzzle.spot.help'));
+  api.reserve('hint', p.spots.filter((s) => !s.clue).map((s) => t(s.hint)));
   for (const s of p.spots) {
     const b = el('button', {
       class: 'spot', 'data-spot': s.id, 'data-clue': s.clue ? 'true' : null, 'aria-label': t(s.name),
@@ -264,7 +309,8 @@ register('spot', (p, api) => {
           found.add(s);
           b.classList.add('found');
           b.disabled = true;
-          list.appendChild(el('li', {}, el('strong', {}, t(s.name)), ' · ', t(s.why)));
+          s._li.classList.remove('later');
+          list.insertBefore(s._li, list.querySelector('.later'));
           api.clearFeedback();
           update();
           if (found.size === clues.length) api.solved();
@@ -276,7 +322,8 @@ register('spot', (p, api) => {
     fig.appendChild(b);
   }
   update();
-  api.body.append(el('p', { class: 'help' }, p.help ? t(p.help) : ui('puzzle.spot.help')), fig, counter, list);
+  api.body.classList.add('with-picture');
+  api.body.append(fig, el('div', { class: 'side' }, counter, list));
 });
 
 // ---------- sequence: put the steps in order (tap to place, tap again to take back) ----------
@@ -296,6 +343,7 @@ register('sequence', (p, api) => {
   wrap.append(leftCol, rightCol);
   api.body.appendChild(wrap);
 
+  api.reserve('hint', steps.map((s) => t(s.hint || p.hint)));
   const check = el('button', { class: 'primary', 'data-test': 'sequence-check', disabled: true, onclick: onCheck }, ui('puzzle.sequence.check'));
   api.actions.appendChild(check);
 

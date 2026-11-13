@@ -1,0 +1,4 @@
+{
+  "about": "Cards that are known to need scrolling at the normal text size, with the reason. tests/cards.mjs fails for any card that is not listed here. Add \"only\": [\"fr\", \"dyslexia\", \"hc\", \"1280\"] to allow a card only for runs that match every tag (language en/fr, letters default/dyslexia, hc/plain, window width).",
+  "allow": {}
+}

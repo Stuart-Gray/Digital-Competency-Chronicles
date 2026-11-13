@@ -1551,7 +1551,7 @@
         {
           "id": "map",
           "icon": "location",
-          "text": {"en": "A map app asks for your location, to show the way to the library", "fr": "Une application de cartes demande ta localisation, pour montrer le chemin de la bibliothèque"},
+          "text": {"en": "A map app asks for your location to show you the way", "fr": "Une application de cartes demande ta localisation pour te guider"},
           "bin": ["allow", "ask"],
           "hint": {"en": "A map needs to know where you are to show the way. Does that make sense?", "fr": "Une carte doit savoir où tu es pour montrer le chemin. Est-ce logique?"},
           "why": {"en": "A map needs your location to guide you. You can also check with an adult.", "fr": "Une carte a besoin de ta localisation pour te guider. Tu peux aussi vérifier avec un adulte."}
@@ -1580,7 +1580,7 @@
         {
           "id": "unknown",
           "icon": "question",
-          "text": {"en": "A new app you don't know asks for camera, microphone and location at once", "fr": "Une nouvelle application que tu ne connais pas demande la caméra, le micro et la localisation d’un coup"},
+          "text": {"en": "An unknown app asks for camera, microphone and location all at once", "fr": "Une application inconnue demande la caméra, le micro et ta localisation d’un coup"},
           "bin": ["ask", "deny"],
           "hint": {"en": "Asking for everything at once is a warning sign. Is \"Allow\" safe here?", "fr": "Tout demander d’un coup, c’est un signal d’alarme. Est-ce prudent d’accepter?"}
         }

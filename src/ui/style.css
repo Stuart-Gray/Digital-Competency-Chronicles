@@ -29,6 +29,8 @@
 
 :root {
   --u: 3px;
+  --u0: 3px;
+  --em: 7; /* the size of reading text, in game pixels */
   --text-scale: 1;
   --ink: #1d1b26;
   --paper: #fdf6e3;
@@ -63,7 +65,7 @@ body { touch-action: manipulation; }
 #game, #game canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 #game canvas { image-rendering: pixelated; image-rendering: crisp-edges; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 
-#ui { position: absolute; inset: 0; pointer-events: none; font-size: calc(var(--u) * 7 * var(--text-scale)); line-height: 1.35; }
+#ui { position: absolute; inset: 0; pointer-events: none; font-size: calc(var(--u) * var(--em) * var(--text-scale)); line-height: 1.35; }
 #ui > * { pointer-events: auto; }
 #ui [hidden] { display: none !important; }
 #marker, #sr-live, #toasts { pointer-events: none !important; }
@@ -218,7 +220,7 @@ input[type="text"] {
 /* ---------- panels (puzzles, pause, journal) ---------- */
 #panel {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(20, 18, 28, .6); padding: calc(var(--u) * 4);
+  background: rgba(20, 18, 28, .6); padding: calc(var(--u) * 2.5);
 }
 .card {
   position: relative;
@@ -232,7 +234,7 @@ input[type="text"] {
 .card h2 { margin: 0; font-size: 1.05em; }
 .card .prompt { margin: 0; font-weight: 700; }
 .card .tag { position: absolute; top: calc(var(--u) * 2); right: calc(var(--u) * 3); font-size: .65em; opacity: .7; }
-.card .feedback { margin: 0; padding: calc(var(--u) * 2) calc(var(--u) * 3); border-radius: calc(var(--u) * 2); background: #fff3c4; border: calc(var(--u) * .5) solid var(--gd, #e0b440); }
+.card :is(.feedback, .sizer) { margin: 0; padding: calc(var(--u) * 2) calc(var(--u) * 3); border-radius: calc(var(--u) * 2); background: #fff3c4; border: calc(var(--u) * .5) solid var(--gd, #e0b440); }
 .card .feedback.good { background: #e3f4dc; border-color: var(--good); }
 .card .actions { display: flex; gap: calc(var(--u) * 3); justify-content: flex-end; flex-wrap: wrap; }
 
@@ -240,7 +242,7 @@ input[type="text"] {
 .seq h3 { margin: 0 0 calc(var(--u) * 1.5); font-size: .8em; text-transform: uppercase; letter-spacing: .05em; }
 .seq ol, .seq ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: calc(var(--u) * 2); }
 .seq .step { width: 100%; text-align: left; font-weight: 400; display: flex; gap: calc(var(--u) * 2); align-items: center; }
-.seq .step .n { font-weight: 700; min-width: 1.4em; }
+.seq .step .n { font-weight: 700; min-width: 1.4em; flex: none; white-space: nowrap; }
 .seq .slot-empty { border: calc(var(--u) * .75) dashed var(--edge); border-radius: calc(var(--u) * 2); min-height: 44px; display: flex; align-items: center; padding: 0 calc(var(--u) * 3); opacity: .6; }
 .seq .locked { background: #e3f4dc; }
 .options { display: flex; flex-direction: column; gap: calc(var(--u) * 2); }
@@ -305,7 +307,7 @@ input[type="text"] {
 .card button { display: inline-flex; align-items: center; gap: calc(var(--u) * 2); }
 
 .picture { position: relative; width: min(100%, calc(var(--u) * 160)); align-self: center; line-height: 0; }
-.picture img { width: 100%; image-rendering: pixelated; border: calc(var(--u) * 1) solid var(--ink); border-radius: calc(var(--u) * 1.5); }
+.picture img { width: 100%; aspect-ratio: auto 5 / 3; image-rendering: pixelated; border: calc(var(--u) * 1) solid var(--ink); border-radius: calc(var(--u) * 1.5); }
 .pic-label {
   position: absolute; transform: translateY(-50%); text-align: center; line-height: 1.1;
   color: #fff; font-weight: 700; font-size: .55em; text-shadow: 0 1px 0 #000; pointer-events: none;
@@ -347,7 +349,7 @@ input[type="text"] {
 .strip li { font-size: .9em; }
 
 /* ---------- feedback that does not rely on colour alone ---------- */
-.card .feedback::before { content: "?"; display: inline-flex; align-items: center; justify-content: center; width: 1.4em; height: 1.4em; margin-right: .4em; border-radius: 50%; background: var(--ink); color: var(--paper); font-weight: 700; font-size: .85em; }
+.card :is(.feedback, .sizer)::before { content: "?"; display: inline-flex; align-items: center; justify-content: center; width: 1.4em; height: 1.4em; margin-right: .4em; border-radius: 50%; background: var(--ink); color: var(--paper); font-weight: 700; font-size: .85em; }
 .card .feedback.good::before { content: "✓"; background: var(--good); color: #fff; }
 .card .feedback.note::before { content: "i"; background: var(--accent); color: #fff; }
 .spot.found::after { content: "✓"; position: absolute; top: 0; right: 0; transform: translate(40%, -40%); background: var(--gold); color: var(--ink); border-radius: 50%; width: 1.3em; height: 1.3em; line-height: 1.3em; font-size: .7em; font-weight: 700; text-align: center; }
@@ -355,7 +357,8 @@ input[type="text"] {
 
 /* ---------- dyslexia-friendly letters: OpenDyslexic, more space between letters, words and lines ---------- */
 body.font-dyslexia { --font-read: "OpenDyslexic", "Atkinson Hyperlegible", Arial, sans-serif; }
-body.font-dyslexia #ui { line-height: 1.55; word-spacing: .06em; font-size: calc(var(--u) * 6.4 * var(--text-scale)); }
+body.font-dyslexia { --em: 6.4; }
+body.font-dyslexia #ui { line-height: 1.55; word-spacing: .06em; }
 
 /* ---------- reduce motion (Settings, or the device's own setting) ---------- */
 body.rm *, body.rm *::before, body.rm *::after { animation: none !important; transition: none !important; }
@@ -381,7 +384,7 @@ body.hc #dialogue .speaker { background: #000; color: #ffe600; border-color: #ff
 body.hc .card .help, body.hc .card .tag, body.hc .settings .note { opacity: 1; }
 body.hc .card .settings .section { color: #000; }
 body.hc .card .feedback, body.hc .card .feedback.good, body.hc .card .feedback.note { background: #fff; border: calc(var(--u) * 1) solid #000; }
-body.hc .card .feedback.good { border-width: calc(var(--u) * 1.5); }
+body.hc .card .feedback.good, body.hc .card .sizer { border: calc(var(--u) * 1.5) solid #000; }
 body.hc .options button.tried { opacity: 1; border-style: dashed; }
 body.hc .bin, body.hc .seq .slot-empty, body.hc .strip li { background: #fff; border: calc(var(--u) * .75) solid #000; opacity: 1; }
 body.hc .bin-list li, body.hc .seq .locked, body.hc .match-col button.paired { background: #fff; border: calc(var(--u) * 1) solid #006400; color: #000; }
@@ -402,3 +405,65 @@ body.hc .swatch.style[aria-pressed="true"] { background: #ffe600; }
 body.hc .maker-side .avatar-c { background: #fff; outline: calc(var(--u) * .8) solid #ffe600; }
 body.hc .ghost { opacity: .55; }
 body.hc input[type="text"] { border-width: calc(var(--u) * 1.2); }
+
+/* ---------- question cards (puzzles and thinking time): laid out to fit one screen ----------
+   src/ui/cardFit.js picks the step: the class "cols" puts the answers two by two, and --fit
+   makes the whole card a little smaller (words, pictures and spacing together, because inside
+   the card every size comes from the card's own --u). */
+.card.pz {
+  --u: calc(var(--u0) * var(--fit, 1));
+  --icon: calc(var(--u) * 9);
+  font-size: calc(var(--u) * var(--em) * var(--text-scale));
+  width: min(100%, calc(var(--u0) * 306));
+  padding: calc(var(--u) * 3.5) calc(var(--u) * 5);
+  gap: calc(var(--u) * 2.5);
+  align-self: flex-start;
+}
+.card.pz .prompt { padding-right: calc(var(--u) * 6); }
+.card.pz .body .prompt { padding-right: 0; }
+.card.pz .body { display: flex; flex-direction: column; gap: calc(var(--u) * 2); }
+.card.pz button { padding: calc(var(--u) * 1.5) calc(var(--u) * 3); line-height: 1.25; }
+.card.pz button.link { padding-left: calc(var(--u) * 1); padding-right: calc(var(--u) * 1); }
+.card.pz .options { gap: calc(var(--u) * 2); }
+.card.pz.cols .options { display: grid; grid-template-columns: 1fr 1fr; }
+.card.pz.cols .options > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* The bottom row: the "how to play" line or the hint on the left, the buttons on the right. */
+.card.pz .foot { display: flex; gap: calc(var(--u) * 3); align-items: flex-end; }
+.card.pz .talk { flex: 1; min-width: 0; display: grid; align-items: end; }
+.card.pz .talk > * { grid-area: 1 / 1; }
+.card.pz .actions { flex: none; margin-left: auto; align-items: center; flex-wrap: nowrap; gap: calc(var(--u) * 2); }
+.card.pz :is(.feedback, .sizer) { padding: calc(var(--u) * 1.5) calc(var(--u) * 3); }
+.card.pz .help { align-self: center; }
+
+/* Parts that are measured but not shown: the longest hint (sizer), and what appears later. */
+.card:not(.measuring) .sizer, .card:not(.measuring) .later, .card:not(.ph-end) .later-end { display: none !important; }
+.card.measuring .sizer, .card.measuring .later, .card.measuring .later-end { visibility: hidden; }
+.card.measuring.ph-end .sort-pool { display: none; }
+
+/* A picture sits beside the answers (or the clues), not above them. */
+.card.pz .body.with-picture { display: grid; grid-template-columns: 5fr 4fr; align-items: start; gap: calc(var(--u) * 3); }
+.card.pz .body.with-picture .picture { width: 100%; }
+.card.pz .side { display: flex; flex-direction: column; gap: calc(var(--u) * 1.5); min-width: 0; }
+.card.pz .count { margin: 0; font-weight: 700; font-size: .9em; }
+.card.pz .found li { margin: 0 0 calc(var(--u) * 1.5); }
+.card.pz .strip { gap: calc(var(--u) * 1.5); }
+.card.pz .strip li { padding: calc(var(--u) * 1.2) calc(var(--u) * 2.5); font-size: .95em; line-height: 1.3; }
+.card.pz .predict-top { grid-template-columns: 3fr 5fr; align-items: center; }
+
+.card.pz .sort-pool { gap: calc(var(--u) * 2); }
+.card.pz .sort-item { max-width: calc(50% - var(--u)); }
+.card.pz .sort-bins { gap: calc(var(--u) * 2); }
+.card.pz .bin { padding: calc(var(--u) * 1.5); gap: calc(var(--u) * 1.2); }
+.card.pz .bin-list { gap: calc(var(--u) * .8); }
+.card.pz .bin-list li { line-height: 1.25; padding: calc(var(--u) * .8) calc(var(--u) * 1.6); }
+body.hc .card.pz .bin-list li { border-width: calc(var(--u) * .6); }
+.card.pz .match, .card.pz .seq { gap: calc(var(--u) * 3); }
+.card.pz .match-col, .card.pz .seq ol, .card.pz .seq ul { gap: calc(var(--u) * 1.5); }
+.card.pz .seq h3 { margin-bottom: calc(var(--u) * 1); }
+.card.pz .seq .slot-empty { min-height: calc(var(--u) * 12); }
+
+/* "More below" arrow on a card that has to scroll (src/ui/cardFit.js). It takes up no room. */
+.card .more-below { position: sticky; bottom: calc(var(--u) * -2); height: 0; margin-top: calc(var(--u) * -2.5); align-self: flex-end; pointer-events: none; z-index: 2; }
+.card .more-below span { position: absolute; bottom: 0; right: 0; background: var(--ink); color: var(--paper); border-radius: calc(var(--u) * 3); padding: 0 calc(var(--u) * 3); font-size: .8em; line-height: 1.5; animation: bob .8s infinite alternate; }
+body.hc .card .more-below span { background: #000; color: #ffe600; outline: calc(var(--u) * .6) solid #ffe600; }

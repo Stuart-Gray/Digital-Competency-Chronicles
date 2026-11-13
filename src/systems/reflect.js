@@ -101,14 +101,18 @@ export function open(slot, def) {
     const before = slot.reflections[key] || {};
     const draft = { choice: before.choice || null, feel: before.feel || 0 };
 
-    const card = el('section', { class: 'card reflect', 'aria-labelledby': 'rf-title', 'data-reflection': key });
+    // "pz" = a question card: src/ui/cardFit.js keeps it on one screen, like the puzzle cards.
+    const card = el('section', { class: 'card reflect pz', 'aria-labelledby': 'rf-title', 'data-reflection': key });
+    const who = el('p', { class: 'who', hidden: true });
     const body = el('div', { class: 'body' });
+    // The bottom row: a short line on the left (no wrong answer, or the thank-you), buttons on the right.
+    const talk = el('div', { class: 'talk' });
     const actions = el('div', { class: 'actions' });
-    card.append(
+    card.append(...[
       def.element ? el('span', { class: 'tag', title: tt('reflect.elementTag') }, def.element) : null,
-      el('h2', { id: 'rf-title' }, '💭 ' + tt('reflect.title')),
-      body, actions,
-    );
+      el('div', { class: 'head' }, el('h2', { id: 'rf-title' }, '💭 ' + tt('reflect.title')), who),
+      body, el('div', { class: 'foot' }, talk, actions),
+    ].filter(Boolean));
 
     const finish = (ok) => { speech.stop(); layer.hidePanel(); resolve(ok); };
     const keep = () => {
@@ -125,16 +129,18 @@ export function open(slot, def) {
       const spoken = [prompt, ...def.options.map((o) => t(o.text))].join('. ');
       body.innerHTML = '';
       actions.innerHTML = '';
+      talk.innerHTML = '';
+      who.textContent = npc ? tt('reflect.asks', { name: t(npc.name) }) : '';
+      who.hidden = !npc;
       body.append(
-        npc ? el('p', { class: 'who' }, tt('reflect.asks', { name: t(npc.name) })) : null,
         el('p', { class: 'prompt' }, prompt),
-        el('p', { class: 'help' }, tt('reflect.noWrong')),
         el('div', { class: 'options', role: 'group', 'aria-label': tt('reflect.title') },
           def.options.map((o) => el('button', {
             'data-option': o.id, 'aria-pressed': String(draft.choice === o.id),
             onclick: () => { draft.choice = o.id; askFeel(); },
           }, el('span', {}, t(o.text))))),
       );
+      talk.append(el('p', { class: 'help' }, tt('reflect.noWrong')));
       actions.append(laterBtn(), listen(spoken));
       layer.announce(prompt);
       speech.speak(spoken, getLang());
@@ -145,6 +151,7 @@ export function open(slot, def) {
       const spoken = [q, ...FEELINGS.map((f) => tt('reflect.feel.' + f))].join('. ');
       body.innerHTML = '';
       actions.innerHTML = '';
+      talk.innerHTML = '';
       body.append(
         el('p', { class: 'picked' }, '✓ ' + answerText(def, draft)),
         el('p', { class: 'prompt' }, q),
@@ -165,12 +172,13 @@ export function open(slot, def) {
       const thanks = tt(draft.feel === 3 ? 'reflect.thanksHelp' : 'reflect.thanks');
       body.innerHTML = '';
       actions.innerHTML = '';
+      talk.innerHTML = '';
       card.classList.add('solved');
       body.append(
         el('p', { class: 'picked' }, '✓ ' + answerText(def, draft)),
         el('p', { class: 'picked' }, FEEL_ICON[draft.feel] + ' ' + tt('reflect.feel.' + draft.feel)),
-        el('p', { class: 'feedback good', role: 'status' }, thanks),
       );
+      talk.append(el('p', { class: 'feedback good', role: 'status' }, thanks));
       const btn = el('button', { class: 'primary', 'data-test': 'reflect-continue', onclick: () => { finish(true); achievements.unlock(slot, 'deep_thinker'); } }, tt('reflect.continue'));
       actions.append(btn);
       layer.announce(thanks);

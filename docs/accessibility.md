@@ -27,7 +27,7 @@ device. Words for every option are in `content/ui.json` (`settings.*`) in Englis
 | Voice | Male, Female | Picks the clearest voice of that kind on this device, in English or Quebec French (see below). **Try the voice** plays a sample. |
 | Reading speed | Normal, Slow, Fast | How fast the voice reads. |
 | Text speed | Normal, Slow, Fast, All at once | How fast dialogue letters appear. *All at once* shows each line straight away. |
-| Text size | Normal, Large (125 %), Larger (150 %) | All menus, dialogue and puzzle cards. Cards scroll when the text is big. |
+| Text size | Normal, Large (125 %), Larger (150 %) | All menus, dialogue and puzzle cards. At Normal, every puzzle and thinking-time card fits one screen without scrolling (see *Cards that fit one screen* below). At Large and Larger the words keep the size the player chose, so a full card scrolls, with a small ▼ at the bottom edge while there is more to read. |
 | Letter style | Standard, Dyslexia-friendly | Standard is Atkinson Hyperlegible (made by the Braille Institute for low-vision readers). Dyslexia-friendly is OpenDyslexic with more space between words and lines. |
 | High contrast | Off, On | Black, white and yellow everywhere: solid white cards with thick black edges and a yellow outline, black buttons with yellow words, a thick yellow focus ring, no see-through boxes, a sharper and more colourful game picture, a bigger "!" marker, and lighter darkness in the temple so walls and paths can be seen (the lantern still decides which hidden traces show). |
 | Reduce motion | Like the device, On, Off | Stops camera shake, screen fades, the drifting title screen, bouncing markers, pop-in animations and shimmering traces. *Like the device* follows the operating system's "reduce motion" setting (Windows: *Show animations* off; ChromeOS: *Reduce animations*; iPad: *Reduce Motion*). |
@@ -57,6 +57,26 @@ iPad: *Settings → Accessibility → Spoken Content → Voices*).
 The voice only reads what is on screen. Nothing is sent anywhere by the game. (Edge's natural
 voices are Microsoft online voices; on a device without Internet the browser uses its offline
 voices instead.)
+
+## Cards that fit one screen
+
+Young players should not have to scroll to find an answer. Puzzle cards and thinking-time cards
+are laid out for a wide screen (pictures and clues side by side, hints beside the buttons) and
+are measured when they open, at their fullest: with the longest hint and the "well done"
+message in place. If a card would not fit, `src/ui/cardFit.js` moves it one step at a time:
+
+1. the answers sit two by two instead of in one list;
+2. the whole card (words, pictures and spacing together) gets a little smaller: 94 %, 88 %, then
+   82 % at most. On a 1280 x 720 laptop the smallest step is still about 19 px text (17 px with
+   the wider dyslexia-friendly letters).
+
+The step is chosen once, when the card opens, and the card's top edge stays where it is, so
+nothing jumps when a hint appears. With the usual letters only a few of the fullest Cycle 3
+cards need step 2, mostly in French. The words are never made smaller at Large or Larger text.
+
+`node tests/cards.mjs` opens every card and conversation at laptop, Chromebook and tablet window
+sizes, in English and French, at every text size, with both letter styles and with high
+contrast on and off, and fails if a card needs scrolling at the normal text size.
 
 ## Always on (no setting needed)
 
@@ -146,5 +166,8 @@ voices instead.)
 - CSS: `body.hc` (high contrast), `body.rm` (reduced motion), `body.font-dyslexia`, and
   `--text-scale`. New HTML must work in all of them; check with high contrast and *Larger* text.
 - New sound effects need a caption (a toast or a line of text).
+- Question cards have the class `pz` and are sized by `src/ui/cardFit.js`. Inside them, sizes
+  must use `var(--u)` or `em` (not fixed pixels) so the card can scale as one piece. Run
+  `node tests/cards.mjs` after changing their layout or their words.
 - `tests/smoke.mjs` (`SMOKE_ONLY=a11y`) checks the settings, voice choice, toggle walking and
   Look around.

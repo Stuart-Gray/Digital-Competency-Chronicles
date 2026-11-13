@@ -4,6 +4,7 @@
 import * as input from '../systems/input.js';
 import * as speech from '../systems/speech.js';
 import { getLang } from '../systems/i18n.js';
+import * as cardFit from './cardFit.js';
 
 const $ = (id) => document.getElementById(id);
 const stage = $('stage');
@@ -52,7 +53,11 @@ export function layout() {
   w = Math.floor(w); h = Math.floor(h);
   stage.style.width = w + 'px';
   stage.style.height = h + 'px';
-  document.documentElement.style.setProperty('--u', (w / GAME_W).toFixed(3) + 'px');
+  // --u is one game pixel. --u0 is the same number: question cards scale their own --u from it
+  // when they need to be a little smaller to fit (src/ui/cardFit.js).
+  const u = (w / GAME_W).toFixed(3) + 'px';
+  document.documentElement.style.setProperty('--u', u);
+  document.documentElement.style.setProperty('--u0', u);
 }
 window.addEventListener('resize', layout);
 window.addEventListener('orientationchange', () => setTimeout(layout, 200));
@@ -67,6 +72,7 @@ export function applySettings(s) {
   textSpeed = s.textSpeed || 'normal';
   toastScale = textSpeed === 'slow' || s.textSize === 'larger' ? 2 : 1;
   speech.applySettings(s);
+  cardFit.refit();
 }
 let toastScale = 1;
 
@@ -113,9 +119,11 @@ export function showPanel(card, { onCancel } = {}) {
     if (e.code === 'Escape' && onCancel) { e.stopPropagation(); onCancel(); }
     arrowNav(e, panelEl);
   };
+  cardFit.watch(card, panelEl);
   focusFirst(card);
 }
 export function hidePanel() {
+  cardFit.stop();
   panelEl.hidden = true; panelEl.innerHTML = ''; panelEl.onkeydown = null;
   // Toasts that arrived while a card was open (so they did not cover the question) show now.
   const waiting = pendingToasts.splice(0);
