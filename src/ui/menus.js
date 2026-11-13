@@ -160,6 +160,8 @@ function settingsBody(rerender) {
   return el('div', { class: 'settings' },
     seg(ui('settings.language'), 'lang', [['en', 'English', 'en'], ['fr', 'Français', 'fr']]),
     canSpeak ? seg(ui('settings.readAloud'), 'readAloud', [[false, ui('common.off')], [true, ui('common.on')]]) : null,
+    seg(ui('settings.music'), 'music', [[false, ui('common.off')], [true, ui('common.on')]]),
+    s.music !== false ? seg(ui('settings.musicVolume'), 'musicVolume', [['low', ui('settings.quiet')], ['medium', ui('settings.medium')], ['high', ui('settings.loud')]]) : null,
     seg(ui('settings.textSpeed'), 'textSpeed', [['slow', ui('settings.slow')], ['normal', ui('settings.normal')], ['fast', ui('settings.fast')]]),
     seg(ui('settings.largeText'), 'largeText', [[false, ui('common.off')], [true, ui('common.on')]]),
     seg(ui('settings.highContrast'), 'highContrast', [[false, ui('common.off')], [true, ui('common.on')]]),

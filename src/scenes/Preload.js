@@ -2,6 +2,7 @@
 
 import * as content from '../systems/content.js';
 import { setUiStrings } from '../systems/i18n.js';
+import * as music from '../systems/music.js';
 
 const NPC_ROWS = 9; // rows in assets/sprites/npcs.png
 
@@ -34,6 +35,7 @@ export default class Preload extends Phaser.Scene {
   create() {
     content.init(this.cache);
     setUiStrings(content.get('ui'));
+    music.setSongs(content.get('music'));
     this.makeAnimations();
     this.scene.start('Title');
   }

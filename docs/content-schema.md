@@ -14,6 +14,7 @@ After any change, check your work: open `tools/validate.html` on the live site (
 | `hub.json` | The digital village: people, signs, gates, the Fix-it shop puzzles |
 | `area2.json` | Dungeon 2, the Temple of Traces (sheet 2: digital identity) |
 | `area1.json`, `area3.json` … `area7.json` | One per content area, added dungeon by dungeon |
+| `music.json` | Background music: the notes of each song (see [Music](#music-musicjson)) |
 
 Every file starts with `"schemaVersion": 1`.
 
@@ -272,6 +273,58 @@ and the teacher guide, and are never shown to students as a checklist.
 ```
 
 Achievements are positive and optional. The Journal lists only what a player has done.
+
+## Music (`music.json`)
+
+The game plays chiptune music with the browser's own sound engine (no audio files). Each song
+is written as notes, so anyone can change a tune in a text editor. All songs are original
+compositions for this project (CC BY 4.0, like the rest of `/content`); please keep it that way
+and never copy a melody from an existing game or song.
+
+| Song id | Where it plays | Mood |
+|---|---|---|
+| `title` | Title screen and menus | Bright, hopeful |
+| `village` | The digital village (a waltz, 3 beats a bar) | Friendly, easy-going |
+| `temple` | Dungeon 2, the Temple of Traces | Mysterious but calm, never scary |
+
+A scene picks its song with the `music` option in its `src/scenes/*.js` file. Changing places
+fades one song out and the next one in.
+
+```json
+"village": {
+  "bpm": 138, "stepsPerBeat": 2, "beatsPerBar": 3,
+  "channels": {
+    "pulse1":   {"duty": 0.5, "volume": 0.24},
+    "triangle": {"wave": "triangle", "volume": 0.45, "gate": 0.8},
+    "noise":    {"wave": "noise", "volume": 0.1}
+  },
+  "order": ["A", "B", "A"],
+  "parts": {
+    "A": {
+      "pulse1":   "A4:2 C5 F5:3 | E5:2 D5 C5:3 | …",
+      "triangle": "F2:2 C3:2 A2:2 | C3:2 G2:2 E2:2 | …",
+      "noise":    "k - h - h - | k - h - h - | …"
+    }
+  }
+}
+```
+
+- **Channels:** `pulse1` and `pulse2` are buzzy retro waves (`duty` 0.125 is thin, 0.25 is
+  classic, 0.5 is round and soft), `triangle` is a soft bass, `noise` plays drums.
+- **Notes:** a letter, an optional `#` or `b`, and an octave: `C5`, `F#4`, `Bb3`. `-` is a rest.
+  Drums are `k` (kick), `s` (snare) and `h` (hi-hat).
+- **Lengths:** `:2` after a note makes it last 2 steps. No number means 1 step. With
+  `stepsPerBeat: 2`, one step is an eighth note.
+- **Bars:** `|` marks a bar line. The checker makes sure every bar has the right number of
+  steps (`stepsPerBeat` × `beatsPerBar`), so a mistake shows up right away.
+- **Volume and feel:** `volume` (0 to 1) per channel, `gate` (how much of each step a note
+  sounds; lower is more staccato), `sustain` (how much a note fades after it starts).
+- `order` lists the parts to play; the song then loops.
+
+Music is on by default at a medium volume. Players turn it off or change the volume in
+Settings; the choice is saved on the device. It starts after the first tap or key press
+(browsers, and iPads especially, don't allow sound before that), pauses when the tab is hidden,
+and gets quieter while Read aloud is speaking.
 
 ## Maps
 

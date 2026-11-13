@@ -1,12 +1,14 @@
 // Boot: applies saved settings and waits for the fonts, then hands over to Preload.
 
 import { applySettings } from '../systems/state.js';
+import * as music from '../systems/music.js';
 
 export default class Boot extends Phaser.Scene {
   constructor() { super('Boot'); }
 
   create() {
     applySettings();
+    music.installUnlock();
     const fonts = document.fonts
       ? Promise.all([
         document.fonts.load('16px "Atkinson Hyperlegible"'),

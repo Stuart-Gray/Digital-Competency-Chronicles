@@ -1,6 +1,8 @@
 // Built-in read-aloud using the browser's own voices (no network).
 // A fallback for when Read&Write is not installed; Read&Write can read the HTML text directly.
 
+import * as music from './music.js';
+
 let enabled = false;
 
 export function setReadAloud(on) {
@@ -29,6 +31,8 @@ export function speak(text, lang) {
     const v = pickVoice(lang);
     if (v) u.voice = v;
     u.rate = 0.95;
+    music.duck(true);
+    u.onend = u.onerror = () => music.duck(false);
     window.speechSynthesis.speak(u);
   } catch (e) { /* speech is optional */ }
 }
@@ -36,5 +40,6 @@ export function speak(text, lang) {
 export function stop() {
   if (isSupported()) {
     try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    music.duck(false);
   }
 }

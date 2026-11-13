@@ -6,6 +6,8 @@
 
 export const PUZZLE_TYPES = ['choice', 'sort', 'spot', 'sequence', 'match', 'predict', 'cocreate'];
 export const KNOWN_TIERS = ['E2', 'E3', 'S1', 'S2', 'S3'];
+import { parseLine } from './music.js';
+
 export const ELEMENTS = ['1a', '1b', '1c', '2a', '2b', '2c', '3a', '3b', '4a', '4b', '5a', '6a', '6b', '7a', '7b'];
 const LANGS = ['en', 'fr'];
 
@@ -99,6 +101,37 @@ function checkPuzzle(p, where, errors) {
   }
 }
 
+const MUSIC_CHANNELS = ['pulse1', 'pulse2', 'triangle', 'noise'];
+
+/** Songs in music.json: known channels, valid notes, and every bar the right length. */
+function checkMusic(songs, name, errors) {
+  for (const [id, song] of Object.entries(songs)) {
+    const where = `${name}.songs.${id}`;
+    if (!(song.bpm > 0)) errors.push(`${where}: "bpm" must be a number`);
+    const barSteps = (song.stepsPerBeat || 2) * (song.beatsPerBar || 4);
+    for (const ch of Object.keys(song.channels || {})) {
+      if (!MUSIC_CHANNELS.includes(ch)) errors.push(`${where}: unknown channel "${ch}" (use ${MUSIC_CHANNELS.join(', ')})`);
+    }
+    if (!Array.isArray(song.order) || !song.order.length) { errors.push(`${where}: "order" must list its parts`); continue; }
+    for (const p of song.order) if (!(song.parts || {})[p]) errors.push(`${where}: "order" names a missing part "${p}"`);
+    for (const [pid, part] of Object.entries(song.parts || {})) {
+      const lengths = new Set();
+      for (const [ch, line] of Object.entries(part)) {
+        const w = `${where}.parts.${pid}.${ch}`;
+        if (!(song.channels || {})[ch]) errors.push(`${w}: no settings for this channel in "channels"`);
+        try {
+          String(line).split('|').forEach((bar, i) => {
+            const n = parseLine(bar).steps;
+            if (n !== barSteps) errors.push(`${w}: bar ${i + 1} is ${n} steps long, should be ${barSteps}`);
+          });
+          lengths.add(parseLine(line).steps);
+        } catch (e) { errors.push(`${w}: ${e.message}`); }
+      }
+      if (lengths.size > 1) errors.push(`${where}.parts.${pid}: its channels are not the same length`);
+    }
+  }
+}
+
 /**
  * files: { ui: {...}, hub: {...}, area2: {...} } (parsed JSON)
  * returns { errors: [], warnings: [] }
@@ -112,6 +145,7 @@ export function validateContent(files) {
     if (!data || typeof data !== 'object') { errors.push(`${name}: could not be read as JSON`); continue; }
     if (data.schemaVersion !== 1) errors.push(`${name}: "schemaVersion" must be 1`);
     checkTexts(data, name, errors);
+    if (data.songs) checkMusic(data.songs, name, errors);
 
     const dialogue = data.dialogue || {};
     const puzzles = data.puzzles || [];

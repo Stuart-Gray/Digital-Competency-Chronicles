@@ -7,7 +7,7 @@ import { state } from '../systems/state.js';
 
 export default class Dungeon2 extends World {
   constructor() {
-    super('Dungeon2', { file: 'area2', map: 'area2', tileset: ['dungeon', 'dungeon-tiles'], place: 'area2.place', dark: true });
+    super('Dungeon2', { file: 'area2', map: 'area2', tileset: ['dungeon', 'dungeon-tiles'], place: 'area2.place', dark: true, music: 'temple' });
   }
 
   onArrive() {

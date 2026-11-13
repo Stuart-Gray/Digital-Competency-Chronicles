@@ -4,6 +4,7 @@ import { buildMap } from './world.js';
 import * as menus from '../ui/menus.js';
 import * as layer from '../ui/textLayer.js';
 import { startSlot } from '../systems/state.js';
+import * as music from '../systems/music.js';
 
 export default class Title extends Phaser.Scene {
   constructor() { super('Title'); }
@@ -15,6 +16,7 @@ export default class Title extends Phaser.Scene {
     this.t0 = 0;
     this.maxX = map.widthInPixels - this.scale.width;
     cam.fadeIn(400);
+    music.play('title');
 
     layer.setHud(null);
     layer.hideTouch();

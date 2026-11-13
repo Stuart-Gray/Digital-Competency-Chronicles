@@ -100,6 +100,8 @@ async function run(lang, tier) {
     step('cycle chosen');
 
     await page.waitForFunction(() => window.DCC && window.DCC.debug.scene === 'Hub', null, { timeout: 10000 });
+    await page.waitForFunction(() => window.DCC.music().playing === 'village', null, { timeout: 5000 });
+    step('village music playing');
     await page.locator('#dialogue').waitFor({ timeout: 5000 });
     await page.waitForTimeout(300);
     await shot(page, `${lang}-4-welcome`);
@@ -303,6 +305,7 @@ async function dungeon(lang, tier) {
     await converse(page, tier, solved, problems);
     await go('gate2');
     await page.waitForFunction(() => window.DCC.debug.scene === 'Dungeon2', null, { timeout: 5000 });
+    await page.waitForFunction(() => window.DCC.music().playing === 'temple', null, { timeout: 5000 });
     await page.waitForTimeout(700);
     await converse(page, tier, solved, problems);
     await need('got_lantern');

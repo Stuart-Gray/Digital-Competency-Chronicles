@@ -105,6 +105,7 @@ Each element in the sheets has: knowledge ("students come to understand"), skill
 - **Maps:** Tiled (`.tmj`/`.json`) so non-coders can design rooms.
 - **Hosting:** public GitHub repo + GitHub Pages to start; other hosting later if needed.
 - **Saves:** browser `localStorage` for now (simple, privacy-friendly). Sign-in for cross-device progress parked as a future option.
+- **Music:** original chiptune songs played by the browser's Web Audio API from note data in `content/music.json` (no audio files, no licence questions). On/off and volume in Settings.
 - **Content as data:** each area's dialogue/puzzles live in plain JSON under `/content/` so consultants and teachers can contribute without editing engine code.
 
 ### Proposed repo layout

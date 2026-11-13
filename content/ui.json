@@ -48,7 +48,12 @@
       "normal": {"en": "Normal", "fr": "Normale"},
       "fast": {"en": "Fast", "fr": "Rapide"},
       "largeText": {"en": "Large text", "fr": "Gros texte"},
-      "highContrast": {"en": "High contrast", "fr": "Contraste élevé"}
+      "highContrast": {"en": "High contrast", "fr": "Contraste élevé"},
+      "music": {"en": "Music", "fr": "Musique"},
+      "musicVolume": {"en": "Music volume", "fr": "Volume de la musique"},
+      "quiet": {"en": "Quiet", "fr": "Bas"},
+      "medium": {"en": "Medium", "fr": "Moyen"},
+      "loud": {"en": "Loud", "fr": "Fort"}
     },
     "teacher": {
       "title": {"en": "Teacher corner", "fr": "Coin enseignant"},

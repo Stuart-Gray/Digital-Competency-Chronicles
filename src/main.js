@@ -7,6 +7,7 @@ import Title from './scenes/Title.js';
 import Hub from './scenes/Hub.js';
 import Dungeon2 from './scenes/Dungeon2.js';
 import { GAME_W, GAME_H } from './ui/textLayer.js';
+import * as music from './systems/music.js';
 
 export const VERSION = '0.2.0';
 
@@ -29,5 +30,5 @@ if (!window.Phaser) {
     scene: [Boot, Preload, Title, Hub, Dungeon2],
   });
   // A small handle for testing and for curious developers. Holds no personal data.
-  window.DCC = { game, version: VERSION, debug: {} };
+  window.DCC = { game, version: VERSION, debug: {}, music: music.status };
 }

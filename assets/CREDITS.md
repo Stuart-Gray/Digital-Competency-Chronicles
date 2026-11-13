@@ -23,4 +23,8 @@ set of tiles in code keeps the licence question simple (no third-party art at al
 us change colours and tiles quickly. The final art direction is still open (decided at the
 teacher review, milestone 4). No art is copied from, or made to imitate, any commercial game.
 
-Audio: none yet.
+Audio: no audio files. The background music is played live by `src/systems/music.js`
+(Web Audio) from the notes in `content/music.json`. All three songs ("Chronicles Overture",
+"Market Waltz", "Lantern in the Dark") are original compositions written for this project in
+2026, in the style of 8-bit console music but not based on any existing tune. Licence: CC BY 4.0,
+like the rest of `/content`.

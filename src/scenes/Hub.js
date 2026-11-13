@@ -8,7 +8,7 @@ import { state, saveNow } from '../systems/state.js';
 
 export default class Hub extends World {
   constructor() {
-    super('Hub', { file: 'hub', map: 'hub', tileset: ['village', 'tiles'], place: 'hub.place' });
+    super('Hub', { file: 'hub', map: 'hub', tileset: ['village', 'tiles'], place: 'hub.place', music: 'village' });
   }
 
   onArrive() {

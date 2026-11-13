@@ -28,6 +28,7 @@ import * as menus from '../ui/menus.js';
 import { fxStyle } from '../ui/art.js';
 import { t, ui, forTier, getTier } from '../systems/i18n.js';
 import { state, saveNow, playerName } from '../systems/state.js';
+import * as music from '../systems/music.js';
 
 const SPEED = 72;
 const FACING = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
@@ -43,7 +44,8 @@ function center(o) {
 export default class World extends Phaser.Scene {
   /**
    * opts = { file: content file, map: tilemap key, tileset: [name in map, texture key],
-   *          place: ui string for the HUD, dark: draw darkness and light }
+   *          place: ui string for the HUD, dark: draw darkness and light,
+   *          music: song id from content/music.json }
    */
   constructor(key, opts) {
     super(key);
@@ -64,6 +66,7 @@ export default class World extends Phaser.Scene {
 
   create() {
     const slot = state.slot;
+    music.play(this.opts.music);
     const { map, ground, structures, objects } = buildMap(this, this.opts.map, this.opts.tileset);
     this.map = map;
     this.layers = { ground, structures };

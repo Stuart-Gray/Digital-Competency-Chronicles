@@ -2,7 +2,7 @@
 
 import { validateContent } from './validate.js';
 
-export const CONTENT_FILES = ['ui', 'hub', 'area2'];
+export const CONTENT_FILES = ['ui', 'hub', 'area2', 'music'];
 
 const store = {};
 
