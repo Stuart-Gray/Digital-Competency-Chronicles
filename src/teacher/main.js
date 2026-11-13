@@ -113,8 +113,10 @@ function render() {
   );
 }
 
+// The single-file preview build has no index.html beside it, so it shows no link back to the game.
 function footer() {
-  return h('footer', {}, h('p', {}, tt('dash.privacy')), h('p', {}, h('a', { href: './index.html' }, tt('dash.toGame')), ' · ', h('a', { href: (app.files.teacher.links || {}).guide || './docs/teacher-guide.md', target: '_blank', rel: 'noopener' }, tt('dash.toGuide'))));
+  return h('footer', {}, h('p', {}, tt('dash.privacy')),
+    h('p', {}, window.DCC_INLINE ? null : h('a', { href: './index.html' }, tt('dash.toGame')), window.DCC_INLINE ? null : ' · ', h('a', { href: (app.files.teacher.links || {}).guide || './docs/teacher-guide.md', target: '_blank', rel: 'noopener' }, tt('dash.toGuide'))));
 }
 
 function moreMenu() {
