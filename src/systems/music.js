@@ -10,7 +10,7 @@
 // setting is off, and the music pauses while the tab is hidden.
 
 // Each step is about 8 decibels apart, so the three levels sound clearly different.
-const VOLUMES = { low: 0.008, medium: 0.02, high: 0.05 };
+const VOLUMES = { low: 0.003, medium: 0.008, high: 0.02 };
 const FADE_OUT = 0.7;     // seconds, when leaving a place
 const FADE_IN = 1.0;      // seconds, when arriving
 const LOOKAHEAD = 0.15;   // seconds of notes scheduled ahead of time
