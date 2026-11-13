@@ -9,7 +9,8 @@
 // so the audio starts on the first touch, click or key press. Nothing plays when the
 // setting is off, and the music pauses while the tab is hidden.
 
-const VOLUMES = { low: 0.18, medium: 0.32, high: 0.5 };
+// Each step is about 8 decibels apart, so the three levels sound clearly different.
+const VOLUMES = { low: 0.07, medium: 0.17, high: 0.42 };
 const FADE_OUT = 0.7;     // seconds, when leaving a place
 const FADE_IN = 1.0;      // seconds, when arriving
 const LOOKAHEAD = 0.15;   // seconds of notes scheduled ahead of time
